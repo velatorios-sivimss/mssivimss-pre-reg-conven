@@ -82,7 +82,59 @@ public class PreRegConvController {
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
+
+	@GetMapping("/buscar/paquetes")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsulta")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsulta")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> catPaquetes( 
+			Authentication authentication) throws Throwable {
+		
+		Response<Object> response = pprc.catPaquetes();
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
 	
+	@GetMapping("/buscar/benfEmpresa/{idPreReg}")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> benefXEmpresa(@PathVariable Integer idPreReg, 
+			Authentication authentication) throws Throwable {
+		
+		Response<Object> response = pprc.benefXEmpresa(idPreReg);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
+
+	@GetMapping("/buscar/titularSustituto/{idTitSust}")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> titularSustituto(@PathVariable Integer idTitSust, 
+			Authentication authentication) throws Throwable {
+		Response<Object> response = pprc.titularSustituto(idTitSust);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+
+	@GetMapping("/buscar/beneficiarios/{idPreReg}")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> beneficioarios(@PathVariable Integer idPreReg, 
+			Authentication authentication) throws Throwable {
+		Response<Object> response = pprc.beneficiarios(idPreReg);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+
+	@GetMapping("/buscar/promotores")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsulta")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsulta")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> promotores(Authentication authentication) throws Throwable {
+		Response<Object> response = pprc.catPromotores();
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
 	/*
 	 * 
 	 * FallBack

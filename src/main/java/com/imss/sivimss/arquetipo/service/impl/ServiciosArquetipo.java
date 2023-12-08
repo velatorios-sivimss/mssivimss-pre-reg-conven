@@ -21,9 +21,7 @@ import com.imss.sivimss.arquetipo.utils.PaginadoUtil;
 import com.imss.sivimss.arquetipo.utils.Response;
 
 
-import lombok.extern.java.Log;
 
-@Log
 @Service
 public class ServiciosArquetipo implements PeticionesPreRegConv {
 
@@ -74,6 +72,99 @@ public class ServiciosArquetipo implements PeticionesPreRegConv {
 			Consultas consultas = session.getMapper(Consultas.class);
 			try {
 				result = consultas.selectNativeQuery(query.queryPreRegistrosXPersona(idPreReg));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+			}
+		}
+		
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
+	}
+	
+	@Override
+	public Response<Object>  catPaquetes() {
+		
+		List<Map<String, Object>> result = new ArrayList<>();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			Consultas consultas = session.getMapper(Consultas.class);
+			try {
+				result = consultas.selectNativeQuery(query.queryCatPaquetes());
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+			}
+		}
+		
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
+	}
+
+	@Override
+	public Response<Object>  benefXEmpresa(Integer idPreReg) {
+		
+		List<Map<String, Object>> result = new ArrayList<>();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			Consultas consultas = session.getMapper(Consultas.class);
+			try {
+				result = consultas.selectNativeQuery(query.queryBenefXEmpresa(idPreReg));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+			}
+		}	
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
+	}
+	
+
+	@Override
+	public Response<Object> titularSustituto(Integer idTitular) {
+		
+		List<Map<String, Object>> result = new ArrayList<>();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			Consultas consultas = session.getMapper(Consultas.class);
+			try {
+				result = consultas.selectNativeQuery(query.queryTitularSustituto(idTitular));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+			}
+		}	
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
+	}
+
+	@Override
+	public Response<Object> beneficiarios(Integer idPreReg) {
+		
+		List<Map<String, Object>> result = new ArrayList<>();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			Consultas consultas = session.getMapper(Consultas.class);
+			try {
+				result = consultas.selectNativeQuery(query.queryBeneficiarios(idPreReg));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+			}
+		}	
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
+	}
+
+	@Override
+	public Response<Object>  catPromotores() {
+		
+		List<Map<String, Object>> result = new ArrayList<>();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			Consultas consultas = session.getMapper(Consultas.class);
+			try {
+				result = consultas.selectNativeQuery(query.queryCatPromotores());
 			} catch (Exception e) {
 				e.printStackTrace();
 				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
