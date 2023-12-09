@@ -26,7 +26,7 @@ public class PaginadoUtil {
 		Page<Map<String, Object>> objetoMapeado = null;
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		String queryPage = query + " LIMIT " + (pagina*tamanio) + ", " + tamanio;
-		String queryConteo = "SELECT COUNT(*) AS conteo FROM (" + query + ") tem";
+		String queryConteo = "SELECT COUNT(*) AS conteo FROM (" + query + ") tem ";
 		List<Map<String, Object>> resp;
 		List<Map<String, Object>> respTotal;
 		Pageable pageable = PageRequest.of(pagina, tamanio);

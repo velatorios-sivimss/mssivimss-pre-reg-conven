@@ -4,7 +4,7 @@ server:
     contextPath: /${spring.application.name}/v1
 spring: 
   application:
-    name: mssivimss-arquetipo
+    name: mssivimss-pre-reg-conven
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -91,5 +91,5 @@ resilience4j.timelimiter:
     msflujo:
         timeout-duration: 3s
 
-ruta-log: 'C:/Users/opimentel/Documents/logs/Arquetipo/'
+ruta-log: 'C:/Users/opimentel/Documents/logs/mssivimss-pre-reg-conven/'
 enviroment: Develop
