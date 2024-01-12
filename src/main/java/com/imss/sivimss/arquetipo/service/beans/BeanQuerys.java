@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
+
 
 
 
@@ -11,148 +13,241 @@ import org.springframework.stereotype.Service;
 public class BeanQuerys {
 	private static final Logger log = LoggerFactory.getLogger(BeanQuerys.class);
 
+	public String queryPreRegistros(RequestFiltroPaginado request) {
+		StringBuilder  query= new StringBuilder ();
+		StringBuilder  queryPers= new StringBuilder ();
+		String union = " UNION ";
+		StringBuilder queryEmp = new StringBuilder ();
+		StringBuilder queryEmpPer = new StringBuilder ();
+		String rfcPer = " AND SP.CVE_RFC = '" + request.getRfc() + "'";
+		
+		queryPers.append("SELECT SPS.ID_PLAN_SFPA AS idConvenioPlan, IFNULL(SPS.NUM_FOLIO_PLAN_SFPA, '') AS folioConvenio, STC.DES_TIPO_CONTRATACION AS tipoContratacion , IFNULL(SP.CVE_RFC, '') AS rfc,");
+		queryPers.append(" CONCAT(SP.NOM_PERSONA, ' ', SP.NOM_PRIMER_APELLIDO , ' ', SP.NOM_SEGUNDO_APELLIDO) AS NombreAfiliadoTitular, SP2.REF_PAQUETE_NOMBRE AS tipoPaquete , 'p' AS tipoConvenio");
+		queryPers.append(" FROM SVT_PLAN_SFPA SPS ");
+		queryPers.append(" JOIN SVC_TIPO_CONTRATACION STC ON STC.ID_TIPO_CONTRATACION = SPS.ID_TIPO_CONTRATACION ");
+		queryPers.append(" JOIN SVC_CONTRATANTE SC ON sc.ID_CONTRATANTE = SPS.ID_TITULAR ");
+		queryPers.append(" JOIN SVC_PERSONA SP ON SP.ID_PERSONA = sc.ID_PERSONA ");
+		queryPers.append(" JOIN SVT_PAQUETE SP2 ON SP2.ID_PAQUETE = SPS.ID_PAQUETE ");
+		queryPers.append(" JOIN SVC_ESTATUS_PLAN_SFPA SEPS ON SEPS.ID_ESTATUS_PLAN_SFPA = SPS.ID_ESTATUS_PLAN_SFPA ");
+		queryPers.append(" WHERE SPS.ID_ESTATUS_PLAN_SFPA = 8 ");
+	
+		queryEmp.append("SELECT SCP.ID_CONVENIO_PF AS idConvenioPlan, IFNULL(SCP.DES_FOLIO, '') AS folioConvenio, 'Empresa' AS tipoContratacion, IFNULL(SECP.CVE_RFC, '') AS rfc,");
+		queryEmp.append(" SECP.REF_NOMBRE AS NombreAfiliadoTitular, SP2.REF_PAQUETE_NOMBRE AS tipoPaquete, 'e' AS tipoConvenio");
+		queryEmp.append(" FROM SVT_CONVENIO_PF SCP");
+		queryEmp.append(" LEFT JOIN SVT_EMPRESA_CONVENIO_PF SECP ON SECP.ID_CONVENIO_PF = scp.ID_CONVENIO_PF");
+		queryEmp.append(" JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPCP ON SCPCP.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF ");
+		queryEmp.append(" JOIN SVC_CONTRATANTE SC ON SC.ID_CONTRATANTE = SCPCP.ID_CONTRATANTE ");
+		queryEmp.append(" LEFT JOIN SVC_PERSONA SP ON SP.ID_PERSONA = SC.ID_PERSONA ");
+		queryEmp.append(" JOIN SVT_PAQUETE SP2 ON SP2.ID_PAQUETE = scpcp.ID_PAQUETE");
+		queryEmp.append(" WHERE SCP.ID_ESTATUS_CONVENIO = 5 AND SCP.IND_TIPO_CONTRATACION = 0");
+
+		queryEmpPer.append("SELECT SCP.ID_CONVENIO_PF AS idConvenioPlan, IFNULL(SCP.DES_FOLIO, '') AS folioConvenio, 'Persona' AS tipoContratacion, IFNULL(SP.CVE_RFC, '') AS rfc,");
+		queryEmpPer.append(" CONCAT(SP.NOM_PERSONA, ' ', SP.NOM_PRIMER_APELLIDO , ' ', SP.NOM_SEGUNDO_APELLIDO) AS NombreAfiliadoTitular, SP2.REF_PAQUETE_NOMBRE AS tipoPaquete, 'ep' AS tipoConvenio");
+		queryEmpPer.append(" FROM SVT_CONVENIO_PF SCP");
+		queryEmpPer.append(" JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPCP ON SCPCP.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF ");
+		queryEmpPer.append(" JOIN SVC_CONTRATANTE SC ON SC.ID_CONTRATANTE = SCPCP.ID_CONTRATANTE ");
+		queryEmpPer.append(" LEFT JOIN SVC_PERSONA SP ON SP.ID_PERSONA = SC.ID_PERSONA ");
+		queryEmpPer.append(" JOIN SVT_PAQUETE SP2 ON SP2.ID_PAQUETE = scpcp.ID_PAQUETE");
+		queryEmpPer.append(" WHERE SCP.ID_ESTATUS_CONVENIO = 5 AND SCP.IND_TIPO_CONTRATACION = 1");
+		if(request.getConvenioPSFPA() != null)
+			queryPers.append(" AND SPS.NUM_FOLIO_PLAN_SFPA = '" + request.getConvenioPSFPA() + "'");	
+		if (request.getConvenioPF() != null) {
+			queryEmp.append(" AND SCP.DES_FOLIO = '" + request.getConvenioPF() + "'");
+			queryEmpPer.append(" AND SCP.DES_FOLIO = '" + request.getConvenioPF() + "'");	
+		}
+		if(request.getRfc() != null) {
+			queryPers.append(rfcPer);
+			queryEmp.append(" AND SECP.CVE_RFC = '" + request.getRfc() + "'");
+			queryEmpPer.append(rfcPer);
+		}
+		
+		
+		if((request.getConvenioPSFPA() == null && request.getConvenioPF() == null && request.getRfc() == null) || (request.getConvenioPSFPA() != null && request.getConvenioPF() != null && request.getRfc() != null) || request.getRfc() != null)
+			query.append(queryPers).append(union).append(queryEmp).append(union).append(queryEmpPer);
+		else if(request.getConvenioPSFPA() != null && request.getConvenioPF() == null)
+			query.append(queryPers);
+		else if(request.getConvenioPSFPA() == null && request.getConvenioPF() != null )
+			query.append(queryEmp).append(queryEmpPer);
+		
+		log.info(query.toString());
+		return query.toString();
+	}
+
 	public String queryPreRegistrosXEmpresa(Integer idPreReg) {
-		String query= "SELECT scp.ID_CONVENIO_PF AS idConvenioPlan, secp.REF_NOMBRE AS nombre, secp.REF_RAZON_SOCIAL AS razonSoc, "
-				+ "IFNULL(secp.CVE_RFC, '') AS rfc, sp.DES_PAIS AS pais, sd.REF_CP AS cp, sd.REF_COLONIA AS colonia "
-				+ ", sd.REF_ESTADO AS estado, sd.REF_MUNICIPIO AS municipio, sd.REF_CALLE AS calle, sd.NUM_EXTERIOR AS numExt "
-				+ ", sd.NUM_EXTERIOR AS numInt, secp.REF_TELEFONO AS telefono, secp.REF_CORREO AS correo "
-				+ " FROM SVT_CONVENIO_PF scp "
-				+ " JOIN SVT_EMPRESA_CONVENIO_PF secp ON secp.ID_CONVENIO_PF = scp.ID_CONVENIO_PF  "
-				+ " JOIN SVC_PAIS sp ON sp.ID_PAIS = secp.ID_PAIS  "
-				+ " JOIN SVT_DOMICILIO sd ON sd.ID_DOMICILIO = secp.ID_DOMICILIO  "
-				+ " WHERE scp.ID_CONVENIO_PF = " + idPreReg ;
+		String query= "SELECT SCP.ID_CONVENIO_PF AS idConvenioPlan, SECP.REF_NOMBRE AS nombre, SECP.REF_RAZON_SOCIAL AS razonSoc, "
+				+ "IFNULL(SECP.CVE_RFC, '') AS rfc, SP.DES_PAIS AS pais, SD.REF_CP AS cp, SD.REF_COLONIA AS colonia "
+				+ ", SD.REF_ESTADO AS estado, SD.REF_MUNICIPIO AS municipio, SD.REF_CALLE AS calle, SD.NUM_EXTERIOR AS numExt "
+				+ ", SD.NUM_EXTERIOR AS numInt, SECP.REF_TELEFONO AS telefono, SECP.REF_CORREO AS correo "
+				+ " FROM SVT_CONVENIO_PF SCP "
+				+ " JOIN SVT_EMPRESA_CONVENIO_PF SECP ON SECP.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF  "
+				+ " JOIN SVC_PAIS SP ON SP.ID_PAIS = SECP.ID_PAIS  "
+				+ " JOIN SVT_DOMICILIO SD ON SD.ID_DOMICILIO = SECP.ID_DOMICILIO  "
+				+ " WHERE SCP.ID_CONVENIO_PF = " + idPreReg ;
 		log.info(query);
 		return query;
 		
 	}
 
-	public String queryPreRegistros() {
-		String query= "SELECT sps.ID_PLAN_SFPA AS idConvenioPlan, IFNULL(sps.NUM_FOLIO_PLAN_SFPA,'') AS folioConvenio, stc.DES_TIPO_CONTRATACION AS tipoContratacion "
-				+ ", IFNULL(sp.CVE_RFC,'')  AS rfc, CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO  , ' ',sp.NOM_SEGUNDO_APELLIDO) AS NombreAfiliadoTitular, sp2.REF_PAQUETE_NOMBRE AS tipoPaquete "
-				+ "FROM SVT_PLAN_SFPA sps  "
-				+ "JOIN SVC_TIPO_CONTRATACION stc ON stc.ID_TIPO_CONTRATACION = sps.ID_TIPO_CONTRATACION  "
-				+ "JOIN SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = sps.ID_TITULAR  "
-				+ "JOIN SVC_PERSONA sp ON sp.ID_PERSONA = sc.ID_PERSONA  "
-				+ "JOIN SVT_PAQUETE sp2 ON sp2.ID_PAQUETE = sps.ID_PAQUETE  "
-				+ "JOIN SVC_ESTATUS_PLAN_SFPA seps ON seps.ID_ESTATUS_PLAN_SFPA = sps.ID_ESTATUS_PLAN_SFPA  "
-				+ "WHERE sps.ID_ESTATUS_PLAN_SFPA = 8 "
-				+ "UNION "
-				+ "SELECT scp.ID_ESTATUS_CONVENIO AS idConvenioPlan , "
-				+ "IFNULL(scp.DES_FOLIO,'') AS folioConvenio, stc.DES_TIPO_CONTRATACION AS tipoContratacion ,  "
-				+ "CASE WHEN scp.IND_TIPO_CONTRATACION = 0 THEN IFNULL(secp.CVE_RFC, '') "
-				+ "   WHEN scp.IND_TIPO_CONTRATACION = 1 THEN IFNULL(sp.CVE_RFC,'')  "
-				+ "END AS rfc,   "
-				+ "CASE WHEN scp.IND_TIPO_CONTRATACION = 0 THEN secp.REF_NOMBRE "
-				+ "   WHEN scp.IND_TIPO_CONTRATACION = 1 THEN CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO  , ' ',sp.NOM_SEGUNDO_APELLIDO)  "
-				+ "END AS NombreAfiliadoTitular, sp2.REF_PAQUETE_NOMBRE  AS tipoPaquete "
-				+ "FROM SVT_CONVENIO_PF scp  "
-				+ "JOIN SVT_CONTRA_PAQ_CONVENIO_PF scpcp ON scpcp.ID_CONVENIO_PF = scp.ID_CONVENIO_PF  "
-				+ "JOIN SVT_PAQUETE sp2 ON sp2.ID_PAQUETE = scpcp.ID_PAQUETE  "
-				+ "JOIN SVC_TIPO_CONTRATACION stc ON stc.ID_TIPO_CONTRATACION = scp.IND_TIPO_CONTRATACION "
-				+ "LEFT JOIN SVT_EMPRESA_CONVENIO_PF secp ON secp.ID_CONVENIO_PF = scp.ID_CONVENIO_PF  "
-				+ "LEFT JOIN SVC_FINADO sf ON sf.ID_CONTRATO_PREVISION = scp.ID_CONVENIO_PF "
-				+ "JOIN SVC_PERSONA sp ON sp.ID_PERSONA = sf.ID_PERSONA  "
-				+ "WHERE scp.ID_ESTATUS_CONVENIO = 5";
-		log.info(query);
-		return query;
+	public String queryPreRegPersonasEmpresa(Integer idPreReg) {
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT SC.ID_CONTRATANTE AS idContratante, IFNULL(SC.CVE_MATRICULA, '') AS matricula, IFNULL(SPE.CVE_RFC, '') AS rfc, IFNULL(SPE.CVE_CURP, '') AS curp,");
+		query.append(" SPE.NOM_PERSONA AS nombre, SPE.NOM_PRIMER_APELLIDO AS primerApellido, SPE.NOM_SEGUNDO_APELLIDO AS segundoApellido, SD2.REF_CALLE AS calle,");
+		query.append(" SD2.NUM_EXTERIOR AS numExt, SD2.NUM_INTERIOR AS numInt, SD2.REF_CP AS cp, SD2.REF_COLONIA AS colonia, SD2.REF_MUNICIPIO AS municipio, SD2.REF_ESTADO AS estado,");
+		query.append(" SPE.ID_PAIS AS idPais, SPA.DES_PAIS AS pais, SPE.REF_CORREO AS correo, SPE.REF_TELEFONO AS telefono, SCPCP.IND_ENFERMEDAD_PREXISTENTE AS idenferpre");
+		query.append(" FROM SVT_CONVENIO_PF SCP");
+		query.append(" JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPCP ON SCPCP.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF");
+		query.append(" JOIN SVT_EMPRESA_CONVENIO_PF SCPE ON SCP.ID_CONVENIO_PF = SCPE.ID_CONVENIO_PF");
+		query.append(" JOIN SVC_CONTRATANTE SC ON SC.ID_CONTRATANTE = SCPCP.ID_CONTRATANTE");
+		query.append(" JOIN SVT_DOMICILIO SD2 ON SD2.ID_DOMICILIO = SC.ID_DOMICILIO");
+		query.append(" JOIN SVC_PERSONA SPE ON SC.ID_PERSONA = SPE.ID_PERSONA");
+		query.append(" LEFT JOIN SVC_PAIS SPA ON SPA.ID_PAIS = SPE.ID_PAIS  ");
+		query.append(" WHERE SCPE.ID_CONVENIO_PF = " + idPreReg);
+		log.info("{}",query.toString());
+		return query.toString();
+	}
+	
+	public String queryDocsEmpresa(Integer idPreReg) {
+		StringBuilder query = new StringBuilder();
+		query.append(" SELECT TD.idDoc, TD.totalDocs AS numeroDocumento, 'INE del afiliado' AS tipoDocumento, SVDCP.REF_UBICACION_INE AS nombreDoc, SVDCP.REF_DOC_INE_AFILIADO AS documento");
+		query.append(" FROM SVC_VALIDA_DOCS_CONVENIO_PF SVDCP");
+		query.append(" JOIN (SELECT LPAD(COUNT(SVDCPT.ID_CONVENIO_PF),4,'0') AS totalDocs, MAX(SVDCPT.ID_VALIDACION_DOCUMENTO) AS idDoc FROM SVC_VALIDA_DOCS_CONVENIO_PF SVDCPT");
+		query.append("       WHERE (SVDCPT.REF_DOC_INE_AFILIADO IS NOT NULL OR SVDCPT.REF_DOC_INE_AFILIADO != '') AND SVDCPT.ID_CONVENIO_PF = " + idPreReg + " ) TD on TD.idDoc = SVDCP.ID_VALIDACION_DOCUMENTO");
+		query.append(" UNION");
+		query.append(" SELECT TD.idDoc, TD.totalDocs AS numeroDocumento, 'CURP del afiliado' AS tipoDocumento, SVDCP.REF_UBICACION_CURP AS nombreDoc, SVDCP.REF_DOC_CURP_AFILIADO AS documento");
+		query.append(" FROM SVC_VALIDA_DOCS_CONVENIO_PF SVDCP");
+		query.append(" JOIN (SELECT LPAD(COUNT(SVDCPT.ID_CONVENIO_PF),4,'0') AS totalDocs, MAX(SVDCPT.ID_VALIDACION_DOCUMENTO) AS idDoc FROM SVC_VALIDA_DOCS_CONVENIO_PF SVDCPT");
+		query.append("       WHERE (SVDCPT.REF_DOC_CURP_AFILIADO IS NOT NULL OR SVDCPT.REF_DOC_CURP_AFILIADO != '')  AND SVDCPT.ID_CONVENIO_PF = " + idPreReg + " ) TD on TD.idDoc = SVDCP.ID_VALIDACION_DOCUMENTO");
+		query.append(" UNION");
+		query.append(" SELECT TD.idDoc, TD.totalDocs AS numeroDocumento, 'RFC del afiliado' AS tipoDocumento, SVDCP.REF_UBICACION_RFC AS nombreDoc, SVDCP.REF_DOC_RFC_AFILIADO AS documento");
+		query.append(" FROM SVC_VALIDA_DOCS_CONVENIO_PF SVDCP");
+		query.append(" JOIN (SELECT LPAD(COUNT(SVDCPT.ID_CONVENIO_PF),4,'0') AS totalDocs, MAX(SVDCPT.ID_VALIDACION_DOCUMENTO) AS idDoc FROM SVC_VALIDA_DOCS_CONVENIO_PF SVDCPT");
+		query.append("       WHERE (SVDCPT.REF_DOC_RFC_AFILIADO IS NOT NULL OR SVDCPT.REF_DOC_RFC_AFILIADO != '') AND SVDCPT.ID_CONVENIO_PF = " + idPreReg + " ) TD on TD.idDoc = SVDCP.ID_VALIDACION_DOCUMENTO");
+				
+		log.info(query.toString());
+		return query.toString();
 	}
 	
 	
+	
+	
 	public String queryPreRegistrosXPersona(Integer idPreReg) {
-		String query= "SELECT sps.ID_PLAN_SFPA AS folioConvenio, sp.CVE_CURP AS curp, sp.CVE_RFC AS rfc, IFNULL(sc.CVE_MATRICULA,'') AS matricula, sp.CVE_NSS AS nss"
-				+ ", sp.NOM_PERSONA AS nombre, sp.NOM_PRIMER_APELLIDO AS primerApellido, sp.NOM_SEGUNDO_APELLIDO AS segundoApellido, sp.NUM_SEXO AS idSexo "
-				+ ", DATE_FORMAT(sp.FEC_NAC, '%d-%m-%Y') AS fecNacimiento, sp2.DES_PAIS AS pais, sp.ID_PAIS AS idPais, se.DES_ESTADO AS lugarNac, sp.ID_ESTADO AS idLugarNac "
-				+ ", sp.REF_TELEFONO AS telCelular, sp.REF_TELEFONO_FIJO AS telFijo, sp.REF_CORREO AS correo, sd.REF_CALLE AS calle, sd.NUM_EXTERIOR AS numExt, sd.NUM_INTERIOR AS numInt "
-				+ ", sd.REF_CP AS cp, sd.REF_COLONIA AS colonia, sd.REF_MUNICIPIO AS municipio, sd.REF_ESTADO AS estado, sps.ID_PAQUETE AS idPaquete, stpm.DES_TIPO_PAGO_MENSUAL AS numPagos "
-				+ " FROM SVT_PLAN_SFPA sps "
-				+ " JOIN SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = sps.ID_TITULAR " 
-				+ " JOIN SVC_PERSONA sp ON sp.ID_PERSONA = sc.ID_PERSONA "
-				+ " JOIN SVC_PAIS sp2 ON sp2.ID_PAIS = sp.ID_PAIS "
-				+ " JOIN SVC_ESTADO se ON se.ID_ESTADO = sp.ID_ESTADO " 
-				+ " JOIN SVT_DOMICILIO sd ON sd.ID_DOMICILIO = sc.ID_DOMICILIO " 
-				+ " JOIN SVC_TIPO_PAGO_MENSUAL stpm ON stpm.ID_TIPO_PAGO_MENSUAL = sps.ID_TIPO_PAGO_MENSUAL " 
-				+ " WHERE sps.ID_PLAN_SFPA = " + idPreReg;
+		String query= "SELECT SP.ID_PERSONA AS idPersona, sc.ID_CONTRATANTE AS idContratante, SD.ID_DOMICILIO AS idDomicilio, SPS.ID_PLAN_SFPA AS folioConvenio, SP.CVE_CURP AS curp, SP.CVE_RFC AS rfc, IFNULL(sc.CVE_MATRICULA,'') AS matricula, SP.CVE_NSS AS nss"
+				+ ", SP.NOM_PERSONA AS nombre, SP.NOM_PRIMER_APELLIDO AS primerApellido, SP.NOM_SEGUNDO_APELLIDO AS segundoApellido, SP.NUM_SEXO AS idSexo "
+				+ ", DATE_FORMAT(SP.FEC_NAC, '%d-%m-%Y') AS fecNacimiento, SP2.DES_PAIS AS pais, SP.ID_PAIS AS idPais, se.DES_ESTADO AS lugarNac, SP.ID_ESTADO AS idLugarNac "
+				+ ", SP.REF_TELEFONO AS telCelular, SP.REF_TELEFONO_FIJO AS telFijo, SP.REF_CORREO AS correo, SD.REF_CALLE AS calle, SD.NUM_EXTERIOR AS numExt, SD.NUM_INTERIOR AS numInt "
+				+ ", SD.REF_CP AS cp, SD.REF_COLONIA AS colonia, SD.REF_MUNICIPIO AS municipio, SD.REF_ESTADO AS estado, SPS.ID_PAQUETE AS idPaquete"
+				+ ", stpm.DES_TIPO_PAGO_MENSUAL AS numPagos, SP3.REF_PAQUETE_NOMBRE AS nomPaquete, SPS.IND_TITULAR_SUBSTITUTO AS titularSust, SPS.ID_TITULAR_SUBSTITUTO AS idTitularSust "
+				+ ", SPS.ID_BENEFICIARIO_1 AS beneficiario1, SPS.ID_BENEFICIARIO_2 AS beneficiario2, SPS.IND_PROMOTOR AS gestionPromotor "
+				+ " FROM SVT_PLAN_SFPA SPS "
+				+ " JOIN SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = SPS.ID_TITULAR " 
+				+ " JOIN SVC_PERSONA SP ON SP.ID_PERSONA = sc.ID_PERSONA "
+				+ " JOIN SVC_PAIS SP2 ON SP2.ID_PAIS = SP.ID_PAIS "
+				+ " JOIN SVC_ESTADO se ON se.ID_ESTADO = SP.ID_ESTADO " 
+				+ " JOIN SVT_DOMICILIO SD ON SD.ID_DOMICILIO = sc.ID_DOMICILIO " 
+				+ " JOIN SVC_TIPO_PAGO_MENSUAL stpm ON stpm.ID_TIPO_PAGO_MENSUAL = SPS.ID_TIPO_PAGO_MENSUAL "
+				+ " JOIN SVT_PAQUETE SP3 ON SP3.ID_PAQUETE = SPS.ID_PAQUETE "  
+				+ " WHERE SPS.ID_PLAN_SFPA = " + idPreReg;
 		log.info(query);
 		return query;
 	}
 	
 	public String queryCatPaquetes() {
-		String query= "SELECT sp.ID_PAQUETE AS idPaquete, sp.REF_PAQUETE_NOMBRE AS nombrePaquete FROM SVT_PAQUETE sp WHERE sp.IND_ACTIVO = 1";
+		String query= "SELECT SP.ID_PAQUETE AS idPaquete, SP.REF_PAQUETE_NOMBRE AS nombrePaquete FROM SVT_PAQUETE SP WHERE SP.IND_ACTIVO = 1";
 		log.info(query);
 		return query;
 	}
 
 	public String queryBenefXEmpresa(Integer idPreReg) {
-		String query= "SELECT CONCAT(sp.NOM_PERSONA, ' ', sp.NOM_PRIMER_APELLIDO, ' ', sp.NOM_SEGUNDO_APELLIDO) AS nombreCompleto "
-				+ " , YEAR(CURDATE())-YEAR(sp.FEC_NAC)  AS edad, sp2.DES_PARENTESCO  AS parentesco "
-				+ " , scb.ID_PARENTESCO AS idParentesco, sp.CVE_CURP AS curp, sp.CVE_RFC AS rfc, IFNULL(sp.REF_CORREO,'') AS correo "
-				+ " , IFNULL(sp.REF_TELEFONO,'') AS telefono "
-				+ " FROM SVT_CONTRATANTE_BENEFICIARIOS scb  "
-				+ " JOIN SVT_CONTRA_PAQ_CONVENIO_PF scpcp ON scpcp.ID_CONTRA_PAQ_CONVENIO_PF = scb.ID_CONTRA_PAQ_CONVENIO_PF  "
-				+ " JOIN SVT_CONVENIO_PF scp ON scp.ID_CONVENIO_PF = scpcp.ID_CONVENIO_PF  "
-				+ " JOIN SVC_PERSONA sp ON sp.ID_PERSONA = scb.ID_PERSONA  "
-				+ " JOIN SVC_PARENTESCO sp2 ON sp2.ID_PARENTESCO = scb.ID_PARENTESCO  "
-				+ " WHERE scp.ID_CONVENIO_PF = " + idPreReg;
+		String query= "SELECT CONCAT(SP.NOM_PERSONA, ' ', SP.NOM_PRIMER_APELLIDO, ' ', SP.NOM_SEGUNDO_APELLIDO) AS nombreCompleto "
+				+ " , YEAR(CURDATE())-YEAR(SP.FEC_NAC)  AS edad, SP2.DES_PARENTESCO  AS parentesco "
+				+ " , SCB.ID_PARENTESCO AS idParentesco, SP.CVE_CURP AS curp, SP.CVE_RFC AS rfc, IFNULL(SP.REF_CORREO,'') AS correo "
+				+ " , IFNULL(SP.REF_TELEFONO,'') AS telefono "
+				+ " FROM SVT_CONTRATANTE_BENEFICIARIOS SCB  "
+				+ " JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPCP ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = SCB.ID_CONTRA_PAQ_CONVENIO_PF  "
+				+ " JOIN SVC_PERSONA SP ON SP.ID_PERSONA = SCB.ID_PERSONA  "
+				+ " JOIN SVC_PARENTESCO SP2 ON SP2.ID_PARENTESCO = SCB.ID_PARENTESCO  "
+				+ " WHERE SCB.IND_ACTIVO = 1 AND SCPCP.ID_CONVENIO_PF = " + idPreReg;
 		log.info(query);
 		return query;
 	}
 
 	public String queryTitularSustituto(Integer idTituSust) {
-		String query= "SELECT sp.CVE_CURP AS curp, IFNULL(sp.CVE_RFC,'') AS rfc, IFNULL(su.CVE_MATRICULA,'') AS matricula  "
-				+ ", IFNULL(sp.CVE_NSS,'') AS nss, sp.NOM_PERSONA AS nombre, sp.NOM_PRIMER_APELLIDO AS primerApellido, sp.NOM_SEGUNDO_APELLIDO AS segundoApellido "
-				+ ", sp.NUM_SEXO AS idSexo, DATE_FORMAT(sp.FEC_NAC, '%d/%m/%Y') AS fecNacimiento, sp2.DES_PAIS AS pais, sp.ID_PAIS AS idPais, se.DES_ESTADO AS lugarNac "
-				+ ", sp.ID_ESTADO AS idLugarNac "
-				+ ", sp.REF_TELEFONO AS telCelular, sp.REF_TELEFONO_FIJO AS telFijo, sp.REF_CORREO AS correo, sd.REF_CALLE AS calle, sd.NUM_EXTERIOR AS numExt, sd.NUM_INTERIOR AS numInt "
-				+ ", sd.REF_CP AS cp, sd.REF_COLONIA AS colonia, sd.REF_MUNICIPIO AS municipio, sd.REF_ESTADO AS estado "
-				+ " FROM SVT_PLAN_SFPA sps  "
-				+ " JOIN SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = sps.ID_TITULAR_SUBSTITUTO  "
-				+ " JOIN SVC_PERSONA sp ON sp.ID_PERSONA = sc.ID_PERSONA  "
-				+ " LEFT JOIN SVT_USUARIOS su ON su.ID_PERSONA = sp.ID_PERSONA  "
-				+ " LEFT JOIN SVC_PAIS sp2 ON sp2.ID_PAIS = sp.ID_PAIS  "
-				+ " JOIN SVC_ESTADO se ON se.ID_ESTADO = sp.ID_ESTADO  "
-				+ " JOIN SVT_DOMICILIO sd ON sd.ID_DOMICILIO = sc.ID_DOMICILIO  "
-				+ " JOIN SVC_TIPO_PAGO_MENSUAL stpm ON stpm.ID_TIPO_PAGO_MENSUAL = sps.ID_TIPO_PAGO_MENSUAL  "
-				+ " WHERE sps.ID_PLAN_SFPA = " + idTituSust;
+		String query= "SELECT SP.CVE_CURP AS curp, IFNULL(SP.CVE_RFC,'') AS rfc, IFNULL(su.CVE_MATRICULA,'') AS matricula  "
+				+ ", IFNULL(SP.CVE_NSS,'') AS nss, SP.NOM_PERSONA AS nombre, SP.NOM_PRIMER_APELLIDO AS primerApellido, SP.NOM_SEGUNDO_APELLIDO AS segundoApellido "
+				+ ", SP.NUM_SEXO AS idSexo, DATE_FORMAT(SP.FEC_NAC, '%d/%m/%Y') AS fecNacimiento, SP2.DES_PAIS AS pais, SP.ID_PAIS AS idPais, se.DES_ESTADO AS lugarNac "
+				+ ", SP.ID_ESTADO AS idLugarNac "
+				+ ", SP.REF_TELEFONO AS telCelular, SP.REF_TELEFONO_FIJO AS telFijo, SP.REF_CORREO AS correo, SD.REF_CALLE AS calle, SD.NUM_EXTERIOR AS numExt, SD.NUM_INTERIOR AS numInt "
+				+ ", SD.REF_CP AS cp, SD.REF_COLONIA AS colonia, SD.REF_MUNICIPIO AS municipio, SD.REF_ESTADO AS estado "
+				+ " FROM SVT_PLAN_SFPA SPS  "
+				+ " JOIN SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = SPS.ID_TITULAR_SUBSTITUTO  "
+				+ " JOIN SVC_PERSONA SP ON SP.ID_PERSONA = sc.ID_PERSONA  "
+				+ " LEFT JOIN SVT_USUARIOS su ON su.ID_PERSONA = SP.ID_PERSONA "
+				+ " LEFT JOIN SVC_PAIS SP2 ON SP2.ID_PAIS = SP.ID_PAIS "
+				+ " JOIN SVC_ESTADO se ON se.ID_ESTADO = SP.ID_ESTADO  "
+				+ " JOIN SVT_DOMICILIO SD ON SD.ID_DOMICILIO = sc.ID_DOMICILIO  "
+				+ " JOIN SVC_TIPO_PAGO_MENSUAL stpm ON stpm.ID_TIPO_PAGO_MENSUAL = SPS.ID_TIPO_PAGO_MENSUAL  "
+				+ " WHERE SPS.ID_PLAN_SFPA = " + idTituSust;
 		log.info(query);
 		return query;
 	}
-	
-	public String queryBeneficiarios(Integer idPreReg) {
-		String query= "SELECT sps.ID_PLAN_SFPA, sp.CVE_CURP AS curp, IFNULL(sp.CVE_RFC,'') AS rfc, IFNULL(su.CVE_MATRICULA,'') AS matricula, sp.CVE_NSS AS nss "
-				+ ", sp.NOM_PERSONA AS nombre, sp.NOM_PRIMER_APELLIDO AS primerApellido, sp.NOM_SEGUNDO_APELLIDO AS segundoApellido, sp.NUM_SEXO AS sexo "
-				+ ", DATE_FORMAT(sp.FEC_NAC, '%d-%m-%Y') AS fecNacimiento, sp2.DES_PAIS AS pais, sp.ID_PAIS AS idPais, se.DES_ESTADO AS lugarNac "
-				+ ", sp.ID_ESTADO AS idLugarNac, sp.REF_TELEFONO AS telCelular, sp.REF_TELEFONO_FIJO AS telFijo, sp.REF_CORREO AS correo, sd.REF_CALLE AS calle, sd.NUM_EXTERIOR AS numExt, sd.NUM_INTERIOR AS numInt "
-				+ ", sd.REF_CP AS cp, sd.REF_COLONIA AS colonia, sd.REF_MUNICIPIO AS municipio, sd.REF_ESTADO AS estado  "
-				+ " FROM SVT_PLAN_SFPA sps  "
-				+ " JOIN SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = sps.ID_BENEFICIARIO_1  "
-				+ " JOIN SVC_PERSONA sp ON sc.ID_PERSONA = sp.ID_PERSONA  "
-				+ " LEFT JOIN SVT_USUARIOS su ON su.ID_PERSONA = sp.ID_PERSONA  "
-				+ " LEFT JOIN SVC_PAIS sp2 ON sp2.ID_PAIS = sp.ID_PAIS  "
-				+ " LEFT JOIN SVC_ESTADO se ON se.ID_ESTADO = sp.ID_ESTADO  "
-				+ " LEFT JOIN SVT_DOMICILIO sd ON sd.ID_DOMICILIO = sc.ID_DOMICILIO  "
-				+ " WHERE sps.ID_PLAN_SFPA = " + idPreReg 
+	public String queryBenefxPersona(Integer idBenef) {
+		String query= "SELECT SP.CVE_CURP AS curp, SP.CVE_RFC AS rfc, stb.CVE_MATRICULA AS matricula, SP.CVE_NSS AS nss "
+				+ ", SP.NOM_PERSONA  AS  nombre, SP.NOM_PRIMER_APELLIDO AS primerApellido, SP.NOM_SEGUNDO_APELLIDO AS segundoApellido "
+				+ ", SP.NUM_SEXO AS idSexo, SP.FEC_NAC AS fecNacimiento, SP.ID_PAIS AS idPais , se.ID_ESTADO AS lugarNac "
+				+ ", SP.REF_TELEFONO_FIJO AS telFijo, SP.REF_TELEFONO AS telCelular, SP.REF_CORREO AS correo, SD.REF_CALLE AS calle "
+				+ ", SD.NUM_EXTERIOR AS numExt, SD.NUM_INTERIOR AS numInt, SP.CVE_CURP AS cp, SD.REF_COLONIA AS colonia "
+				+ ", SD.REF_MUNICIPIO AS municipio, SP.ID_ESTADO AS idEstado, SD.REF_ESTADO AS estado "
+				+ "FROM SVT_TITULAR_BENEFICIARIOS stb "
+				+ "JOIN SVC_PERSONA SP on SP.ID_PERSONA = stb.ID_PERSONA "
+				+ "JOIN SVC_ESTADO se on se.ID_ESTADO = SP.ID_ESTADO "
+				+ "JOIN SVT_DOMICILIO SD on SD.ID_DOMICILIO = stb.ID_DOMICILIO "
+				+ "WHERE stb.ID_TITULAR_BENEFICIARIOS = " + idBenef ;
+		log.info(query);
+		return query;
+	}
+	public String queryBeneficiarios1(Integer idPreReg) {
+		String query= "SELECT SPS.ID_PLAN_SFPA, SP.CVE_CURP AS curp, IFNULL(SP.CVE_RFC,'') AS rfc, IFNULL(su.CVE_MATRICULA,'') AS matricula, SP.CVE_NSS AS nss "
+				+ ", SP.NOM_PERSONA AS nombre, SP.NOM_PRIMER_APELLIDO AS primerApellido, SP.NOM_SEGUNDO_APELLIDO AS segundoApellido, SP.NUM_SEXO AS sexo "
+				+ ", DATE_FORMAT(SP.FEC_NAC, '%d-%m-%Y') AS fecNacimiento, SP2.DES_PAIS AS pais, SP.ID_PAIS AS idPais, se.DES_ESTADO AS lugarNac "
+				+ ", SP.ID_ESTADO AS idLugarNac, SP.REF_TELEFONO AS telCelular, SP.REF_TELEFONO_FIJO AS telFijo, SP.REF_CORREO AS correo, SD.REF_CALLE AS calle, SD.NUM_EXTERIOR AS numExt, SD.NUM_INTERIOR AS numInt "
+				+ ", SD.REF_CP AS cp, SD.REF_COLONIA AS colonia, SD.REF_MUNICIPIO AS municipio, SD.REF_ESTADO AS estado  "
+				+ " FROM SVT_PLAN_SFPA SPS  "
+				+ " JOIN SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = SPS.ID_BENEFICIARIO_1  "
+				+ " JOIN SVC_PERSONA SP ON sc.ID_PERSONA = SP.ID_PERSONA  "
+				+ " LEFT JOIN SVT_USUARIOS su ON su.ID_PERSONA = SP.ID_PERSONA  "
+				+ " LEFT JOIN SVC_PAIS SP2 ON SP2.ID_PAIS = SP.ID_PAIS  "
+				+ " LEFT JOIN SVC_ESTADO se ON se.ID_ESTADO = SP.ID_ESTADO  "
+				+ " LEFT JOIN SVT_DOMICILIO SD ON SD.ID_DOMICILIO = sc.ID_DOMICILIO  "
+				+ " WHERE SPS.ID_PLAN_SFPA = " + idPreReg 
 				+ " UNION "
-				+ " SELECT sps.ID_PLAN_SFPA, sp.CVE_CURP AS curp, IFNULL(sp.CVE_RFC,'') AS rfc, IFNULL(su.CVE_MATRICULA,'') AS matricula, sp.CVE_NSS AS nss "
-				+ ", sp.NOM_PERSONA AS nombre, sp.NOM_PRIMER_APELLIDO AS primerApellido, sp.NOM_SEGUNDO_APELLIDO AS segundoApellido, sp.NUM_SEXO AS sexo "
-				+ ", DATE_FORMAT(sp.FEC_NAC, '%d-%m-%Y') AS fecNacimiento, sp2.DES_PAIS AS pais, sp.ID_PAIS AS idPais, se.DES_ESTADO AS lugarNac "
-				+ ", sp.ID_ESTADO AS idLugarNac, sp.REF_TELEFONO AS telCelular, sp.REF_TELEFONO_FIJO AS telFijo, sp.REF_CORREO AS correo, sd.REF_CALLE AS calle, sd.NUM_EXTERIOR AS numExt, sd.NUM_INTERIOR AS numInt "
-				+ ", sd.REF_CP AS cp, sd.REF_COLONIA AS colonia, sd.REF_MUNICIPIO AS municipio, sd.REF_ESTADO AS estado  "
-				+ " FROM SVT_PLAN_SFPA sps  "
-				+ " JOIN SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = sps.ID_BENEFICIARIO_2 "
-				+ " JOIN SVC_PERSONA sp ON sc.ID_PERSONA = sp.ID_PERSONA  "
-				+ " LEFT JOIN SVT_USUARIOS su ON su.ID_PERSONA = sp.ID_PERSONA  "
-				+ " LEFT JOIN SVC_PAIS sp2 ON sp2.ID_PAIS = sp.ID_PAIS  "
-				+ " LEFT JOIN SVC_ESTADO se ON se.ID_ESTADO = sp.ID_ESTADO  "
-				+ " LEFT JOIN SVT_DOMICILIO sd ON sd.ID_DOMICILIO = sc.ID_DOMICILIO  "
-				+ " WHERE sps.ID_PLAN_SFPA = " + idPreReg;
+				+ " SELECT SPS.ID_PLAN_SFPA, SP.CVE_CURP AS curp, IFNULL(SP.CVE_RFC,'') AS rfc, IFNULL(su.CVE_MATRICULA,'') AS matricula, SP.CVE_NSS AS nss "
+				+ ", SP.NOM_PERSONA AS nombre, SP.NOM_PRIMER_APELLIDO AS primerApellido, SP.NOM_SEGUNDO_APELLIDO AS segundoApellido, SP.NUM_SEXO AS sexo "
+				+ ", DATE_FORMAT(SP.FEC_NAC, '%d-%m-%Y') AS fecNacimiento, SP2.DES_PAIS AS pais, SP.ID_PAIS AS idPais, se.DES_ESTADO AS lugarNac "
+				+ ", SP.ID_ESTADO AS idLugarNac, SP.REF_TELEFONO AS telCelular, SP.REF_TELEFONO_FIJO AS telFijo, SP.REF_CORREO AS correo, SD.REF_CALLE AS calle, SD.NUM_EXTERIOR AS numExt, SD.NUM_INTERIOR AS numInt "
+				+ ", SD.REF_CP AS cp, SD.REF_COLONIA AS colonia, SD.REF_MUNICIPIO AS municipio, SD.REF_ESTADO AS estado  "
+				+ " FROM SVT_PLAN_SFPA SPS  "
+				+ " JOIN SVC_CONTRATANTE sc ON sc.ID_CONTRATANTE = SPS.ID_BENEFICIARIO_2 "
+				+ " JOIN SVC_PERSONA SP ON sc.ID_PERSONA = SP.ID_PERSONA  "
+				+ " LEFT JOIN SVT_USUARIOS su ON su.ID_PERSONA = SP.ID_PERSONA  "
+				+ " LEFT JOIN SVC_PAIS SP2 ON SP2.ID_PAIS = SP.ID_PAIS  "
+				+ " LEFT JOIN SVC_ESTADO se ON se.ID_ESTADO = SP.ID_ESTADO  "
+				+ " LEFT JOIN SVT_DOMICILIO SD ON SD.ID_DOMICILIO = sc.ID_DOMICILIO  "
+				+ " WHERE SPS.ID_PLAN_SFPA = " + idPreReg;
 		log.info(query);
 		return query;
 	}
 
 	public String queryCatPromotores() {
-		String query= "SELECT sp.ID_PROMOTOR AS idPromotor, sp.NUM_EMPLEDO AS numEmpleado "
-				+ ", CONCAT_WS(' ' ,sp.NOM_PROMOTOR, sp.NOM_PAPELLIDO, sp.NOM_SAPELLIDO) AS nombrePromotor "
-				+ " FROM SVT_PROMOTOR sp WHERE sp.IND_ACTIVO = 1";
+		String query= "SELECT SP.ID_PROMOTOR AS idPromotor, SP.NUM_EMPLEDO AS numEmpleado "
+				+ ", CONCAT_WS(' ' ,SP.NOM_PROMOTOR, SP.NOM_PAPELLIDO, SP.NOM_SAPELLIDO) AS nombrePromotor "
+				+ " FROM SVT_PROMOTOR SP WHERE SP.IND_ACTIVO = 1";
+		log.info(query);
+		return query;
+	}
+	
+	
+	public String queryActDesactConvenioPer(Integer idPreReg) {
+		String query= "UPDATE SVT_PLAN_SFPA SET IND_ACTIVO = !IND_ACTIVO WHERE ID_PLAN_SFPA = " + idPreReg;
 		log.info(query);
 		return query;
 	}

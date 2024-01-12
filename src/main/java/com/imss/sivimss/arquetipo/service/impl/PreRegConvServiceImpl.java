@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
 import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
-import com.imss.sivimss.arquetipo.model.request.Paginado;
-import com.imss.sivimss.arquetipo.service.PeticionesPreRegConv;
+import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
+import com.imss.sivimss.arquetipo.service.PreRegConvService;
 import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
 import com.imss.sivimss.arquetipo.utils.AppConstantes;
 import com.imss.sivimss.arquetipo.utils.PaginadoUtil;
@@ -23,7 +23,7 @@ import com.imss.sivimss.arquetipo.utils.Response;
 
 
 @Service
-public class ServiciosArquetipo implements PeticionesPreRegConv {
+public class PreRegConvServiceImpl implements PreRegConvService {
 
 	@Autowired
 	private BeanQuerys query;
@@ -34,11 +34,12 @@ public class ServiciosArquetipo implements PeticionesPreRegConv {
 	@Autowired
 	private PaginadoUtil paginadoUtil;
 	
+	private static final String ERROR = "ERROR"; 
 
 	@Override
-	public Response<Object> obtenerPreRegistros(Paginado paginado) {
+	public Response<Object> obtenerPreRegistros(RequestFiltroPaginado request) {
 		
-		Page<Map<String, Object>> objetoPaginado = paginadoUtil.paginado(paginado.getPagina(), paginado.getTamanio(), query.queryPreRegistros());
+		Page<Map<String, Object>> objetoPaginado = paginadoUtil.paginado(request.getPagina(), request.getTamanio(), query.queryPreRegistros(request));
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, objetoPaginado);
 		
 	}
@@ -55,13 +56,55 @@ public class ServiciosArquetipo implements PeticionesPreRegConv {
 				result = consultas.selectNativeQuery(query.queryPreRegistrosXEmpresa(idPreReg));
 			} catch (Exception e) {
 				e.printStackTrace();
-				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 			}
 		}
 		
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
 	}
 
+
+	@Override
+	public Response<Object> obtenerPreRegistrosPersonasEmpresa(Integer idPreReg) {
+		List<Map<String, Object>> result = new ArrayList<>();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			Consultas consultas = session.getMapper(Consultas.class);
+			try {
+				result = consultas.selectNativeQuery(query.queryPreRegPersonasEmpresa(idPreReg));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+			}
+		}
+		
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
+	}
+	
+
+	@Override
+	public Response<Object>  obtenerDocsEmpresa(Integer idPreReg) {
+		
+		List<Map<String, Object>> result = new ArrayList<>();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			Consultas consultas = session.getMapper(Consultas.class);
+			try {
+				result = consultas.selectNativeQuery(query.queryDocsEmpresa(idPreReg));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+			}
+		}	
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
+	}
+	
+	
+	
+	
+	
 	@Override
 	public Response<Object>  obtenerPreRegistrosXPersona(Integer idPreReg) {
 		
@@ -74,7 +117,7 @@ public class ServiciosArquetipo implements PeticionesPreRegConv {
 				result = consultas.selectNativeQuery(query.queryPreRegistrosXPersona(idPreReg));
 			} catch (Exception e) {
 				e.printStackTrace();
-				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 			}
 		}
 		
@@ -93,7 +136,7 @@ public class ServiciosArquetipo implements PeticionesPreRegConv {
 				result = consultas.selectNativeQuery(query.queryCatPaquetes());
 			} catch (Exception e) {
 				e.printStackTrace();
-				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 			}
 		}
 		
@@ -112,13 +155,16 @@ public class ServiciosArquetipo implements PeticionesPreRegConv {
 				result = consultas.selectNativeQuery(query.queryBenefXEmpresa(idPreReg));
 			} catch (Exception e) {
 				e.printStackTrace();
-				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 			}
 		}	
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
 	}
 	
 
+	
+	
+	
 	@Override
 	public Response<Object> titularSustituto(Integer idTitular) {
 		
@@ -131,14 +177,14 @@ public class ServiciosArquetipo implements PeticionesPreRegConv {
 				result = consultas.selectNativeQuery(query.queryTitularSustituto(idTitular));
 			} catch (Exception e) {
 				e.printStackTrace();
-				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 			}
 		}	
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
 	}
 
 	@Override
-	public Response<Object> beneficiarios(Integer idPreReg) {
+	public Response<Object>  benefXPersona(Integer idBenef) {
 		
 		List<Map<String, Object>> result = new ArrayList<>();
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
@@ -146,14 +192,16 @@ public class ServiciosArquetipo implements PeticionesPreRegConv {
 		try(SqlSession session = sqlSessionFactory.openSession()) {
 			Consultas consultas = session.getMapper(Consultas.class);
 			try {
-				result = consultas.selectNativeQuery(query.queryBeneficiarios(idPreReg));
+				result = consultas.selectNativeQuery(query.queryBenefxPersona(idBenef));
 			} catch (Exception e) {
 				e.printStackTrace();
-				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 			}
 		}	
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
 	}
+	
+
 
 	@Override
 	public Response<Object>  catPromotores() {
@@ -167,10 +215,36 @@ public class ServiciosArquetipo implements PeticionesPreRegConv {
 				result = consultas.selectNativeQuery(query.queryCatPromotores());
 			} catch (Exception e) {
 				e.printStackTrace();
-				return new Response<>(true, HttpStatus.OK.value(), "ERROR", 0);
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 			}
 		}
 		
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
 	}
+
+	@Override
+	public Response<Object> beneficiarios(Integer idPreReg) {
+		return null;
+	}
+	
+	
+	@Override
+	public Response<Object>  actDesactConvenioPer(Integer idPreReg) {
+		
+		List<Map<String, Object>> result = new ArrayList<>();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			Consultas consultas = session.getMapper(Consultas.class);
+			try {
+				result = consultas.selectNativeQuery(query.queryActDesactConvenioPer(idPreReg));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+			}
+		}
+		
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
+	}
+
 }
