@@ -123,12 +123,16 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 			Consultas consultas = session.getMapper(Consultas.class);
 			try {
 				consultaPreRegistroXPersona = consultas.selectPreRegistrosXPersona(query.queryPreRegistrosXPersona(idPreReg));
-				consultaBenefxPersona1 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario1()));
-				consultaBenefxPersona2 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario2()));
-
 				preRegistro.setPreRegistro(consultaPreRegistroXPersona);
-				preRegistro.setBeneficiario1(consultaBenefxPersona1);
-				preRegistro.setBeneficiario2(consultaBenefxPersona2);
+
+				if ( consultaPreRegistroXPersona != null ){
+					consultaBenefxPersona1 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario1()));
+					consultaBenefxPersona2 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario2()));
+					
+					preRegistro.setBeneficiario1(consultaBenefxPersona1);
+					preRegistro.setBeneficiario2(consultaBenefxPersona2);
+				}
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
