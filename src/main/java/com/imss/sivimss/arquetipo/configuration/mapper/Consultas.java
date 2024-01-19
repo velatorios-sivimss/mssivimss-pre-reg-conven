@@ -6,6 +6,9 @@ import java.util.Map;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.springframework.stereotype.Repository;
 
+import com.imss.sivimss.arquetipo.model.entity.BenefxPersona;
+import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPersona;
+
 
 @Repository
 public interface Consultas {
@@ -18,6 +21,13 @@ public interface Consultas {
             return "SELECT count(*) FROM " + from;
         }
     }
-	@SelectProvider(type = PureSqlProvider.class, method = "sql")
+	
+    @SelectProvider(type = PureSqlProvider.class, method = "sql")
 	public List<Map<String, Object>> selectNativeQuery(String sql);
+    
+    @SelectProvider(type = PureSqlProvider.class, method = "sql")
+    public PreRegistrosXPersona selectPreRegistrosXPersona(String sql);
+
+    @SelectProvider(type = PureSqlProvider.class, method = "sql")
+    public BenefxPersona selectBenefxPersona(String sql);
 }

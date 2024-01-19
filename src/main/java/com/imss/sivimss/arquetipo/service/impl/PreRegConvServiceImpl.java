@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
 import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
+import com.imss.sivimss.arquetipo.model.entity.BenefxPersona;
+import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPersona;
+import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPersonaConBeneficiarios;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.service.PreRegConvService;
 import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
@@ -107,21 +110,32 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 	
 	@Override
 	public Response<Object>  obtenerPreRegistrosXPersona(Integer idPreReg) {
-		
-		List<Map<String, Object>> result = new ArrayList<>();
+		/*
+		Este servicio obtiene el pre registro de una persona con sus 2 beneficiarios
+		*/ 
+		PreRegistrosXPersona consultaPreRegistroXPersona = new PreRegistrosXPersona();
+		BenefxPersona consultaBenefxPersona1 = new BenefxPersona();
+		BenefxPersona consultaBenefxPersona2 = new BenefxPersona();
+		PreRegistrosXPersonaConBeneficiarios preRegistro = new PreRegistrosXPersonaConBeneficiarios();
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		
 		try(SqlSession session = sqlSessionFactory.openSession()) {
 			Consultas consultas = session.getMapper(Consultas.class);
 			try {
-				result = consultas.selectNativeQuery(query.queryPreRegistrosXPersona(idPreReg));
+				consultaPreRegistroXPersona = consultas.selectPreRegistrosXPersona(query.queryPreRegistrosXPersona(idPreReg));
+				consultaBenefxPersona1 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario1()));
+				consultaBenefxPersona2 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario2()));
+
+				preRegistro.setPreRegistro(consultaPreRegistroXPersona);
+				preRegistro.setBeneficiario1(consultaBenefxPersona1);
+				preRegistro.setBeneficiario2(consultaBenefxPersona2);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 			}
 		}
 		
-		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, preRegistro);
 	}
 	
 	@Override
