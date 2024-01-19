@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.imss</groupId>
-	<artifactId>mssivimss-arquetipo</artifactId>
+	<artifactId>mssivimss-pre-reg-conven</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>mssivimss-arquetipo</name>
-	<description>Ms Arquetipo</description>
+	<name>mssivimss-pre-reg-conven</name>
+	<description>Ms Preregistro convenios</description>
 	<properties>
 		<java.version>1.8</java.version>
 		<lombok.version>1.18.24</lombok.version>
