@@ -116,6 +116,7 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 		PreRegistrosXPersona consultaPreRegistroXPersona = new PreRegistrosXPersona();
 		BenefxPersona consultaBenefxPersona1 = new BenefxPersona();
 		BenefxPersona consultaBenefxPersona2 = new BenefxPersona();
+		ArrayList<BenefxPersona> beneficiarios = new ArrayList<>();
 		PreRegistrosXPersonaConBeneficiarios preRegistro = new PreRegistrosXPersonaConBeneficiarios();
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		
@@ -129,8 +130,10 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 					consultaBenefxPersona1 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario1()));
 					consultaBenefxPersona2 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario2()));
 					
-					preRegistro.setBeneficiario1(consultaBenefxPersona1);
-					preRegistro.setBeneficiario2(consultaBenefxPersona2);
+					beneficiarios.add(consultaBenefxPersona1);
+					beneficiarios.add(consultaBenefxPersona2);
+					preRegistro.setBeneficiarios(beneficiarios);
+					
 				}
 				
 			} catch (Exception e) {

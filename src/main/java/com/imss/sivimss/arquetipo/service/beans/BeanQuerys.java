@@ -249,7 +249,8 @@ public class BeanQuerys {
 	public String queryBenefxPersona(Integer idBenef) {
 		String query= ""
 				+ " SELECT "
-				+ " 	SP.CVE_CURP AS curp, "
+				+ " 	stb.ID_TITULAR_BENEFICIARIOS idBeneficiario, "
+				+ "		SP.CVE_CURP AS curp, "
 				+ " 	SP.CVE_RFC AS rfc, "
 				+ " 	stb.CVE_MATRICULA AS matricula, "
 				+ " 	SP.CVE_NSS AS nss, "
