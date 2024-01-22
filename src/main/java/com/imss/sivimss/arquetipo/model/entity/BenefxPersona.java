@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class BenefxPersona {
 
+	private int idBeneficiario;
 	private String curp;
 	private String rfc;
 	private String matricula;

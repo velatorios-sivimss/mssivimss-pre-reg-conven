@@ -22,7 +22,7 @@ public class BeanQuerys {
 		String rfcPer = " AND SP.CVE_RFC = '" + request.getRfc() + "'";
 		
 		queryPers.append("SELECT SPS.ID_PLAN_SFPA AS idConvenioPlan, IFNULL(SPS.NUM_FOLIO_PLAN_SFPA, '') AS folioConvenio, STC.DES_TIPO_CONTRATACION AS tipoContratacion , IFNULL(SP.CVE_RFC, '') AS rfc,");
-		queryPers.append(" CONCAT(SP.NOM_PERSONA, ' ', SP.NOM_PRIMER_APELLIDO , ' ', SP.NOM_SEGUNDO_APELLIDO) AS NombreAfiliadoTitular, SP2.REF_PAQUETE_NOMBRE AS tipoPaquete , 'p' AS tipoConvenio");
+		queryPers.append(" CONCAT(SP.NOM_PERSONA, ' ', SP.NOM_PRIMER_APELLIDO , ' ', SP.NOM_SEGUNDO_APELLIDO) AS NombreAfiliadoTitular, SP2.REF_PAQUETE_NOMBRE AS tipoPaquete , 'p' AS tipoConvenio, 'PA' tipo");
 		queryPers.append(" FROM SVT_PLAN_SFPA SPS ");
 		queryPers.append(" JOIN SVC_TIPO_CONTRATACION STC ON STC.ID_TIPO_CONTRATACION = SPS.ID_TIPO_CONTRATACION ");
 		queryPers.append(" JOIN SVC_CONTRATANTE SC ON sc.ID_CONTRATANTE = SPS.ID_TITULAR ");
@@ -32,7 +32,7 @@ public class BeanQuerys {
 		queryPers.append(" WHERE SPS.ID_ESTATUS_PLAN_SFPA = 8 ");
 	
 		queryEmp.append("SELECT SCP.ID_CONVENIO_PF AS idConvenioPlan, IFNULL(SCP.DES_FOLIO, '') AS folioConvenio, 'Empresa' AS tipoContratacion, IFNULL(SECP.CVE_RFC, '') AS rfc,");
-		queryEmp.append(" SECP.REF_NOMBRE AS NombreAfiliadoTitular, SP2.REF_PAQUETE_NOMBRE AS tipoPaquete, 'e' AS tipoConvenio");
+		queryEmp.append(" SECP.REF_NOMBRE AS NombreAfiliadoTitular, SP2.REF_PAQUETE_NOMBRE AS tipoPaquete, 'e' AS tipoConvenio , 'PF-Empresa' tipo ");
 		queryEmp.append(" FROM SVT_CONVENIO_PF SCP");
 		queryEmp.append(" LEFT JOIN SVT_EMPRESA_CONVENIO_PF SECP ON SECP.ID_CONVENIO_PF = scp.ID_CONVENIO_PF");
 		queryEmp.append(" JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPCP ON SCPCP.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF ");
@@ -42,7 +42,7 @@ public class BeanQuerys {
 		queryEmp.append(" WHERE SCP.ID_ESTATUS_CONVENIO = 5 AND SCP.IND_TIPO_CONTRATACION = 0");
 
 		queryEmpPer.append("SELECT SCP.ID_CONVENIO_PF AS idConvenioPlan, IFNULL(SCP.DES_FOLIO, '') AS folioConvenio, 'Persona' AS tipoContratacion, IFNULL(SP.CVE_RFC, '') AS rfc,");
-		queryEmpPer.append(" CONCAT(SP.NOM_PERSONA, ' ', SP.NOM_PRIMER_APELLIDO , ' ', SP.NOM_SEGUNDO_APELLIDO) AS NombreAfiliadoTitular, SP2.REF_PAQUETE_NOMBRE AS tipoPaquete, 'ep' AS tipoConvenio");
+		queryEmpPer.append(" CONCAT(SP.NOM_PERSONA, ' ', SP.NOM_PRIMER_APELLIDO , ' ', SP.NOM_SEGUNDO_APELLIDO) AS NombreAfiliadoTitular, SP2.REF_PAQUETE_NOMBRE AS tipoPaquete, 'ep' AS tipoConvenio , 'PF Persona' tipo ");
 		queryEmpPer.append(" FROM SVT_CONVENIO_PF SCP");
 		queryEmpPer.append(" JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPCP ON SCPCP.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF ");
 		queryEmpPer.append(" JOIN SVC_CONTRATANTE SC ON SC.ID_CONTRATANTE = SCPCP.ID_CONTRATANTE ");
@@ -249,7 +249,8 @@ public class BeanQuerys {
 	public String queryBenefxPersona(Integer idBenef) {
 		String query= ""
 				+ " SELECT "
-				+ " 	SP.CVE_CURP AS curp, "
+				+ " 	stb.ID_TITULAR_BENEFICIARIOS idBeneficiario, "
+				+ "		SP.CVE_CURP AS curp, "
 				+ " 	SP.CVE_RFC AS rfc, "
 				+ " 	stb.CVE_MATRICULA AS matricula, "
 				+ " 	SP.CVE_NSS AS nss, "

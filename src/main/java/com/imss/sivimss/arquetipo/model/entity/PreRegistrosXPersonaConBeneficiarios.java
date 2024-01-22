@@ -1,5 +1,6 @@
 package com.imss.sivimss.arquetipo.model.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import lombok.Data;
@@ -8,8 +9,7 @@ import lombok.Data;
 public class PreRegistrosXPersonaConBeneficiarios {
 
 	private PreRegistrosXPersona preRegistro;
-	private BenefxPersona beneficiario1;
-	private BenefxPersona beneficiario2;
+	private ArrayList<BenefxPersona> beneficiarios;
 	
 	
 }
