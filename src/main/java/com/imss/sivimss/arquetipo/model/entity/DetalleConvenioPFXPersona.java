@@ -6,26 +6,16 @@ import lombok.Data;
 
 @Data
 public class DetalleConvenioPFXPersona  {
-	private int idPersona;
-    private int idContratante;
-    private int idDomicilio;
-    private String folioConvenio;
-    private String curp;
+	private String matricula;
     private String rfc;
-    private String matricula;
-    private String nss;
+    private String curp;
     private String nombre;
     private String primerApellido;
     private String segundoApellido;
-    private String sexo;
-    private String fecNacimiento;
-    private String pais;
-    private int idPais;
-    private String lugarNacimiento;
-    private int idLugarNac;
-    private String telCelular;
-    private String telFijo;
-    private String correo;
+    private int idPersona;
+    private int idContratante;
+    private int idDomicilio;
+    private String folioConvenio;
     private String calle;
     private String numExt;
     private String numInt;
@@ -33,8 +23,13 @@ public class DetalleConvenioPFXPersona  {
     private String colonia;
     private String municipio;
     private String estado;
+    private String pais;
+    private int idPais;
+    private String lugarNac;
+    private int idLugarNac;
+    private String correo;
+    private String telCelular;
     private int idPaquete;
-    private String nomPaquete;
-    private int gestionPromotor;
+    private String tipoPaquete;
 	
 }

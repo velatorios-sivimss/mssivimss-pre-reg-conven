@@ -70,7 +70,7 @@ public class PreRegConvController {
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
 	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object> preRegXPagosAnticipados(@PathVariable Integer idFlujo, @PathVariable Integer idConvenioPf, 
+	public CompletableFuture<Object> preRegXConvenios(@PathVariable Integer idFlujo, @PathVariable Integer idConvenioPf, 
 			Authentication authentication) throws Throwable {
 		/* Consulta Detalle 
 		 * 
@@ -78,7 +78,24 @@ public class PreRegConvController {
 		 * 2 PF Empresa
 		 * 3 PF Persona
 		*/
-		Response<Object> response = pprc2.obtenerPreRegistrosXPersona(idFlujo,idConvenioPf);
+		Response<Object> response = pprc2.preRegXConvenios(idFlujo,idConvenioPf);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
+
+	@GetMapping("/buscar/docs/{idFlujo}/{idConvenioPf}")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> preRegXConveniosDocs(@PathVariable Integer idFlujo, @PathVariable Integer idConvenioPf, 
+			Authentication authentication) throws Throwable {
+		/* Consulta Detalle 
+		 * 
+		 * 1 PA
+		 * 2 PF Empresa
+		 * 3 PF Persona
+		*/
+		Response<Object> response = pprc2.preRegXConveniosDocs(idFlujo,idConvenioPf);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}

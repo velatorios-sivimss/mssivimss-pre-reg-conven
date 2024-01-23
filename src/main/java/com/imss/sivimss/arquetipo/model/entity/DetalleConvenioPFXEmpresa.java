@@ -20,5 +20,5 @@ public class DetalleConvenioPFXEmpresa  {
     private int idConvenio;
     private int idEmpresa;
     private int idPromotor;
-	
+	private String tipoPaquete;
 }

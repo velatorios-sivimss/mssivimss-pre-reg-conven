@@ -1,11 +1,10 @@
 package com.imss.sivimss.arquetipo.model.entity;
 
-import java.sql.Date;
-
 import lombok.Data;
 
 @Data
 public class DetalleConvenioPFXEmpresaBeneficiarios  {
+    private Integer idBeneficiario;
     private String nombre;
     private int edad;
     private String parentesco;

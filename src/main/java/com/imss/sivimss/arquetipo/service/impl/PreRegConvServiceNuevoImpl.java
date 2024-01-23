@@ -17,6 +17,7 @@ import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPF;
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiarios;
+import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiariosDocs;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaSolicitantes;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersona;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
@@ -48,7 +49,33 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	}
 
 	@Override
-	public Response<Object> obtenerPreRegistrosXPersona(Integer idFlujo, Integer idConvenioPf) {
+	public Response<Object> preRegXConveniosDocs(Integer idFlujo, Integer idConvenioPf) {
+		if ( idFlujo == null ){
+			return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+		}
+		
+		switch (idFlujo) {
+			case 1:
+				// PreRegistrosXPAConBeneficiarios preRegistro = consultaConveniosPA(idConvenioPf);
+				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/1/30
+				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
+			case 2:
+				ArrayList<DetalleConvenioPFXEmpresaBeneficiariosDocs> detalleConvenioPFEmpresa = consultaConveniosPFEmpresaDocs(idConvenioPf);
+				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/docs/2/9
+				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFEmpresa);
+			case 3:
+				// DetalleConvenioPFXPersona detalleConvenioPFPersona = consultaConveniosPFPersona(idConvenioPf);
+				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/3/14
+				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null );
+
+		}
+
+		return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+
+	}
+
+	@Override
+	public Response<Object> preRegXConvenios(Integer idFlujo, Integer idConvenioPf) {
 		if ( idFlujo == null ){
 			return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 		}
@@ -126,6 +153,31 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 			}
 		}
 		return convenioPFEmpresa;
+	}
+
+	public ArrayList<DetalleConvenioPFXEmpresaBeneficiariosDocs> consultaConveniosPFEmpresaDocs ( Integer idConvenioPf ){
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		DetalleConvenioPFXEmpresa detalleConvenioPFModel = null;
+		ArrayList<DetalleConvenioPFXEmpresaSolicitantes> solicitantes = new ArrayList<>();
+		PreRegistrosXPFEmpresaConSolicitantes convenioPFEmpresa = new PreRegistrosXPFEmpresaConSolicitantes();
+		ArrayList<DetalleConvenioPFXEmpresaBeneficiariosDocs> beneficiarios = new ArrayList<>();
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
+			try {
+				detalleConvenioPFModel = convenios.consultaDetalleConvenioXEmpresa(idConvenioPf);
+				solicitantes = convenios.consultaDetalleConvenioXEmpresaSolicitantes(idConvenioPf);
+				beneficiarios = convenios.consultaDetalleConvenioXEmpresaBeneficiariosDocs(idConvenioPf);
+				/* 
+				convenioPFEmpresa.setEmpresa(detalleConvenioPFModel != null ? detalleConvenioPFModel : new DetalleConvenioPFXEmpresa());
+				convenioPFEmpresa.setSolicitantes(solicitantes != null ? solicitantes : new ArrayList<DetalleConvenioPFXEmpresaSolicitantes>() );
+				convenioPFEmpresa.setBeneficiarios(beneficiarios != null ? beneficiarios : new ArrayList<DetalleConvenioPFXEmpresaBeneficiarios>());
+				*/
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return beneficiarios;
 	}
 
 	public DetalleConvenioPFXPersona consultaConveniosPFPersona ( Integer idConvenioPf ){

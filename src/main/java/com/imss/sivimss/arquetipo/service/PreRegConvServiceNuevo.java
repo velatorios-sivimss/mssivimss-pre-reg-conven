@@ -9,7 +9,8 @@ import com.imss.sivimss.arquetipo.utils.Response;
 public interface PreRegConvServiceNuevo {
 	
 	public Response<Object> obtenerPreRegistros(RequestFiltroPaginado paginado );
-	public Response<Object> obtenerPreRegistrosXPersona(Integer idFlujo, Integer idPreReg);
+	public Response<Object> preRegXConvenios(Integer idFlujo, Integer idPreReg);
+	public Response<Object> preRegXConveniosDocs(Integer idFlujo, Integer idPreReg);
 	
 	/*
 	public Response<Object> benefXPersona(Integer idBenef);
