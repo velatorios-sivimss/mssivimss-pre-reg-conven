@@ -63,9 +63,52 @@ public interface ConvenioPF {
 	+"	LEFT JOIN SVC_ESTADO se 						ON se.ID_ESTADO = SP.ID_ESTADO 	"
 	+"	"
 	+"	WHERE	"
-	+"		SCP.ID_CONVENIO_PF = 14")
+	+"		SCP.ID_CONVENIO_PF = #{idConvenioPf}")
 	public DetalleConvenioPFXPersona consultaDetalleConvenioXPersona( @Param("idConvenioPf") Integer idConvenioPf );
 	
+	@Select(" "
+			+ "SELECT "
+			+ "	SC.ID_PERSONA idPersona, "
+			+ "    SC.ID_CONTRATANTE idContratante,  "
+			+ "    SD.ID_DOMICILIO idDomicilio, "
+			+ "    SCP.DES_FOLIO folioConvenio, "
+			+ "    IFNULL(SPE.CVE_CURP, '') AS curp, "
+			+ "    IFNULL(SPE.CVE_RFC, '') AS rfc, "
+			+ "	IFNULL(SC.CVE_MATRICULA, '') AS matricula, "
+			+ "    SPE.CVE_NSS nss, "
+			+ "    SPE.NOM_PERSONA AS nombre, "
+			+ "    SPE.NOM_PRIMER_APELLIDO AS primerApellido, "
+			+ "    SPE.NOM_SEGUNDO_APELLIDO AS segundoApellido, "
+			+ "    CASE SPE.NUM_SEXO WHEN 1 THEN 'FEMENINO' WHEN 2 THEN 'MASCULINO' ELSE IFNULL(SPE.REF_OTRO_SEXO, '') END AS sexo, "
+			+ "    DATE_FORMAT(SPE.FEC_NAC, '%d-%m-%Y') AS fecNacimiento, "
+			+ "    PAI.DES_PAIS pais, "
+			+ "    PAI.ID_PAIS idPAis, "
+			+ "    se.DES_ESTADO AS lugarNac, "
+			+ "    se.ID_ESTADO idLugarNac, "
+			+ "    SPE.REF_TELEFONO telCelular, "
+			+ "    SPE.REF_TELEFONO_FIJO telFIjo, "
+			+ "    SPE.REF_CORREO correo, "
+			+ "    SD.REF_CALLE calle, "
+			+ "    SD.NUM_INTERIOR numInt, "
+			+ "    SD.NUM_EXTERIOR numExt, "
+			+ "    SD.REF_CP cp, "
+			+ "    SD.REF_COLONIA colonia, "
+			+ "    SD.REF_MUNICIPIO municipio,  "
+			+ "    se.DES_ESTADO estado, "
+			+ "    SCPCP.ID_PAQUETE, "
+			+ "    'nomPaquete' nomPaquete, "
+			+ "    scp.ID_PROMOTOR gestionPromotor "
+			+ "FROM "
+			+ "    SVT_CONVENIO_PF SCP "
+			+ "INNER JOIN SVT_EMPRESA_CONVENIO_PF SCPE 	ON SCP.ID_CONVENIO_PF = SCPE.ID_CONVENIO_PF "
+			+ "INNER JOIN SVT_DOMICILIO SD 				ON SCPE.ID_DOMICILIO = SD.ID_DOMICILIO "
+			+ "INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPCP ON SCPCP.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF "
+			+ "INNER JOIN SVC_CONTRATANTE SC 				ON SC.ID_CONTRATANTE = SCPCP.ID_CONTRATANTE "
+			+ "INNER JOIN SVC_PERSONA SPE 					ON SC.ID_PERSONA = SPE.ID_PERSONA "
+			+ "LEFT JOIN SVC_PAIS PAI 						ON    PAI.ID_PAIS = SPE.ID_PAIS	 "
+			+ "LEFT JOIN SVC_ESTADO se 					ON se.ID_ESTADO = SPE.ID_ESTADO "
+			+ "WHERE SCPE.ID_CONVENIO_PF = #{idConvenioPf} ")
+		public DetalleConvenioPFXPersona consultaDetalleConvenioXEmpresa( @Param("idConvenioPf") Integer idConvenioPf );
 	
 	/*
 	 * Este es un ejemplo para realizar un insert con un objeto como parámetro

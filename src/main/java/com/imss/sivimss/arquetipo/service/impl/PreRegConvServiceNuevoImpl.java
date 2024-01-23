@@ -49,8 +49,15 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				ConvenioPF convenios = session.getMapper(ConvenioPF.class);
 				try {
 					switch (idFlujo) {
-						case 3:
+						
+					case 2:
+						detalleConvenioPFModel = convenios.consultaDetalleConvenioXEmpresa(idConvenioPf);
+//						localhost:8080/mssivimss-pre-reg-conven/v1/sivimss/buscar/2/2
+							break;
+							
+					case 3:
 						detalleConvenioPFModel = convenios.consultaDetalleConvenioXPersona(idConvenioPf);
+//						localhost:8080/mssivimss-pre-reg-conven/v1/sivimss/buscar/3/14
 							break;
 					
 						default:
