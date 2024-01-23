@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.imss.sivimss.arquetipo.model.request.PersonaNombres;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.service.PreRegConvService;
+import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
 import com.imss.sivimss.arquetipo.utils.LogUtil;
 import com.imss.sivimss.arquetipo.utils.ProviderServiceRestTemplate;
 import com.imss.sivimss.arquetipo.utils.Response;
@@ -39,6 +41,9 @@ public class PreRegConvController {
 	private PreRegConvService pprc;
 
 	@Autowired
+	private PreRegConvServiceNuevo pprc2;
+
+	@Autowired
 	private ProviderServiceRestTemplate providerRestTemplate;
 	
 	@Autowired
@@ -49,16 +54,44 @@ public class PreRegConvController {
 	private static final String UPDATE = "update";
 	
 
+	
 	@PostMapping("/buscar/preregistros")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> preregistros (@Validated @RequestBody RequestFiltroPaginado request, Authentication authentication) throws IOException {
-	
-		Response<Object> response = pprc.obtenerPreRegistros(request);
+		/* Consulta pagiada */
+		Response<Object> response = pprc2.obtenerPreRegistros(request);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
+	
+	@GetMapping("/buscar/{idFlujo}/{idConvenioPf}")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> preRegXPagosAnticipados(@PathVariable Integer idFlujo, @PathVariable Integer idConvenioPf, 
+			Authentication authentication) throws Throwable {
+		/* Consulta Detalle 
+		 * 
+		 * 1 PA
+		 * 2 PF Empresa
+		 * 3 PF Persona
+		*/
+		Response<Object> response = pprc2.obtenerPreRegistrosXPersona(idFlujo,idConvenioPf);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/* -------------FLUJOS REVALIDAR-------------------- 	*/
 
 	@GetMapping("/buscar/empresa/{idPreReg}")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
@@ -111,17 +144,7 @@ public class PreRegConvController {
 	
 	
 	
-	@GetMapping("/buscar/persona/{idPreReg}")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
-	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object> preRegXPersona(@PathVariable Integer idPreReg, 
-			Authentication authentication) throws Throwable {
-		
-		Response<Object> response = pprc.obtenerPreRegistrosXPersona(idPreReg);
-		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
-
-	}
+	
 
 	@GetMapping("/buscar/paquetes")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsulta")
@@ -177,6 +200,18 @@ public class PreRegConvController {
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
+
+	@PutMapping("/guardar/documentos/{idPreReg}")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackGuardarDocs")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> guardarDocs(@PathVariable Integer idPreReg, 
+			Authentication authentication, MultipartFile[] archivo) throws Throwable {
+		
+		Response<Object> response = pprc.guardaDocsConvenioXPersona(idPreReg,archivo);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
 	
 	/*
 	 * 
@@ -226,7 +261,7 @@ public class PreRegConvController {
 	}
 
 	@SuppressWarnings("unused")
-	private CompletableFuture<Object> fallbackConsultaGenerica(@PathVariable Integer idPreReg,  Authentication authentication,
+	private CompletableFuture<Object> fallbackConsultaGenerica(@PathVariable Integer idFlujo,@PathVariable Integer idPreReg,  Authentication authentication,
 			CallNotPermittedException e) throws IOException {
 		Response<?> response = providerRestTemplate.respuestaProvider(e.getMessage());
 		 logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString(),e.getMessage(),CONSULTA,authentication);

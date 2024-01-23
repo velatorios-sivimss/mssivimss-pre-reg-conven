@@ -1,6 +1,7 @@
 package com.imss.sivimss.arquetipo.service.impl;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
 import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
@@ -109,7 +111,7 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 	
 	
 	@Override
-	public Response<Object>  obtenerPreRegistrosXPersona(Integer idPreReg) {
+	public Response<Object>  obtenerPreRegistrosXPersona(Integer idPreReg /* idConvenio  */) {
 		/*
 		Este servicio obtiene el pre registro de una persona con sus 2 beneficiarios
 		*/ 
@@ -130,6 +132,8 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 					consultaBenefxPersona1 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario1()));
 					consultaBenefxPersona2 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario2()));
 					
+					/* Si llegan null se deben setear objetos instanciados vacios */
+					
 					beneficiarios.add(consultaBenefxPersona1);
 					beneficiarios.add(consultaBenefxPersona2);
 					preRegistro.setBeneficiarios(beneficiarios);
@@ -144,7 +148,29 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 		
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, preRegistro);
 	}
+
+	public Response<Object> guardaDocsConvenioXPersona(Integer idPreReg,MultipartFile[] archivo){
+		/* Este Servicio se encarga de cargar los docs de un pre registro */
+		
+		PreRegistrosXPersonaConBeneficiarios preRegistro = new PreRegistrosXPersonaConBeneficiarios();
+
+		
+
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, preRegistro);
+	}
 	
+	private String convertirABase64(MultipartFile file) {
+        try {
+            byte[] fileContent = file.getBytes();
+            String base64String = Base64.getEncoder().encodeToString(fileContent);
+            return base64String;
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Manejo de errores, devuelve una cadena vacía o maneja la excepción según sea necesario
+            return "";
+        }
+    }
+
 	@Override
 	public Response<Object>  catPaquetes() {
 		
