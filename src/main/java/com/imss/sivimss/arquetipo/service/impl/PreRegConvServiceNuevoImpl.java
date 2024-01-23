@@ -1,5 +1,6 @@
 package com.imss.sivimss.arquetipo.service.impl;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -11,8 +12,16 @@ import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
 import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
+import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPA;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPF;
+import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
+import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresa;
+import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiarios;
+import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaSolicitantes;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersona;
+import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
+import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPAConBeneficiarios;
+import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFEmpresaConSolicitantes;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
 import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
@@ -39,43 +48,98 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	}
 
 	@Override
-	public Response<Object> obtenerPreRegistrosXPersona(Integer idFlujo,Integer idConvenioPf) {
-		DetalleConvenioPFXPersona detalleConvenioPFModel = null;
-
-		if ( idFlujo != null && (idFlujo>0 || idFlujo<=3) ){
-			SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
-			
-			try(SqlSession session = sqlSessionFactory.openSession()) {
-				ConvenioPF convenios = session.getMapper(ConvenioPF.class);
-				try {
-					switch (idFlujo) {
-						
-					case 2:
-						detalleConvenioPFModel = convenios.consultaDetalleConvenioXEmpresa(idConvenioPf);
-//						localhost:8080/mssivimss-pre-reg-conven/v1/sivimss/buscar/2/2
-							break;
-							
-					case 3:
-						detalleConvenioPFModel = convenios.consultaDetalleConvenioXPersona(idConvenioPf);
-//						localhost:8080/mssivimss-pre-reg-conven/v1/sivimss/buscar/3/14
-							break;
-					
-						default:
-							break;
-					}
-					
-					
-						
-				
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-					return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
-				}
-			}
+	public Response<Object> obtenerPreRegistrosXPersona(Integer idFlujo, Integer idConvenioPf) {
+		if ( idFlujo == null ){
+			return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 		}
 		
-		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFModel);
+		switch (idFlujo) {
+			case 1:
+				PreRegistrosXPAConBeneficiarios preRegistro = consultaConveniosPA(idConvenioPf);
+				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/1/30
+				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, preRegistro);
+			case 2:
+			PreRegistrosXPFEmpresaConSolicitantes detalleConvenioPFEmpresa = consultaConveniosPFEmpresa(idConvenioPf);
+				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/2/2
+				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/2/9
+				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFEmpresa);
+			case 3:
+				DetalleConvenioPFXPersona detalleConvenioPFPersona = consultaConveniosPFPersona(idConvenioPf);
+				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/3/14
+				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFPersona);
+
+		}
+
+		return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+
 	}
 
+	public PreRegistrosXPAConBeneficiarios consultaConveniosPA( Integer idConvenioPf ){
+		PreRegistrosXPA consultaPreRegistrosXPA = new PreRegistrosXPA();
+		PreRegistrosXPAConBeneficiarios preRegistro = new PreRegistrosXPAConBeneficiarios();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPA conveniosPA = session.getMapper(ConvenioPA.class);
+			try {
+				consultaPreRegistrosXPA = conveniosPA.consultaDetalleConvenioPA(idConvenioPf);
+					preRegistro.setPreRegistro(consultaPreRegistrosXPA);
+
+					if ( consultaPreRegistrosXPA != null ){
+						BenefXPA beneficiarioPA1 = conveniosPA.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario1());
+						BenefXPA beneficiarioPA2 = conveniosPA.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario2());
+
+						ArrayList<BenefXPA> beneficiarios = new ArrayList<>();
+						beneficiarios.add(beneficiarioPA1);
+						beneficiarios.add(beneficiarioPA2);
+						preRegistro.setBeneficiarios(beneficiarios);
+					}
+
+				
+			} catch (Exception e) {
+				return null;
+			}
+		}
+
+		return preRegistro;
+	}
+
+	public PreRegistrosXPFEmpresaConSolicitantes consultaConveniosPFEmpresa ( Integer idConvenioPf ){
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		DetalleConvenioPFXEmpresa detalleConvenioPFModel = null;
+		ArrayList<DetalleConvenioPFXEmpresaSolicitantes> solicitantes = new ArrayList<>();
+		PreRegistrosXPFEmpresaConSolicitantes convenioPFEmpresa = new PreRegistrosXPFEmpresaConSolicitantes();
+		ArrayList<DetalleConvenioPFXEmpresaBeneficiarios> beneficiarios = new ArrayList<>();
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
+			try {
+				detalleConvenioPFModel = convenios.consultaDetalleConvenioXEmpresa(idConvenioPf);
+				solicitantes = convenios.consultaDetalleConvenioXEmpresaSolicitantes(idConvenioPf);
+				beneficiarios = convenios.consultaDetalleConvenioXEmpresaBeneficiarios(idConvenioPf);
+
+				convenioPFEmpresa.setEmpresa(detalleConvenioPFModel != null ? detalleConvenioPFModel : new DetalleConvenioPFXEmpresa());
+				convenioPFEmpresa.setSolicitantes(solicitantes != null ? solicitantes : new ArrayList<DetalleConvenioPFXEmpresaSolicitantes>() );
+				convenioPFEmpresa.setBeneficiarios(beneficiarios != null ? beneficiarios : new ArrayList<DetalleConvenioPFXEmpresaBeneficiarios>());
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return convenioPFEmpresa;
+	}
+
+	public DetalleConvenioPFXPersona consultaConveniosPFPersona ( Integer idConvenioPf ){
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		DetalleConvenioPFXPersona detalleConvenioPFModel = null;
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
+			try {
+				detalleConvenioPFModel = convenios.consultaDetalleConvenioXPersona(idConvenioPf);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return detalleConvenioPFModel;
+	}
 }

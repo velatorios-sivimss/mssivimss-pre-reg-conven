@@ -15,9 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
 import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
-import com.imss.sivimss.arquetipo.model.entity.BenefxPersona;
-import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPersona;
-import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPersonaConBeneficiarios;
+import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
+import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
+import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPAConBeneficiarios;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.service.PreRegConvService;
 import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
@@ -115,11 +115,11 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 		/*
 		Este servicio obtiene el pre registro de una persona con sus 2 beneficiarios
 		*/ 
-		PreRegistrosXPersona consultaPreRegistroXPersona = new PreRegistrosXPersona();
-		BenefxPersona consultaBenefxPersona1 = new BenefxPersona();
-		BenefxPersona consultaBenefxPersona2 = new BenefxPersona();
-		ArrayList<BenefxPersona> beneficiarios = new ArrayList<>();
-		PreRegistrosXPersonaConBeneficiarios preRegistro = new PreRegistrosXPersonaConBeneficiarios();
+		PreRegistrosXPA consultaPreRegistroXPersona = new PreRegistrosXPA();
+		BenefXPA consultaBenefXPA1 = new BenefXPA();
+		BenefXPA consultaBenefXPA2 = new BenefXPA();
+		ArrayList<BenefXPA> beneficiarios = new ArrayList<>();
+		PreRegistrosXPAConBeneficiarios preRegistro = new PreRegistrosXPAConBeneficiarios();
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		
 		try(SqlSession session = sqlSessionFactory.openSession()) {
@@ -129,13 +129,13 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 				preRegistro.setPreRegistro(consultaPreRegistroXPersona);
 
 				if ( consultaPreRegistroXPersona != null ){
-					consultaBenefxPersona1 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario1()));
-					consultaBenefxPersona2 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario2()));
+					consultaBenefXPA1 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario1()));
+					consultaBenefXPA2 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario2()));
 					
 					/* Si llegan null se deben setear objetos instanciados vacios */
 					
-					beneficiarios.add(consultaBenefxPersona1);
-					beneficiarios.add(consultaBenefxPersona2);
+					beneficiarios.add(consultaBenefXPA1);
+					beneficiarios.add(consultaBenefXPA2);
 					preRegistro.setBeneficiarios(beneficiarios);
 					
 				}
@@ -152,7 +152,7 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 	public Response<Object> guardaDocsConvenioXPersona(Integer idPreReg,MultipartFile[] archivo){
 		/* Este Servicio se encarga de cargar los docs de un pre registro */
 		
-		PreRegistrosXPersonaConBeneficiarios preRegistro = new PreRegistrosXPersonaConBeneficiarios();
+		PreRegistrosXPAConBeneficiarios preRegistro = new PreRegistrosXPAConBeneficiarios();
 
 		
 

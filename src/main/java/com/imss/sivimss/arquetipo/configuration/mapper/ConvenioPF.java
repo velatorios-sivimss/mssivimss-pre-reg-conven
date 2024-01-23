@@ -1,13 +1,13 @@
 package com.imss.sivimss.arquetipo.configuration.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
+import java.util.ArrayList;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-
+import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresa;
+import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiarios;
+import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaSolicitantes;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersona;
-import com.imss.sivimss.arquetipo.model.entity.PersonaEntityMyBatis;
 
 /*
  * Este es un ejemplo de cómo se pueden implementar querys a través de interfaces con MyBatis.
@@ -66,6 +66,7 @@ public interface ConvenioPF {
 	+"		SCP.ID_CONVENIO_PF = #{idConvenioPf}")
 	public DetalleConvenioPFXPersona consultaDetalleConvenioXPersona( @Param("idConvenioPf") Integer idConvenioPf );
 	
+	/* 
 	@Select(" "
 			+ "SELECT "
 			+ "	SC.ID_PERSONA idPersona, "
@@ -109,33 +110,107 @@ public interface ConvenioPF {
 			+ "LEFT JOIN SVC_ESTADO se 					ON se.ID_ESTADO = SPE.ID_ESTADO "
 			+ "WHERE SCPE.ID_CONVENIO_PF = #{idConvenioPf} ")
 		public DetalleConvenioPFXPersona consultaDetalleConvenioXEmpresa( @Param("idConvenioPf") Integer idConvenioPf );
-	
-	/*
-	 * Este es un ejemplo para realizar un insert con un objeto como parámetro
-	 * Esta debería ser la forma estandar para insertar nuevos registros
-	 * 
-	 * Se debe pasar un objeto con la anotacion @Param("out") para despues sacar los
-	 * valores del objeto usando los comodines 
-	 * #{out.nomPersona} -> #{nombreDelParam.nombreAtributoDeClase}
-	 * 
-	 * Esta expresión se utiliza para especificar el atributo del objeto que almacenará 
-	 * el identificador del nuevo registro. @Options tiene mas aplicaciones, pero en este ejemplo
-	 * se limita solo a obtener el id generado
-	 * @Options(useGeneratedKeys = true,keyProperty = "out.idPersona", keyColumn="id")
-	 * 
-	 * 
-	@Insert(value = "INSERT INTO SVC_PERSONA(NOM_PERSONA, NOM_PRIMER_APELLIDO, NOM_SEGUNDO_APELLIDO) "
-			+ "VALUES ( #{out.nomPersona},#{out.primerApellido},#{out.segundoApellido} )")
-	@Options(useGeneratedKeys = true,keyProperty = "out.idPersona", keyColumn="id")
-	public int nuevoRegistroObj(@Param("out")PersonaEntityMyBatis persona);
-	
-	@Update(value = ""
-			+ "UPDATE SVC_PERSONA  "
-			+ "SET  "
-			+ "	NOM_PERSONA=#{in.nomPersona}, "
-			+ "	NOM_PRIMER_APELLIDO=#{in.primerApellido}, "
-			+ "	NOM_SEGUNDO_APELLIDO=#{in.segundoApellido} "
-			+ "WHERE ID_PERSONA=#{in.idPersona}")
-	public int actualizarRegistroObj(@Param("in")PersonaEntityMyBatis persona);
-	*/
+		*/
+		
+		@Select(" "
+		+ "SELECT "
+		+ "	EMP.REF_NOMBRE AS nombre, "
+		+ "			EMP.REF_RAZON_SOCIAL AS razonSocial, "
+		+ "			EMP.CVE_RFC AS rfc, "
+		+ "			EMP.ID_PAIS AS idPais, "
+		+ "			DOM.REF_CP AS cp, "
+		+ "			DOM.REF_COLONIA AS colonia, "
+		+ "			DOM.REF_ESTADO AS estado, "
+		+ "			DOM.REF_MUNICIPIO AS municipio, "
+		+ "			DOM.REF_CALLE AS calle, "
+		+ "			DOM.NUM_INTERIOR AS numInterior, "
+		+ "			DOM.NUM_EXTERIOR AS numExterior, "
+		+ "			EMP.REF_TELEFONO AS telefono, "
+		+ "			EMP.REF_CORREO AS correo, "
+		+ "			EMP.ID_CONVENIO_PF AS idConvenio, "
+		+ "			EMP.ID_EMPRESA_CONVENIO_PF AS idEmpresa, "
+		+ "			PF.ID_PROMOTOR AS idPromotor "
+		+ "FROM "
+		+ "			SVT_CONVENIO_PF PF "
+		+ "INNER JOIN SVT_EMPRESA_CONVENIO_PF EMP ON "
+		+ "			PF.ID_CONVENIO_PF = EMP.ID_CONVENIO_PF "
+		+ "INNER JOIN SVT_DOMICILIO DOM ON "
+		+ "			EMP.ID_DOMICILIO = DOM.ID_DOMICILIO "
+		+ "WHERE "
+		+ "			EMP.ID_CONVENIO_PF = #{idConvenioPf} ")
+		public DetalleConvenioPFXEmpresa consultaDetalleConvenioXEmpresa( @Param("idConvenioPf") Integer idConvenioPf );
+
+		@Select(" SELECT  " +  
+				"  " +  
+				"     " +  
+				"    PAQ.ID_CONTRA_PAQ_CONVENIO_PF idPaquete, " +  
+				"     " +  
+				"    PER.CVE_RFC rfc, " +  
+				"    PER.CVE_CURP curp, " +  
+				"    PER.NOM_PERSONA nombre, " +  
+				"    PER.NOM_PRIMER_APELLIDO primerApellido, " +  
+				"    PER.NOM_SEGUNDO_APELLIDO segundoApellido, " +  
+				"    DOM.REF_CALLE calle, " +  
+				"    DOM.NUM_EXTERIOR numExterior, " +  
+				"    DOM.NUM_INTERIOR numInterior, " +  
+				"    DOM.REF_CP cp, " +  
+				"    DOM.REF_COLONIA colonia, " +  
+				"    DOM.REF_MUNICIPIO, " +  
+				"    DOM.REF_ESTADO estado, " +  
+				"    PAI.DES_PAIS pais, " +  
+				"    PAI.ID_PAIS idPais, " +  
+				"    ES.DES_ESTADO lugarNac, " +  
+				"    ES.ID_ESTADO idLugarNac, " +  
+				"    PER.REF_TELEFONO telefono, " +  
+				"    PER.REF_CORREO correo " +  
+				" " +  
+				"FROM " +  
+				"    SVT_CONVENIO_PF PF " +  
+				"INNER JOIN SVT_EMPRESA_CONVENIO_PF EMP ON  PF.ID_CONVENIO_PF = EMP.ID_CONVENIO_PF  " +  
+				"INNER JOIN svt_contra_paq_convenio_pf PAQ ON PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF " +  
+				"INNER JOIN SVC_CONTRATANTE CON ON CON.ID_CONTRATANTE = PAQ.ID_CONTRATANTE " +  
+				"INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = CON.ID_PERSONA  " +  //-- persona contratante
+				"INNER JOIN SVT_DOMICILIO DOM ON DOM.ID_DOMICILIO = CON.ID_DOMICILIO  " +  //-- domicilio del contratante
+				"INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
+				"INNER JOIN svc_estado ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
+				" " +  
+				"WHERE PF.ID_CONVENIO_PF = #{idConvenioPf} and CON.IND_ACTIVO = 1")
+		public ArrayList<DetalleConvenioPFXEmpresaSolicitantes> 
+		consultaDetalleConvenioXEmpresaSolicitantes( @Param("idConvenioPf") Integer idConvenioPf );
+
+		@Select("SELECT  " +  
+				"  " +  
+				"    CONCAT(PER.NOM_PERSONA,' ',PER.NOM_PRIMER_APELLIDO,' ',PER.NOM_SEGUNDO_APELLIDO) nombre, " +  
+				"    TIMESTAMPDIFF(YEAR, PER.FEC_NAC, CURDATE()) AS edad, " +  
+				"    PAR.DES_PARENTESCO, " +  
+				"    PER.CVE_CURP curp, " +  
+				"    PER.CVE_RFC rfc, " +  
+				"    PER.REF_CORREO correo, " +  
+				"    PER.REF_TELEFONO telefono, " +  
+				"    PAQ.ID_CONTRATANTE idContratante " +  
+				" " +  
+				" " +  
+				"FROM " +  
+				"    SVT_CONVENIO_PF PF " +  
+				"INNER JOIN svt_contra_paq_convenio_pf PAQ ON PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF " +  
+				"INNER JOIN svt_contratante_beneficiarios BEN ON BEN.ID_CONTRA_PAQ_CONVENIO_PF =PAQ.ID_CONTRA_PAQ_CONVENIO_PF " +  
+				"INNER JOIN svc_parentesco PAR ON PAR.ID_PARENTESCO = BEN.ID_PARENTESCO " +  
+				"INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = BEN.ID_PERSONA  " +  // -- Persona BENEFICIARIO
+				"WHERE BEN.IND_ACTIVO = 1  " +  
+				"AND  BEN.ID_CONTRA_PAQ_CONVENIO_PF IN " +  
+				"( " +  
+				"    SELECT  " +  
+				"        PAQ.ID_CONTRA_PAQ_CONVENIO_PF idPaquete " +  
+				"    FROM " +  
+				"        SVT_CONVENIO_PF PF " +  
+				"    INNER JOIN SVT_EMPRESA_CONVENIO_PF EMP ON  PF.ID_CONVENIO_PF = EMP.ID_CONVENIO_PF  " +  
+				"    INNER JOIN svt_contra_paq_convenio_pf PAQ ON PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF " +  
+				"    INNER JOIN SVC_CONTRATANTE CON ON CON.ID_CONTRATANTE = PAQ.ID_CONTRATANTE " +  
+				"    INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = CON.ID_PERSONA  " +  // -- persona contratante
+				"    INNER JOIN SVT_DOMICILIO DOM ON DOM.ID_DOMICILIO = CON.ID_DOMICILIO  " +  // -- domicilio del contratante
+				"    INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
+				"    INNER JOIN svc_estado ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
+				"    WHERE PF.ID_CONVENIO_PF = #{idConvenioPf} and CON.IND_ACTIVO = 1 )")
+		public ArrayList<DetalleConvenioPFXEmpresaBeneficiarios> 
+		consultaDetalleConvenioXEmpresaBeneficiarios( @Param("idConvenioPf") Integer idConvenioPf );
 }
