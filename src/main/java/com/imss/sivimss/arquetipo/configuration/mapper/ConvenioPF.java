@@ -21,15 +21,12 @@ public interface ConvenioPF {
 	@Select("  " +  
 			"SELECT " +  
 			"    IFNULL(sc.CVE_MATRICULA, '') AS matricula, " +  
+			"    SCP.DES_FOLIO folioConvenio, " +  
 			"    sp.CVE_RFC rfc, " +  
 			"    SP.CVE_CURP curp, " +  
 			"    SP.NOM_PERSONA AS nombre, " +  
 			"    SP.NOM_PRIMER_APELLIDO AS primerApellido, " +  
 			"    SP.NOM_SEGUNDO_APELLIDO AS segundoApellido, " +  
-			"    SP.ID_PERSONA idPersona, " +  
-			"    SC.ID_CONTRATANTE AS idContratante, " +  
-			"    SD.ID_DOMICILIO idDOmicilio, " +  
-			"    SCP.DES_FOLIO folioConvenio, " +  
 			"    SD.REF_CALLE AS calle, " +  
 			"    SD.NUM_EXTERIOR AS numExt, " +  
 			"    SD.NUM_INTERIOR AS numInt, " +  
@@ -44,20 +41,27 @@ public interface ConvenioPF {
 			"    SP.REF_CORREO AS correo, " +  
 			"    SP.REF_TELEFONO AS telCelular, " +  
 			"\tSCPA.ID_PAQUETE idPaquete, " +  
-			"\tPA.REF_PAQUETE_NOMBRE tipoPaquete " +  
-			" " +  
+			"\tPA.REF_PAQUETE_NOMBRE tipoPaquete, " +  
+			"    ENF.IND_ENFERMEDAD_PREXISTENTE enfermedadPre, " +  
+			"    ENF.REF_OTRA_ENFERMEDAD otraEnfermedad " +  
+			"\t " +  
+			"     " +  
+			"     " +  
+			"     " +  
 			"FROM " +  
 			"    SVT_CONVENIO_PF SCP " +  
-			"INNER JOIN SVC_ESTATUS_CONVENIO_PF SECP 		ON SCP.ID_ESTATUS_CONVENIO = SECP.ID_ESTATUS_CONVENIO_PF " +  
-			"INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPA 	ON SCP.ID_CONVENIO_PF = SCPA.ID_CONVENIO_PF " +  
-			"INNER JOIN svt_paquete PA 						ON PA.ID_PAQUETE = SCPA.ID_PAQUETE " +  
-			"INNER JOIN SVC_CONTRATANTE SC 					ON SCPA.ID_CONTRATANTE = SC.ID_CONTRATANTE " +  
-			"INNER JOIN SVT_DOMICILIO SD 					ON SC.ID_DOMICILIO = SD.ID_DOMICILIO " +  
-			"INNER JOIN SVC_PERSONA SP 						ON SC.ID_PERSONA = SP.ID_PERSONA " +  
-			"INNER JOIN SVC_VELATORIO V 					ON V.ID_VELATORIO = SCP.ID_VELATORIO " +  
-			"LEFT JOIN SVC_PAIS PAI 						ON PAI.ID_PAIS = SP.ID_PAIS " +  
-			"LEFT JOIN SVC_ESTADO se 						ON se.ID_ESTADO = SP.ID_ESTADO " +  
-			"WHERE SCP.ID_CONVENIO_PF = #{idConvenioPf} ")
+			"INNER JOIN SVC_ESTATUS_CONVENIO_PF SECP \tON SCP.ID_ESTATUS_CONVENIO = SECP.ID_ESTATUS_CONVENIO_PF " +  
+			"INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPA \tON SCP.ID_CONVENIO_PF = SCPA.ID_CONVENIO_PF " +  
+			"INNER JOIN svt_paquete \t\t\t\t\t\tPA ON PA.ID_PAQUETE = SCPA.ID_PAQUETE " +  
+			"INNER JOIN SVC_CONTRATANTE SC \t\t\t\tON SCPA.ID_CONTRATANTE = SC.ID_CONTRATANTE " +  
+			"INNER JOIN SVT_DOMICILIO SD \t\t\t\tON SC.ID_DOMICILIO = SD.ID_DOMICILIO " +  
+			"INNER JOIN SVC_PERSONA SP \t\t\t\t\tON SC.ID_PERSONA = SP.ID_PERSONA " +  
+			"INNER JOIN SVC_VELATORIO V \t\t\t\t\tON V.ID_VELATORIO = SCP.ID_VELATORIO " +  
+			"LEFT JOIN SVC_PAIS PAI \t\t\t\t\t\tON PAI.ID_PAIS = SP.ID_PAIS " +  
+			"LEFT JOIN SVC_ESTADO se \t\t\t\t\tON se.ID_ESTADO = SP.ID_ESTADO " +  
+			"LEFT JOIN svt_contra_paq_convenio_pf ENF\tON ENF.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF " +  
+			"WHERE SCP.ID_CONVENIO_PF = #{idConvenioPf} " +  
+			"   ")
 	public DetalleConvenioPFXPersona consultaDetalleConvenioXPersona( @Param("idConvenioPf") Integer idConvenioPf );
 	
 	/* 
@@ -124,7 +128,8 @@ public interface ConvenioPF {
 		+ "			EMP.ID_CONVENIO_PF AS idConvenio, "
 		+ "			EMP.ID_EMPRESA_CONVENIO_PF AS idEmpresa, "
 		+ "			PF.ID_PROMOTOR AS idPromotor, "
-		+ "			PA.REF_PAQUETE_NOMBRE tipoPaquete "
+		+ "			PA.REF_PAQUETE_NOMBRE tipoPaquete, "
+		+ "			PF.DES_FOLIO folioConvenio "
 		+ "FROM "
 		+ "			SVT_CONVENIO_PF PF "
 		+ "INNER JOIN SVT_EMPRESA_CONVENIO_PF EMP ON "

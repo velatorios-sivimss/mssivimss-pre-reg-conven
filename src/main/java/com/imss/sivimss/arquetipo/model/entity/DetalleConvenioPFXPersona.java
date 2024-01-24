@@ -1,21 +1,16 @@
 package com.imss.sivimss.arquetipo.model.entity;
 
-import java.util.Date;
-
 import lombok.Data;
 
 @Data
 public class DetalleConvenioPFXPersona  {
 	private String matricula;
+    private String folioConvenio;
     private String rfc;
     private String curp;
     private String nombre;
     private String primerApellido;
     private String segundoApellido;
-    private int idPersona;
-    private int idContratante;
-    private int idDomicilio;
-    private String folioConvenio;
     private String calle;
     private String numExt;
     private String numInt;
