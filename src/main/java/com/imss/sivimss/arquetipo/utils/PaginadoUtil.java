@@ -14,7 +14,11 @@ import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
 import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
+import com.imss.sivimss.arquetipo.model.entity.DatosConvenio;
 
+import lombok.extern.java.Log;
+
+@Log
 @Service
 public class PaginadoUtil {
 
@@ -38,6 +42,33 @@ public class PaginadoUtil {
 			resp = consultas.selectNativeQuery(queryPage);
 			respTotal = consultas.selectNativeQuery(queryConteo);
 			
+			Integer conteo =  Integer.parseInt( respTotal.get(0).get("conteo").toString() );
+			objetoMapeado = new PageImpl<>(resp, pageable, conteo);
+		}
+		
+		return objetoMapeado;
+		
+	}
+	
+	public Page<Map<String, DatosConvenio>> paginadoConvenio(Integer pagina, Integer tamanio, String query){
+		
+		Page<Map<String, DatosConvenio>> objetoMapeado = null;
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		String queryPage = query + " LIMIT " + (pagina*tamanio) + ", " + tamanio;
+		String queryConteo = "SELECT COUNT(*) AS conteo FROM (" + query + ") tem ";
+		List<Map<String, DatosConvenio>> resp;
+		List<Map<String, Object>> respTotal;
+		Pageable pageable = PageRequest.of(pagina, tamanio);
+		
+		
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			
+			Consultas consultas = session.getMapper(Consultas.class);
+			resp = consultas.selectNativeQueryConvenios(queryPage);
+			respTotal = consultas.selectNativeQuery(queryConteo);
+			
+			
+
 			Integer conteo =  Integer.parseInt( respTotal.get(0).get("conteo").toString() );
 			objetoMapeado = new PageImpl<>(resp, pageable, conteo);
 		}

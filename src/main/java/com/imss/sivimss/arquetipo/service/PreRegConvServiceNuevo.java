@@ -1,17 +1,18 @@
 package com.imss.sivimss.arquetipo.service;
 
-import java.util.Map;
-
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.stereotype.Service;
 
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.utils.Response;
 
 
-public interface PreRegConvService {
+public interface PreRegConvServiceNuevo {
 	
 	public Response<Object> obtenerPreRegistros(RequestFiltroPaginado paginado );
-	public Response<Object> obtenerPreRegistrosXPersona(Integer idPreReg);
+	public Response<Object> preRegXConvenios(Integer idFlujo, Integer idPreReg);
+	public Response<Object> preRegXConveniosDocs(Integer idFlujo, Integer idPreReg);
+	
+	/*
 	public Response<Object> benefXPersona(Integer idBenef);
 	public Response<Object> titularSustituto(Integer idTitular);
 	public Response<Object> actDesactConvenioPer(Integer idPreReg);
@@ -26,4 +27,5 @@ public interface PreRegConvService {
 	public Response<Object> catPaquetes();
 	public Response<Object> catPromotores();
 	public Response<Object> beneficiarios(Integer idPreReg);
+	 */
 }

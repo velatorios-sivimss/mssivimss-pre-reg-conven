@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class PreRegistrosXPersona {
+public class PreRegistrosXPA {
 
 	private int idPersona;
 	private int idContratante;

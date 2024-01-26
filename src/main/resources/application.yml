@@ -15,9 +15,9 @@ spring:
   datasource:
     platform: mariadb
     driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://10.102.44.18:3306/SIVIBDDS
-    username: SIVI_USER
-    password: 51V1_US3R
+    url: jdbc:mysql://127.0.0.1:3306/SIVIBDDS
+    username: root
+    password: ""
     timeBetweenEvictionRunsMillis: 1000
     testWhileIdle: true
     validationQuery: SELECT 1
@@ -51,6 +51,9 @@ logging:
     root: info
     org.springframework.web: info
     org.hibernate: error
+    com.imss.sivimss.arquetipo.configuration.mapper: TRACE
+    # com.imss.sivimss.arquetipo.controller: TRACE
+    com.imss.sivimss.arquetipo.utils: TRACE
 
 
 endpoints:
@@ -91,5 +94,5 @@ resilience4j.timelimiter:
     msflujo:
         timeout-duration: 3s
 
-ruta-log: 'C:/Users/opimentel/Documents/logs/mssivimss-pre-reg-conven/'
+ruta-log: 'C:\ambiente\log\'
 enviroment: Develop
