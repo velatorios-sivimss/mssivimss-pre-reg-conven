@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.SelectProvider;
 import org.springframework.stereotype.Repository;
 
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
+import com.imss.sivimss.arquetipo.model.entity.DatosConvenio;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
 
 
@@ -24,6 +25,9 @@ public interface Consultas {
 	
     @SelectProvider(type = PureSqlProvider.class, method = "sql")
 	public List<Map<String, Object>> selectNativeQuery(String sql);
+
+    @SelectProvider(type = PureSqlProvider.class, method = "sql")
+	public List<Map<String, DatosConvenio>> selectNativeQueryConvenios(String sql);
     
     @SelectProvider(type = PureSqlProvider.class, method = "sql")
     public PreRegistrosXPA selectPreRegistrosXPersona(String sql);

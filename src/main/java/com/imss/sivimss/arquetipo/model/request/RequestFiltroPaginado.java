@@ -1,6 +1,7 @@
 package com.imss.sivimss.arquetipo.model.request;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -23,5 +24,8 @@ public class RequestFiltroPaginado {
 	
 	private String convenioPSFPA;
 	
+	@Pattern(regexp = "^([A-ZÑ\\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1]))((-)?([A-Z\\d]{3}))?$",
+			message = "Debe ser un RFC válido")
+	private String cveRFC;
 	private String rfc;
 }

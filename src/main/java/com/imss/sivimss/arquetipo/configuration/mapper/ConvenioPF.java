@@ -116,6 +116,7 @@ public interface ConvenioPF {
 		+ "			EMP.REF_RAZON_SOCIAL AS razonSocial, "
 		+ "			EMP.CVE_RFC AS rfc, "
 		+ "			EMP.ID_PAIS AS idPais, "
+		+ "			PAI.DES_PAIS as pais, "
 		+ "			DOM.REF_CP AS cp, "
 		+ "			DOM.REF_COLONIA AS colonia, "
 		+ "			DOM.REF_ESTADO AS estado, "
@@ -138,6 +139,7 @@ public interface ConvenioPF {
 		+ "			EMP.ID_DOMICILIO = DOM.ID_DOMICILIO "
 		+ "INNER JOIN svt_contra_paq_convenio_pf PAQ ON PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF "
 		+ " INNER JOIN svt_paquete PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE "
+		+ " INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = EMP.ID_PAIS "
 		+ "WHERE "
 		+ "			EMP.ID_CONVENIO_PF = #{idConvenioPf} ")
 		public DetalleConvenioPFXEmpresa consultaDetalleConvenioXEmpresa( @Param("idConvenioPf") Integer idConvenioPf );

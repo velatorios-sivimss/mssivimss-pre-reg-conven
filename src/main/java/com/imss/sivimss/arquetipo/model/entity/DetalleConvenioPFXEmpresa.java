@@ -8,6 +8,7 @@ public class DetalleConvenioPFXEmpresa  {
     private String razonSocial;
     private String rfc;
     private int idPais;
+    private String pais;
     private String cp;
     private String colonia;
     private String estado;

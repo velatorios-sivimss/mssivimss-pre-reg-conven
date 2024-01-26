@@ -53,6 +53,7 @@ logging:
     org.hibernate: error
     com.imss.sivimss.arquetipo.configuration.mapper: TRACE
     # com.imss.sivimss.arquetipo.controller: TRACE
+    com.imss.sivimss.arquetipo.utils: TRACE
 
 
 endpoints:

@@ -1,6 +1,7 @@
 package com.imss.sivimss.arquetipo.service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -10,11 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
-import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPA;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPF;
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
+import com.imss.sivimss.arquetipo.model.entity.DatosConvenio;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiariosDocs;
@@ -44,7 +46,12 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	private static final String ERROR = "ERROR"; 
 	@Override
 	public Response<Object> obtenerPreRegistros(RequestFiltroPaginado request) {
-		Page<Map<String, Object>> objetoPaginado = paginadoUtil.paginado(request.getPagina(), request.getTamanio(), query.queryPreRegistros(request));
+		Page<Map<String, DatosConvenio>> objetoPaginado = paginadoUtil.paginadoConvenio(request.getPagina(), request.getTamanio(), query.queryPreRegistros(request));
+		List<Map<String, DatosConvenio>> aa = objetoPaginado.getContent();
+		Gson gson = new Gson();
+		String respuesta = gson.toJson(aa);
+		System.out.println(respuesta);
+
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, objetoPaginado);
 	}
 
@@ -56,9 +63,9 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		
 		switch (idFlujo) {
 			case 1:
-				// PreRegistrosXPAConBeneficiarios preRegistro = consultaConveniosPA(idConvenioPf);
+				PreRegistrosXPAConBeneficiarios preRegistro = consultaConveniosPA(idConvenioPf);
 				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/1/30
-				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
+				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, preRegistro);
 			case 2:
 				ArrayList<DetalleConvenioPFXEmpresaBeneficiariosDocs> detalleConvenioPFEmpresa = consultaConveniosPFEmpresaDocs(idConvenioPf);
 				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/docs/2/9
