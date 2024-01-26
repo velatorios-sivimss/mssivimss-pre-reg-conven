@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class BenefxPersona {
+public class BenefXPA {
 
 	private int idBeneficiario;
 	private String curp;

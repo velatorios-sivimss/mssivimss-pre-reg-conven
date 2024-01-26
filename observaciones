@@ -10,7 +10,8 @@ POST -> localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/persona/30
 
 enviar los beneficiarios por arreglo                                                [OK]
 consulta paginada cuando es por persona trae "POR Personasssssss" BUSCAR EN bd
-agregar documentos de los beneficiarios por persona                                 
+agregar documentos de los beneficiarios por persona       
+revisar fecha del detalle de buscar por persona (la fec nacimiendo beneifciarios)                      
 
 CREATE TABLE `svt_contratante_beneficiarios` (
   `ID_CONTRATANTE_BENEFICIARIOS` int(11) NOT NULL,
