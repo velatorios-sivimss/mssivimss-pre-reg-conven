@@ -26,5 +26,7 @@ public class DetalleConvenioPFXPersona  {
     private String telCelular;
     private int idPaquete;
     private String tipoPaquete;
+    private String enfermedadPre;
+    private String otraEnfermedad;
 	
 }
