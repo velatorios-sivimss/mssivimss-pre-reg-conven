@@ -10,6 +10,7 @@ import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBenefici
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaSolicitantes;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersona;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersonaBeneficiarios;
+import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersonaBeneficiariosDocs;
 
 /*
  * Este es un ejemplo de cómo se pueden implementar querys a través de interfaces con MyBatis.
@@ -66,7 +67,7 @@ public interface ConvenioPF {
 	public DetalleConvenioPFXPersona consultaDetalleConvenioXPersona( @Param("idConvenioPf") Integer idConvenioPf );
 
 	@Select("  SELECT  " +   
-			"BEN.ID_CONTRATANTE_BENEFICIARIOS idBeneficiario,  " +   
+			"BEN.ID_CONTRATANTE_BENEFICIARIOS  idBeneficiario, BEN.ID_CONTRATANTE_BENEFICIARIOS idBeneficiario,  " +   
 			"CONCAT(PER.NOM_PERSONA,' ',PER.NOM_PRIMER_APELLIDO,' ',PER.NOM_SEGUNDO_APELLIDO) nombre,  " +   
 			"TIMESTAMPDIFF(YEAR, PER.FEC_NAC, CURDATE()) AS edad,  " +   
 			"PAR.DES_PARENTESCO,  " +   
@@ -112,57 +113,56 @@ public interface ConvenioPF {
 			"LEFT JOIN svt_contra_paq_convenio_pf ENF ON  " +   
 			"    ENF.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF  " +   
 			"WHERE  " +   
-			"    SCP.ID_CONVENIO_PF = #{idConvenioPf}  " +   
-			"  " +   
-			")   " +   
+			"    SCP.ID_CONVENIO_PF = #{idConvenioPf}  )   " +   
 			"" )
 	public ArrayList<DetalleConvenioPFXPersonaBeneficiarios> consultaDetalleConvenioXPersonaBenficiarios( @Param("idConvenioPf") Integer idConvenioPf );
 	
-	/* 
+
+
 	@Select(" "
-			+ "SELECT "
-			+ "	SC.ID_PERSONA idPersona, "
-			+ "    SC.ID_CONTRATANTE idContratante,  "
-			+ "    SD.ID_DOMICILIO idDomicilio, "
-			+ "    SCP.DES_FOLIO folioConvenio, "
-			+ "    IFNULL(SPE.CVE_CURP, '') AS curp, "
-			+ "    IFNULL(SPE.CVE_RFC, '') AS rfc, "
-			+ "	IFNULL(SC.CVE_MATRICULA, '') AS matricula, "
-			+ "    SPE.CVE_NSS nss, "
-			+ "    SPE.NOM_PERSONA AS nombre, "
-			+ "    SPE.NOM_PRIMER_APELLIDO AS primerApellido, "
-			+ "    SPE.NOM_SEGUNDO_APELLIDO AS segundoApellido, "
-			+ "    CASE SPE.NUM_SEXO WHEN 1 THEN 'FEMENINO' WHEN 2 THEN 'MASCULINO' ELSE IFNULL(SPE.REF_OTRO_SEXO, '') END AS sexo, "
-			+ "    DATE_FORMAT(SPE.FEC_NAC, '%d-%m-%Y') AS fecNacimiento, "
-			+ "    PAI.DES_PAIS pais, "
-			+ "    PAI.ID_PAIS idPAis, "
-			+ "    se.DES_ESTADO AS lugarNac, "
-			+ "    se.ID_ESTADO idLugarNac, "
-			+ "    SPE.REF_TELEFONO telCelular, "
-			+ "    SPE.REF_TELEFONO_FIJO telFIjo, "
-			+ "    SPE.REF_CORREO correo, "
-			+ "    SD.REF_CALLE calle, "
-			+ "    SD.NUM_INTERIOR numInt, "
-			+ "    SD.NUM_EXTERIOR numExt, "
-			+ "    SD.REF_CP cp, "
-			+ "    SD.REF_COLONIA colonia, "
-			+ "    SD.REF_MUNICIPIO municipio,  "
-			+ "    se.DES_ESTADO estado, "
-			+ "    SCPCP.ID_PAQUETE, "
-			+ "    'nomPaquete' nomPaquete, "
-			+ "    scp.ID_PROMOTOR gestionPromotor "
-			+ "FROM "
-			+ "    SVT_CONVENIO_PF SCP "
-			+ "INNER JOIN SVT_EMPRESA_CONVENIO_PF SCPE 	ON SCP.ID_CONVENIO_PF = SCPE.ID_CONVENIO_PF "
-			+ "INNER JOIN SVT_DOMICILIO SD 				ON SCPE.ID_DOMICILIO = SD.ID_DOMICILIO "
-			+ "INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPCP ON SCPCP.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF "
-			+ "INNER JOIN SVC_CONTRATANTE SC 				ON SC.ID_CONTRATANTE = SCPCP.ID_CONTRATANTE "
-			+ "INNER JOIN SVC_PERSONA SPE 					ON SC.ID_PERSONA = SPE.ID_PERSONA "
-			+ "LEFT JOIN SVC_PAIS PAI 						ON    PAI.ID_PAIS = SPE.ID_PAIS	 "
-			+ "LEFT JOIN SVC_ESTADO se 					ON se.ID_ESTADO = SPE.ID_ESTADO "
-			+ "WHERE SCPE.ID_CONVENIO_PF = #{idConvenioPf} ")
-		public DetalleConvenioPFXPersona consultaDetalleConvenioXEmpresa( @Param("idConvenioPf") Integer idConvenioPf );
-		*/
+	+ "SELECT "
+	+ "/* Query para obtener los beneficiarios de un paq */ "
+	+ "BEN.ID_CONTRATANTE_BENEFICIARIOS idBeneficiario, "
+	+ "BEN.REF_UBICACION_INE_BENEFICIARIO refUbicacionIneBeneficiario, "
+	+ "BEN.REF_UBICACION_ACTA_NACIMIENTO refUbicacionActaNac, "
+	+ "BEN.REF_DOC_ACTA_NACIMIENTO_BENEFICIARIO refDocActaNacBeneficiario, "
+	+ "BEN.REF_DOC_INE_BENEFICIARIO refDocIneBeneficiario, "
+	+ "BEN.REF_DOCUMENTO_BENEFICIARIO refDocBeneficiario "
+	+ "FROM "
+	+ "SVT_CONVENIO_PF PF "
+	+ "INNER JOIN svt_contra_paq_convenio_pf PAQ ON "
+	+ "PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF "
+	+ "INNER JOIN svt_contratante_beneficiarios BEN ON "
+	+ "BEN.ID_CONTRA_PAQ_CONVENIO_PF = PAQ.ID_CONTRA_PAQ_CONVENIO_PF "
+	+ "WHERE "
+	+ "BEN.IND_ACTIVO = 1  AND BEN.ID_CONTRA_PAQ_CONVENIO_PF IN( "
+		+ "SELECT "
+		+ "SCPA.ID_PAQUETE idPaquete "
+		+ "FROM "
+		+ "SVT_CONVENIO_PF SCP "
+		+ "INNER JOIN SVC_ESTATUS_CONVENIO_PF SECP ON "
+		+ "SCP.ID_ESTATUS_CONVENIO = SECP.ID_ESTATUS_CONVENIO_PF "
+		+ "INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPA ON "
+		+ "SCP.ID_CONVENIO_PF = SCPA.ID_CONVENIO_PF "
+		+ "INNER JOIN svt_paquete PA ON "
+		+ "PA.ID_PAQUETE = SCPA.ID_PAQUETE "
+		+ "INNER JOIN SVC_CONTRATANTE SC ON "
+		+ "SCPA.ID_CONTRATANTE = SC.ID_CONTRATANTE "
+		+ "INNER JOIN SVT_DOMICILIO SD ON "
+		+ "SC.ID_DOMICILIO = SD.ID_DOMICILIO "
+		+ "INNER JOIN SVC_PERSONA SP ON "
+		+ "SC.ID_PERSONA = SP.ID_PERSONA "
+		+ "INNER JOIN SVC_VELATORIO V ON "
+		+ "V.ID_VELATORIO = SCP.ID_VELATORIO "
+		+ "LEFT JOIN SVC_PAIS PAI ON "
+		+ "PAI.ID_PAIS = SP.ID_PAIS "
+		+ "LEFT JOIN SVC_ESTADO se ON "
+		+ "se.ID_ESTADO = SP.ID_ESTADO "
+		+ "LEFT JOIN svt_contra_paq_convenio_pf ENF ON "
+		+ "ENF.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF "
+		+ "WHERE SCP.ID_CONVENIO_PF > #{idConvenioPf})")
+		public ArrayList<DetalleConvenioPFXPersonaBeneficiariosDocs> 
+		consultaDetalleConvenioXPersonaBeneficiariosDocs( @Param("idConvenioPf") Integer idConvenioPf );
 		
 		@Select(" "
 		+ "SELECT "
