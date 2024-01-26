@@ -49,11 +49,18 @@ public class BeanQuerys {
 		queryEmpPer.append(" LEFT JOIN SVC_PERSONA SP ON SP.ID_PERSONA = SC.ID_PERSONA ");
 		queryEmpPer.append(" JOIN SVT_PAQUETE SP2 ON SP2.ID_PAQUETE = scpcp.ID_PAQUETE");
 		queryEmpPer.append(" WHERE SCP.ID_ESTATUS_CONVENIO = 5 AND SCP.IND_TIPO_CONTRATACION = 1");
-		if(request.getConvenioPSFPA() != null)
-			queryPers.append(" AND SPS.NUM_FOLIO_PLAN_SFPA = '" + request.getConvenioPSFPA() + "'");	
+		
+		if ( request.getIdVelatorio() != null ){
+			queryPers.append(" AND SPS.ID_VELATORIO  = '" + request.getIdVelatorio() + "' ");	
+			queryEmp.append(" AND SCP.ID_VELATORIO = '" + request.getIdVelatorio() + "' ");
+			queryEmpPer.append(" AND SCP.ID_VELATORIO = '" + request.getIdVelatorio() + "' ");	
+		}
+		if(request.getConvenioPSFPA() != null){
+			queryPers.append(" AND SPS.NUM_FOLIO_PLAN_SFPA = '" + request.getConvenioPSFPA() + "' ");	
+		}
 		if (request.getConvenioPF() != null) {
-			queryEmp.append(" AND SCP.DES_FOLIO = '" + request.getConvenioPF() + "'");
-			queryEmpPer.append(" AND SCP.DES_FOLIO = '" + request.getConvenioPF() + "'");	
+			queryEmp.append(" AND SCP.DES_FOLIO = '" + request.getConvenioPF() + "' ");
+			queryEmpPer.append(" AND SCP.DES_FOLIO = '" + request.getConvenioPF() + "' ");	
 		}
 		if(request.getRfc() != null) {
 			queryPers.append(rfcPer);
