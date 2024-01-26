@@ -112,7 +112,7 @@ public interface ConvenioPF {
 			"LEFT JOIN svt_contra_paq_convenio_pf ENF ON  " +   
 			"    ENF.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF  " +   
 			"WHERE  " +   
-			"    SCP.ID_CONVENIO_PF = 1  " +   
+			"    SCP.ID_CONVENIO_PF = #{idConvenioPf}  " +   
 			"  " +   
 			")   " +   
 			"" )
