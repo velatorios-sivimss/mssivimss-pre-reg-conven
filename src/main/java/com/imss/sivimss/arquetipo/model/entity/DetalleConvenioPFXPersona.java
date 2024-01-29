@@ -28,5 +28,5 @@ public class DetalleConvenioPFXPersona  {
     private String tipoPaquete;
     private String enfermedadPre;
     private String otraEnfermedad;
-	
+	private int activo;
 }

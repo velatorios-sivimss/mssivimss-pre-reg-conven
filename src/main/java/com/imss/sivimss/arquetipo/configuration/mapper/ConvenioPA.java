@@ -54,7 +54,7 @@ public interface ConvenioPA {
 		+ "		SPS.ID_TITULAR_SUBSTITUTO AS idTitularSust, "
 		+ "		SPS.ID_BENEFICIARIO_1 AS beneficiario1, "
 		+ "		SPS.ID_BENEFICIARIO_2 AS beneficiario2, "
-		+ "		SPS.IND_PROMOTOR AS gestionPromotor "
+		+ "		SPS.IND_PROMOTOR AS gestionPromotor , SPS.IND_ACTIVO activo"
 		+ "	FROM "
 		+ "		SVT_PLAN_SFPA SPS "
 		+ "	JOIN SVC_CONTRATANTE sc ON "

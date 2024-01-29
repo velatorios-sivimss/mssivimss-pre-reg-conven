@@ -102,7 +102,17 @@ public class PreRegConvController {
 	
 	
 	
-	
+	@PutMapping("/activar/desactivar/{idFlujo}/{idConvenioPf}")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> actDesactConvenio(@PathVariable Integer idFlujo, @PathVariable Integer idConvenioPf, 
+			Authentication authentication) throws Throwable {
+		
+		Response<Object> response = pprc2.actDesactConvenio(idFlujo, idConvenioPf);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
 	
 	
 	
@@ -206,17 +216,7 @@ public class PreRegConvController {
 	}
 	
 
-	@PutMapping("/activar/desactivar/{idPreReg}")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
-	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object> actDesactConvenio(@PathVariable Integer idPreReg, 
-			Authentication authentication) throws Throwable {
-		
-		Response<Object> response = pprc.actDesactConvenioPer(idPreReg);
-		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
-
-	}
+	
 
 	@PutMapping("/guardar/documentos/{idPreReg}")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
@@ -278,7 +278,7 @@ public class PreRegConvController {
 	}
 
 	@SuppressWarnings("unused")
-	private CompletableFuture<Object> fallbackConsultaGenerica(@PathVariable Integer idFlujo,@PathVariable Integer idPreReg,  Authentication authentication,
+	private CompletableFuture<Object> fallbackConsultaGenerica(@PathVariable Integer idFlujo,@PathVariable Integer idConvenioPf,  Authentication authentication,
 			CallNotPermittedException e) throws IOException {
 		Response<?> response = providerRestTemplate.respuestaProvider(e.getMessage());
 		 logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString(),e.getMessage(),CONSULTA,authentication);

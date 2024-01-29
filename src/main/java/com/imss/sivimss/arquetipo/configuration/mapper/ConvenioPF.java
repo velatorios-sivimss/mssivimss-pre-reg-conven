@@ -1,9 +1,10 @@
 package com.imss.sivimss.arquetipo.configuration.mapper;
 
 import java.util.ArrayList;
-
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiariosDocs;
@@ -19,6 +20,11 @@ import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersonaBenefici
 
 public interface ConvenioPF {
 
+	@Update("UPDATE SVT_CONVENIO_PF SET IND_ACTIVO = !IND_ACTIVO WHERE ID_CONVENIO_PF = #{idConvenioPf}")
+	public int activarDesactivarConvenioPF (@Param("idConvenioPf") Integer idConvenioPf);
+
+	@Update("UPDATE SVT_PLAN_SFPA SET IND_ACTIVO = !IND_ACTIVO WHERE ID_PLAN_SFPA = #{idConvenioPf}")
+	public int activarDesactivarConvenioPA (@Param("idConvenioPf") Integer idConvenioPf);
 	
 	@Select("  " +  
 			"SELECT " +  
@@ -45,7 +51,7 @@ public interface ConvenioPF {
 			"\tSCPA.ID_PAQUETE idPaquete, " +  
 			"\tPA.REF_PAQUETE_NOMBRE tipoPaquete, " +  
 			"    ENF.IND_ENFERMEDAD_PREXISTENTE enfermedadPre, " +  
-			"    ENF.REF_OTRA_ENFERMEDAD otraEnfermedad " +  
+			"    ENF.REF_OTRA_ENFERMEDAD otraEnfermedad, SCP.IND_ACTIVO activo " +  
 			"FROM " +  
 			"    SVT_CONVENIO_PF SCP " +  
 			"INNER JOIN SVC_ESTATUS_CONVENIO_PF SECP \tON SCP.ID_ESTATUS_CONVENIO = SECP.ID_ESTATUS_CONVENIO_PF " +  
@@ -180,7 +186,7 @@ public interface ConvenioPF {
 		+ "			EMP.ID_EMPRESA_CONVENIO_PF AS idEmpresa, "
 		+ "			PF.ID_PROMOTOR AS idPromotor, "
 		+ "			PA.REF_PAQUETE_NOMBRE tipoPaquete, "
-		+ "			PF.DES_FOLIO folioConvenio "
+		+ "			PF.DES_FOLIO folioConvenio, PF.IND_ACTIVO activo "
 		+ "FROM "
 		+ "			SVT_CONVENIO_PF PF "
 		+ "INNER JOIN SVT_EMPRESA_CONVENIO_PF EMP ON "

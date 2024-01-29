@@ -42,5 +42,5 @@ public class PreRegistrosXPA {
 	private int beneficiario1;
 	private int beneficiario2;
 	private Boolean gestionPromotor;
-	
+	private int activo;
 }
