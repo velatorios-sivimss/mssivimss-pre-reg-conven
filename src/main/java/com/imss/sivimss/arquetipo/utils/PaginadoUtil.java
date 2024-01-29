@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,12 +17,14 @@ import org.springframework.stereotype.Service;
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
 import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
 import com.imss.sivimss.arquetipo.model.entity.DatosConvenio;
+import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
 
 import lombok.extern.java.Log;
 
 @Log
 @Service
 public class PaginadoUtil {
+	private static final Logger log = LoggerFactory.getLogger(BeanQuerys.class);
 
 	@Autowired
 	private MyBatisConfig myBatisConfig;
@@ -63,14 +67,18 @@ public class PaginadoUtil {
 		
 		try(SqlSession session = sqlSessionFactory.openSession()) {
 			
-			Consultas consultas = session.getMapper(Consultas.class);
-			resp = consultas.selectNativeQueryConvenios(queryPage);
-			respTotal = consultas.selectNativeQuery(queryConteo);
-			
-			
+			try {
+				Consultas consultas = session.getMapper(Consultas.class);
+				resp = consultas.selectNativeQueryConvenios(queryPage);
+				respTotal = consultas.selectNativeQuery(queryConteo);
+				
+				
 
-			Integer conteo =  Integer.parseInt( respTotal.get(0).get("conteo").toString() );
-			objetoMapeado = new PageImpl<>(resp, pageable, conteo);
+				Integer conteo =  Integer.parseInt( respTotal.get(0).get("conteo").toString() );
+				objetoMapeado = new PageImpl<>(resp, pageable, conteo);
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
 		}
 		
 		return objetoMapeado;

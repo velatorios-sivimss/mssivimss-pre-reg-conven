@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
+import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPA;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPF;
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
@@ -51,6 +52,69 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	private PaginadoUtil paginadoUtil;
 	
 	private static final String ERROR = "ERROR"; 
+
+
+	@Override
+	public Response<Object>  actDesactConvenio(Integer idFlujo,Integer idConvenioPf) {
+		/*
+		 * localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/activar/desactivar/1/28
+		 * localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/activar/desactivar/2/9
+		 * localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/activar/desactivar/3/1
+		 * 
+		 */
+		int result = 0;
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
+			try {
+				switch (idFlujo) {
+					case 1:
+						log.info("Flujo " + idFlujo);
+						result = convenios.activarDesactivarConvenioPA(idConvenioPf);
+						session.commit();
+						
+						Response<Object> aa = preRegXConvenios( idFlujo,  idConvenioPf);
+						PreRegistrosXPAConBeneficiarios convenioPA = (PreRegistrosXPAConBeneficiarios) aa.getDatos();
+						log.info("result "+convenioPA.getPreRegistro().getActivo());
+						
+						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, convenioPA.getPreRegistro().getActivo());
+					case 2:
+						log.info("Flujo " + idFlujo);
+						result = convenios.activarDesactivarConvenioPF(idConvenioPf);
+						session.commit();
+						
+						Response<Object> cc = preRegXConvenios( idFlujo,  idConvenioPf);
+						PreRegistrosXPFEmpresaConSolicitantes convenioPFEmpresa = (PreRegistrosXPFEmpresaConSolicitantes) cc.getDatos();
+						log.info("result "+convenioPFEmpresa.getEmpresa().getActivo());
+
+						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, convenioPFEmpresa.getEmpresa().getActivo());
+					case 3:
+						log.info("Flujo " + idFlujo);
+						
+						result = convenios.activarDesactivarConvenioPF(idConvenioPf);
+						session.commit();
+						 
+						Response<Object> dd = preRegXConvenios( idFlujo,  idConvenioPf);
+						PreRegistrosXPFPersonaConBeneficiarios detalleConvenioPFPersona = (PreRegistrosXPFPersonaConBeneficiarios) dd.getDatos();
+						log.info("result "+detalleConvenioPFPersona.getDetalleConvenioPFModel().getActivo());
+						
+						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFPersona.getDetalleConvenioPFModel().getActivo());
+		
+				}
+
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				session.rollback();
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+			}
+		}
+		
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, result);
+	}
+
+
 	@Override
 	public Response<Object> obtenerPreRegistros(RequestFiltroPaginado request) {
 		Page<Map<String, DatosConvenio>> objetoPaginado = paginadoUtil.paginadoConvenio(request.getPagina(), request.getTamanio(), query.queryPreRegistros(request));
@@ -75,12 +139,12 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/1/30
 				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, preRegistro);
 			case 2:
-			PreRegistrosXPFEmpresaConSolicitantes detalleConvenioPFEmpresa = consultaConveniosPFEmpresa(idConvenioPf);
+				PreRegistrosXPFEmpresaConSolicitantes detalleConvenioPFEmpresa = consultaConveniosPFEmpresa(idConvenioPf);
 				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/2/2
 				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/2/9
 				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFEmpresa);
 			case 3:
-			PreRegistrosXPFPersonaConBeneficiarios detalleConvenioPFPersona = consultaConveniosPFPersona(idConvenioPf);
+				PreRegistrosXPFPersonaConBeneficiarios detalleConvenioPFPersona = consultaConveniosPFPersona(idConvenioPf);
 				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/3/14
 				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFPersona);
 

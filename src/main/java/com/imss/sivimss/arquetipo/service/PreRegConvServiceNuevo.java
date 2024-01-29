@@ -11,11 +11,12 @@ public interface PreRegConvServiceNuevo {
 	public Response<Object> obtenerPreRegistros(RequestFiltroPaginado paginado );
 	public Response<Object> preRegXConvenios(Integer idFlujo, Integer idPreReg);
 	public Response<Object> preRegXConveniosDocs(Integer idFlujo, Integer idPreReg);
+	public Response<Object> actDesactConvenio(Integer idFlujo,Integer idPreReg);
 	
 	/*
 	public Response<Object> benefXPersona(Integer idBenef);
 	public Response<Object> titularSustituto(Integer idTitular);
-	public Response<Object> actDesactConvenioPer(Integer idPreReg);
+	
 	public Response<Object> guardaDocsConvenioXPersona(Integer idPreReg,MultipartFile[] archivo);
 	
 	public Response<Object> obtenerPreRegistrosXEmpresa(Integer idPreReg);
