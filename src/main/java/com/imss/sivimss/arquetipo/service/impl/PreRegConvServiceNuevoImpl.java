@@ -31,7 +31,6 @@ import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPAConBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFEmpresaConSolicitantes;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFPersonaConBeneficiarios;
-import com.imss.sivimss.arquetipo.model.entity.estatusConvenio;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
 import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
