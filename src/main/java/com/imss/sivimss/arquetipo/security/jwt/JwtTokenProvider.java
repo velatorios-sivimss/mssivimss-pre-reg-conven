@@ -28,33 +28,18 @@ public class JwtTokenProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-	@Value("${jwt.login}")
-	private String jwtSecret;
-
 	@Value("${jwt.secretkey-flujo}")
-	private String jwtSecretFlujo;
+	private String jwtSecret;
 	
 	@Value("${jwt.expiration-milliseconds}")
 	private String expiration;
-
-
+	
 	public String createToken(String subject) {
-		Gson gson= new Gson();
-		UsuarioDto usuario=gson.fromJson(subject, UsuarioDto.class);
-		validarUsuario(usuario);
-		String datosUsuario = "{" + "\"idVelatorio\":" + usuario.getIdVelatorio() + "," 
-				+ "\"idRol\":"	+ usuario.getIdRol() + "," + "\"desRol\":'" + usuario.getDesRol() + "',"
-				+ "\"idOficina\":"	+ usuario.getIdOficina() + "," + "\"idUsuario\":" + usuario.getIdUsuario() + ","
-				+ "\"cveUsuario\":'"	+ usuario.getCveUsuario() + "'," + "\"cveMatricula\":'" + usuario.getCveMatricula() + "',"
-				+ "\"nombre\":'"	+ usuario.getNombre() + "'," + "\"curp\":'" + usuario.getCurp() + "',"
-				+ "\"idDelegacion\":" + usuario.getIdDelegacion()+ "}";			
-		
-		Map<String, Object> claims = Jwts.claims().setSubject(datosUsuario);
-		
+		Map<String, Object> claims = Jwts.claims().setSubject(subject);
 		Date now = new Date();
 		Date exp = new Date(now.getTime() + Long.parseLong(expiration) * 1000);
 		return Jwts.builder().setHeaderParam("sistema", "sivimss").setClaims(claims).setIssuedAt(now).setExpiration(exp)
-				.signWith(SignatureAlgorithm.HS512, jwtSecretFlujo).compact();
+				.signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
 	}
 	
 	private void validarUsuario(UsuarioDto usuario) {
