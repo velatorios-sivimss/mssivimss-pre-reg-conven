@@ -168,13 +168,16 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 					if ( consultaPreRegistrosXPA != null ){
 						BenefXPA beneficiarioPA1 = conveniosPA.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario1());
 						BenefXPA beneficiarioPA2 = conveniosPA.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario2());
+						BenefXPA titularSustituto = conveniosPA.consultaTitularSust(consultaPreRegistrosXPA.getIdTitularSust());
 
 						ArrayList<BenefXPA> beneficiarios = new ArrayList<>();
 						beneficiarios.add(beneficiarioPA1);
 						beneficiarios.add(beneficiarioPA2);
+						preRegistro.setSustituto(titularSustituto);
 						preRegistro.setBeneficiarios(beneficiarios);
 					}
-
+					
+					
 				
 			} catch (Exception e) {
 				return null;

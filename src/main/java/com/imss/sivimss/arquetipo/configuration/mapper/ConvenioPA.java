@@ -109,4 +109,35 @@ public interface ConvenioPA {
 				+ " 	SD.ID_DOMICILIO = stb.ID_DOMICILIO "
 				+ "WHERE stb.ID_TITULAR_BENEFICIARIOS =  #{idConvenioPf} " )
 	public BenefXPA consultaBeneficiariosConvenioPA( @Param("idConvenioPf") Integer idConvenioPf );
+
+@Select("SELECT TIT.ID_TITULAR_BENEFICIARIOS idBeneficiario, " + 
+		"		TIT.REF_PERSONA referencia, " + 
+		"		PER.CVE_CURP AS curp, " + 
+		"		PER.CVE_RFC AS rfc, " + 
+		"		TIT.CVE_MATRICULA AS matricula, " + 
+		"		PER.CVE_NSS AS nss, " + 
+		"		PER.NOM_PERSONA AS nombre, " + 
+		"		PER.NOM_PRIMER_APELLIDO AS primerApellido, " + 
+		"		PER.NOM_SEGUNDO_APELLIDO AS segundoApellido, " + 
+		"		PER.NUM_SEXO AS idSexo, " + 
+		"		PER.FEC_NAC AS fecNacimiento, " + 
+		"		PER.ID_PAIS AS idPais, " + 
+		"		se.ID_ESTADO AS lugarNac, " + 
+		"		PER.REF_TELEFONO_FIJO AS telFijo, " + 
+		"		PER.REF_TELEFONO AS telCelular, " + 
+		"		PER.REF_CORREO AS correo, " + 
+		"		SD.REF_CALLE AS calle, " + 
+		"		SD.NUM_EXTERIOR AS numExt, " + 
+		"		SD.NUM_INTERIOR AS numInt, " + 
+		"		PER.CVE_CURP AS cp, " + 
+		"		SD.REF_COLONIA AS colonia, " + 
+		"		SD.REF_MUNICIPIO AS municipio, " + 
+		"		PER.ID_ESTADO AS idEstado, " + 
+		"		SD.REF_ESTADO AS estado  " + 
+		"FROM	svt_titular_beneficiarios TIT " + 
+		"INNER	JOIN svc_persona PER ON PER.ID_PERSONA = TIT.ID_PERSONA " + 
+		"INNER	JOIN SVC_ESTADO se ON se.ID_ESTADO = PER.ID_ESTADO " + 
+		"INNER	JOIN SVT_DOMICILIO SD ON SD.ID_DOMICILIO = TIT.ID_DOMICILIO  " + 
+		"WHERE	TIT.ID_TITULAR_BENEFICIARIOS = #{idTitularSus} ")
+	public BenefXPA consultaTitularSust( @Param("idTitularSus") Integer idTitularSus );
 }
