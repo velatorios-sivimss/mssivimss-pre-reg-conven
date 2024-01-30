@@ -35,6 +35,7 @@ import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
 import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
 import com.imss.sivimss.arquetipo.utils.AppConstantes;
+import com.imss.sivimss.arquetipo.utils.DatosRequest;
 import com.imss.sivimss.arquetipo.utils.PaginadoUtil;
 import com.imss.sivimss.arquetipo.utils.Response;
 
@@ -116,10 +117,15 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 
 	@Override
-	public Response<Object> obtenerPreRegistros(RequestFiltroPaginado request) {
-		Page<Map<String, DatosConvenio>> objetoPaginado = paginadoUtil.paginadoConvenio(request.getPagina(), request.getTamanio(), query.queryPreRegistros(request));
-		List<Map<String, DatosConvenio>> aa = objetoPaginado.getContent();
+	public Response<Object> obtenerPreRegistros(DatosRequest paginado) {
+		
 		Gson gson = new Gson();
+		RequestFiltroPaginado request = gson.fromJson(String.valueOf(paginado.getDatos().get(AppConstantes.DATOS)), RequestFiltroPaginado.class);
+		Integer pagina =  Integer.parseInt( paginado.getDatos().get("pagina").toString() );
+		Integer tamanio =  Integer.parseInt( paginado.getDatos().get("tamanio").toString() );
+		
+		Page<Map<String, DatosConvenio>> objetoPaginado = paginadoUtil.paginadoConvenio(pagina, tamanio, query.queryPreRegistros(request));
+		List<Map<String, DatosConvenio>> aa = objetoPaginado.getContent();
 		String respuesta = gson.toJson(aa);
 		System.out.println(respuesta);
 
@@ -168,15 +174,19 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 					if ( consultaPreRegistrosXPA != null ){
 						BenefXPA beneficiarioPA1 = conveniosPA.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario1());
 						BenefXPA beneficiarioPA2 = conveniosPA.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario2());
+						BenefXPA titularSustituto = conveniosPA.consultaTitularSust(consultaPreRegistrosXPA.getIdTitularSust());
 
 						ArrayList<BenefXPA> beneficiarios = new ArrayList<>();
 						beneficiarios.add(beneficiarioPA1);
 						beneficiarios.add(beneficiarioPA2);
+						preRegistro.setSustituto(titularSustituto);
 						preRegistro.setBeneficiarios(beneficiarios);
 					}
-
+					
+					
 				
 			} catch (Exception e) {
+				log.error(ERROR, e);
 				return null;
 			}
 		}

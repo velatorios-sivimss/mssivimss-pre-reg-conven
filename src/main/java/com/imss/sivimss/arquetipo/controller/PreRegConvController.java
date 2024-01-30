@@ -22,6 +22,7 @@ import com.imss.sivimss.arquetipo.model.request.PersonaNombres;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.service.PreRegConvService;
 import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
+import com.imss.sivimss.arquetipo.utils.DatosRequest;
 import com.imss.sivimss.arquetipo.utils.LogUtil;
 import com.imss.sivimss.arquetipo.utils.ProviderServiceRestTemplate;
 import com.imss.sivimss.arquetipo.utils.Response;
@@ -59,7 +60,7 @@ public class PreRegConvController {
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
 	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object> preregistros (@Validated @RequestBody RequestFiltroPaginado request, Authentication authentication) throws IOException {
+	public CompletableFuture<Object> preregistros (@RequestBody DatosRequest request, Authentication authentication) throws IOException {
 		/* Consulta pagiada */
 		Response<Object> response = pprc2.obtenerPreRegistros(request);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
@@ -237,7 +238,7 @@ public class PreRegConvController {
 	 */
 	
 	@SuppressWarnings("unused")
-	private CompletableFuture<Object> fallbackConsultaPaginada(@RequestBody RequestFiltroPaginado paginado,Authentication authentication,
+	private CompletableFuture<Object> fallbackConsultaPaginada(@RequestBody DatosRequest paginado,Authentication authentication,
 			CallNotPermittedException e) throws IOException {
 		Response<?> response = providerRestTemplate.respuestaProvider(e.getMessage());
 		 logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString(),e.getMessage(),CONSULTA + " " + paginado,authentication);

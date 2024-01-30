@@ -8,6 +8,7 @@ public class PreRegistrosXPAConBeneficiarios {
 
 	private PreRegistrosXPA preRegistro;
 	private ArrayList<BenefXPA> beneficiarios;
+	private BenefXPA sustituto;
 	
 	
 }
