@@ -1,7 +1,5 @@
 package com.imss.sivimss.arquetipo.model.entity;
 
-import java.util.Date;
-
 import lombok.Data;
 
 @Data
@@ -16,8 +14,10 @@ public class BenefXPA {
 	private String primerApellido;
 	private String segundoApellido;
 	private String idSexo;
+	private String sexo;
 	private String fecNacimiento;
 	private String idPais;
+	private String pais;
 	private String lugarNac;
 	private String telFijo;
 	private String telCelular;

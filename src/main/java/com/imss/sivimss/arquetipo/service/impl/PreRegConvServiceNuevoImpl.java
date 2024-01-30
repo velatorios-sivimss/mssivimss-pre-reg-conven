@@ -180,6 +180,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 					
 				
 			} catch (Exception e) {
+				log.error(ERROR, e);
 				return null;
 			}
 		}
