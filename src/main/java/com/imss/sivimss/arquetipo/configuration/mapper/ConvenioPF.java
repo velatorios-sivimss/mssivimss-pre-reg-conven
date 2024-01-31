@@ -212,7 +212,7 @@ public interface ConvenioPF {
 				"    DOM.NUM_INTERIOR numInterior, " +  
 				"    DOM.REF_CP cp, " +  
 				"    DOM.REF_COLONIA colonia, " +  
-				"    DOM.REF_MUNICIPIO, " +  
+				"    DOM.REF_MUNICIPIO municipio, " +  
 				"    DOM.REF_ESTADO estado, " +  
 				"    PAI.DES_PAIS pais, " +  
 				"    PAI.ID_PAIS idPais, " +  

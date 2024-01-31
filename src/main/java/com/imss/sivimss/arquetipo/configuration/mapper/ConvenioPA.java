@@ -27,6 +27,7 @@ public interface ConvenioPA {
 		+ "		SP.NOM_SEGUNDO_APELLIDO AS segundoApellido, "
 		+ "		SP.NUM_SEXO AS idSexo, "
 		+ " 	CASE SP.NUM_SEXO WHEN 1 THEN 'Mujer' WHEN 2 THEN 'Hombre'  ELSE 'Otro' END AS sexo, "
+		+ "		SP.REF_OTRO_SEXO otroSexo "
 		+ "		DATE_FORMAT(SP.FEC_NAC, '%d/%m/%Y') AS fecNacimiento, "
 		+ "		SP2.DES_PAIS AS pais, "
 		+ "		SP.ID_PAIS AS idPais, "
@@ -81,6 +82,7 @@ public interface ConvenioPA {
 				+ " 	SP.NOM_SEGUNDO_APELLIDO AS segundoApellido, "
 				+ " 	SP.NUM_SEXO AS idSexo, "
 				+ " 	CASE SP.NUM_SEXO WHEN 1 THEN 'Mujer' WHEN 2 THEN 'Hombre'  ELSE 'Otro' END AS sexo, "
+				+ "		SP.REF_OTRO_SEXO otroSexo "
 				+ " 	DATE_FORMAT(SP.FEC_NAC, '%d/%m/%Y') AS fecNacimiento, "
 				+ " 	SP.ID_PAIS AS idPais, "
 				+ "		SP2.DES_PAIS AS pais, "
@@ -121,6 +123,7 @@ public interface ConvenioPA {
 		"		PER.NOM_SEGUNDO_APELLIDO AS segundoApellido, " + 
 		"		PER.NUM_SEXO AS idSexo, " + 
 		" 		CASE PER.NUM_SEXO WHEN 1 THEN 'Mujer' WHEN 2 THEN 'Hombre'  ELSE 'Otro' END AS sexo, " +
+		"		SP.REF_OTRO_SEXO otroSexo " +
 		"		DATE_FORMAT(PER.FEC_NAC, '%d/%m/%Y') AS fecNacimiento, " + 
 		"		PER.ID_PAIS AS idPais, " + 
 		"		SP2.DES_PAIS AS pais, " +

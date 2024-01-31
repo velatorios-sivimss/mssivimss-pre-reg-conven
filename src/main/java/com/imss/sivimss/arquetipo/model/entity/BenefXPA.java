@@ -15,6 +15,7 @@ public class BenefXPA {
 	private String segundoApellido;
 	private String idSexo;
 	private String sexo;
+	private String otroSexo;
 	private String fecNacimiento;
 	private String idPais;
 	private String pais;
