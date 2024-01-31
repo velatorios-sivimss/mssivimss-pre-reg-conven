@@ -67,19 +67,18 @@ public class PreRegConvController {
 
 	}
 	
-	@GetMapping("/buscar/{idFlujo}/{idConvenioPf}")
+	@PostMapping("/buscar/idFlujo/idConvenioPf")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
 	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object> preRegXConvenios(@PathVariable Integer idFlujo, @PathVariable Integer idConvenioPf, 
-			Authentication authentication) throws Throwable {
+	public CompletableFuture<Object> preRegXConvenios(@RequestBody DatosRequest request, Authentication authentication) throws Throwable {
 		/* Consulta Detalle 
 		 * 
 		 * 1 PA
 		 * 2 PF Empresa
 		 * 3 PF Persona
 		*/
-		Response<Object> response = pprc2.preRegXConvenios(idFlujo,idConvenioPf);
+		Response<Object> response = pprc2.preRegXConvenios(request);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}

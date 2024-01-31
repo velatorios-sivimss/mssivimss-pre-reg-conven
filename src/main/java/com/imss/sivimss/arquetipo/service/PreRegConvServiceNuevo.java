@@ -10,7 +10,7 @@ import com.imss.sivimss.arquetipo.utils.Response;
 public interface PreRegConvServiceNuevo {
 	
 	public Response<Object> obtenerPreRegistros(DatosRequest paginado );
-	public Response<Object> preRegXConvenios(Integer idFlujo, Integer idPreReg);
+	public Response<Object> preRegXConvenios(DatosRequest request);
 	public Response<Object> preRegXConveniosDocs(Integer idFlujo, Integer idPreReg);
 	public Response<Object> actDesactConvenio(Integer idFlujo,Integer idPreReg);
 	

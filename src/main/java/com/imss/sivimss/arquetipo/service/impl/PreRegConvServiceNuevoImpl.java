@@ -31,6 +31,7 @@ import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPAConBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFEmpresaConSolicitantes;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFPersonaConBeneficiarios;
+import com.imss.sivimss.arquetipo.model.request.Flujos;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
 import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
@@ -75,33 +76,41 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 						result = convenios.activarDesactivarConvenioPA(idConvenioPf);
 						session.commit();
 						
+						/* 
 						Response<Object> aa = preRegXConvenios( idFlujo,  idConvenioPf);
 						PreRegistrosXPAConBeneficiarios convenioPA = (PreRegistrosXPAConBeneficiarios) aa.getDatos();
 						log.info("result "+convenioPA.getPreRegistro().getActivo());
 						
 						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, convenioPA.getPreRegistro().getActivo());
+						*/
+						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
 					case 2:
 						log.info("Flujo " + idFlujo);
 						result = convenios.activarDesactivarConvenioPF(idConvenioPf);
 						session.commit();
 						
+						/* 
 						Response<Object> cc = preRegXConvenios( idFlujo,  idConvenioPf);
 						PreRegistrosXPFEmpresaConSolicitantes convenioPFEmpresa = (PreRegistrosXPFEmpresaConSolicitantes) cc.getDatos();
 						log.info("result "+convenioPFEmpresa.getEmpresa().getActivo());
 
 						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, convenioPFEmpresa.getEmpresa().getActivo());
+						*/
+						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
 					case 3:
 						log.info("Flujo " + idFlujo);
 						
 						result = convenios.activarDesactivarConvenioPF(idConvenioPf);
 						session.commit();
-						 
+						
+						/* 
 						Response<Object> dd = preRegXConvenios( idFlujo,  idConvenioPf);
 						PreRegistrosXPFPersonaConBeneficiarios detalleConvenioPFPersona = (PreRegistrosXPFPersonaConBeneficiarios) dd.getDatos();
 						log.info("result "+detalleConvenioPFPersona.getDetalleConvenioPFModel().getActivo());
 						
 						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFPersona.getDetalleConvenioPFModel().getActivo());
-		
+						*/
+						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
 				}
 
 				
@@ -134,11 +143,18 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 
 	@Override
-	public Response<Object> preRegXConvenios(Integer idFlujo, Integer idConvenioPf) {
+	public Response<Object> preRegXConvenios(DatosRequest request) {
+		//Gson gson = new Gson();
+		//RequestFiltroPaginado request1 = gson.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), Flujos.class);
+		Integer idFlujo =  Integer.parseInt( request.getDatos().get("pagina").toString() );
+		Integer idConvenioPf =  Integer.parseInt( request.getDatos().get("tamanio").toString() );
+		
+		/* 
 		if ( idFlujo == null ){
 			return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 		}
-		
+		*/
+
 		switch (idFlujo) {
 			case 1:
 				PreRegistrosXPAConBeneficiarios preRegistro = consultaConveniosPA(idConvenioPf);
