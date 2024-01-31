@@ -68,8 +68,8 @@ public class PreRegConvController {
 	}
 	
 	@PostMapping("/buscar/idFlujo/idConvenioPf")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada") // fallbackConsultaGenerica
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> preRegXConvenios(@RequestBody DatosRequest request, Authentication authentication) throws Throwable {
 		/* Consulta Detalle 
