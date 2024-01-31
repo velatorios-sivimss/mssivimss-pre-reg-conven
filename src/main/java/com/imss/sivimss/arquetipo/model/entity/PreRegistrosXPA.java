@@ -19,6 +19,7 @@ public class PreRegistrosXPA {
 	private String primerApellido;
 	private String segundoApellido;
 	private int idSexo;
+	private String sexo;
 	private String fecNacimiento;
 	private String pais;
 	private String idPais;

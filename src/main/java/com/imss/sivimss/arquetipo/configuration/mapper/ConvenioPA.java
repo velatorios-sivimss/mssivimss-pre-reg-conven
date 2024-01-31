@@ -84,7 +84,8 @@ public interface ConvenioPA {
 				+ " 	DATE_FORMAT(SP.FEC_NAC, '%d/%m/%Y') AS fecNacimiento, "
 				+ " 	SP.ID_PAIS AS idPais, "
 				+ "		SP2.DES_PAIS AS pais, "
-				+ " 	se.ID_ESTADO AS lugarNac, "
+				+ " 	se.ID_ESTADO AS idLugarNac, "
+				+ " 	se.DES_ESTADO AS lugarNac, "
 				+ " 	SP.REF_TELEFONO_FIJO AS telFijo, "
 				+ " 	SP.REF_TELEFONO AS telCelular, "
 				+ " 	SP.REF_CORREO AS correo, "
@@ -123,7 +124,8 @@ public interface ConvenioPA {
 		"		DATE_FORMAT(PER.FEC_NAC, '%d/%m/%Y') AS fecNacimiento, " + 
 		"		PER.ID_PAIS AS idPais, " + 
 		"		SP2.DES_PAIS AS pais, " +
-		"		se.ID_ESTADO AS lugarNac, " + 
+		" 		se.ID_ESTADO AS idLugarNac, " +
+		" 		se.DES_ESTADO AS lugarNac, " +
 		"		PER.REF_TELEFONO_FIJO AS telFijo, " + 
 		"		PER.REF_TELEFONO AS telCelular, " + 
 		"		PER.REF_CORREO AS correo, " + 
