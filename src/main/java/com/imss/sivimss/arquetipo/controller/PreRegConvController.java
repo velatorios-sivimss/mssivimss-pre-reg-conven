@@ -55,7 +55,7 @@ public class PreRegConvController {
 	private static final String UPDATE = "update";
 	
 
-	
+	/* OK */
 	@PostMapping("/buscar/preregistros")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
@@ -67,6 +67,7 @@ public class PreRegConvController {
 
 	}
 	
+	/* OK */
 	@PostMapping("/buscar/idFlujo/idConvenioPf")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada") // fallbackConsultaGenerica
 	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
@@ -83,33 +84,31 @@ public class PreRegConvController {
 
 	}
 
-	@GetMapping("/buscar/docs/{idFlujo}/{idConvenioPf}")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	@PostMapping("/buscar/docs/idFlujo/idConvenioPf")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
 	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object> preRegXConveniosDocs(@PathVariable Integer idFlujo, @PathVariable Integer idConvenioPf, 
-			Authentication authentication) throws Throwable {
+	public CompletableFuture<Object> preRegXConveniosDocs(@RequestBody DatosRequest request, Authentication authentication) throws Throwable {
 		/* Consulta Detalle 
 		 * 
 		 * 1 PA
 		 * 2 PF Empresa
 		 * 3 PF Persona
 		*/
-		Response<Object> response = pprc2.preRegXConveniosDocs(idFlujo,idConvenioPf);
+		Response<Object> response = pprc2.preRegXConveniosDocs(request);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
 	
 	
-	
-	@PutMapping("/activar/desactivar/{idFlujo}/{idConvenioPf}")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
+	/* OK */
+	@PostMapping("/activar/desactivar/")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
 	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object> actDesactConvenio(@PathVariable Integer idFlujo, @PathVariable Integer idConvenioPf, 
-			Authentication authentication) throws Throwable {
+	public CompletableFuture<Object> actDesactConvenio(@RequestBody DatosRequest request,	Authentication authentication) throws Throwable {
 		
-		Response<Object> response = pprc2.actDesactConvenio(idFlujo, idConvenioPf);
+		Response<Object> response = pprc2.actDesactConvenio(request);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}

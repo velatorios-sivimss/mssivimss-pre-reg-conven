@@ -135,7 +135,7 @@ public interface ConvenioPA {
 		"		SD.REF_MUNICIPIO AS municipio, " + 
 		"		PER.ID_ESTADO AS idEstado, " + 
 		"		SD.REF_ESTADO AS estado  " + 
-		"FROM	svt_titular_beneficiarios TIT " + 
+		"FROM	SVT_TITULAR_BENEFICIARIOS TIT " + 
 		"INNER	JOIN SVC_PERSONA PER ON PER.ID_PERSONA = TIT.ID_PERSONA " + 
 		"INNER	JOIN SVC_PAIS SP2 ON SP2.ID_PAIS = PER.ID_PAIS " +
 		"INNER	JOIN SVC_ESTADO se ON se.ID_ESTADO = PER.ID_ESTADO " + 
