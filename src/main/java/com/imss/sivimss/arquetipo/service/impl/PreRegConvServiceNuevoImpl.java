@@ -144,8 +144,8 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 	@Override
 	public Response<Object> preRegXConvenios(DatosRequest request) {
-		//Gson gson = new Gson();
-		//RequestFiltroPaginado request1 = gson.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), Flujos.class);
+		Gson gson = new Gson();
+		Flujos request1 = gson.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), Flujos.class);
 		Integer idFlujo =  Integer.parseInt( request.getDatos().get("idFLujo").toString() );
 		Integer idConvenioPf =  Integer.parseInt( request.getDatos().get("idConvenio").toString() );
 		
