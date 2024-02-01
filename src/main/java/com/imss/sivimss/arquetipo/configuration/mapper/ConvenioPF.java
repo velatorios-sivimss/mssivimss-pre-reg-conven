@@ -53,7 +53,7 @@ public interface ConvenioPF {
 	
 	@Select("  " +  
 			"SELECT " +  
-			"    IFNULL(sc.CVE_MATRICULA, '') AS matricula, " +  
+			"    IFNULL(SC.CVE_MATRICULA, '') AS matricula, " +  
 			"    SCP.DES_FOLIO folioConvenio, " +  
 			"    SP.CVE_RFC rfc, " +  
 			"    SP.CVE_CURP curp, " +  
@@ -137,7 +137,7 @@ public interface ConvenioPF {
 			"    PAI.ID_PAIS = SP.ID_PAIS  " +   
 			"LEFT JOIN SVC_ESTADO se ON  " +   
 			"    se.ID_ESTADO = SP.ID_ESTADO  " +   
-			"LEFT JOIN svt_contra_paq_convenio_pf ENF ON  " +   
+			"LEFT JOIN SVT_CONTRA_PAQ_CONVENIO_PF ENF ON  " +   
 			"    ENF.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF  " +   
 			"WHERE  " +   
 			"    SCP.ID_CONVENIO_PF = #{idConvenioPf}  )   " +   
@@ -247,6 +247,7 @@ public interface ConvenioPF {
 				"    ES.DES_ESTADO lugarNac, " +  
 				"    ES.ID_ESTADO idLugarNac, " +  
 				"    PER.REF_TELEFONO telefono, " +  
+				"	 PAQ.REF_PAQUETE_NOMBRE tipoPaquete, " +
 				"    PER.REF_CORREO correo " +  
 				" " +  
 				"FROM " +  
