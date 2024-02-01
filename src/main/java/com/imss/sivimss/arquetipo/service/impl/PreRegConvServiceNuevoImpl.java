@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.Null;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPA;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPF;
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
+import com.imss.sivimss.arquetipo.model.entity.ContratanteRfcCurp;
 import com.imss.sivimss.arquetipo.model.entity.DatosConvenio;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiarios;
@@ -33,6 +36,8 @@ import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFEmpresaConSolicita
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFPersonaConBeneficiarios;
 import com.imss.sivimss.arquetipo.model.request.Flujos;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
+import com.imss.sivimss.arquetipo.model.request.ValidarRfcCurpContratante;
+import com.imss.sivimss.arquetipo.model.response.ResponseContratanteRfcCurp;
 import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
 import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
 import com.imss.sivimss.arquetipo.utils.AppConstantes;
@@ -55,15 +60,119 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	
 	private static final String ERROR = "ERROR"; 
 
+	@Override
+	public Response<Object>  validarRfcCurpContratante(DatosRequest request) {
+		Gson gson = new Gson();
+		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		log.info(datos);
+		ValidarRfcCurpContratante request1 = new ValidarRfcCurpContratante();
+
+		request1 = gson.fromJson(datos, ValidarRfcCurpContratante.class);
+		String rfc = request1.getRfc();
+		String curp = request1.getCurp();
+		Integer idConvenio = request1.getIdConvenio();
+		Integer idFlujo = request1.getIdFlujo();
+		
+		log.info("rfc "+rfc);
+		log.info("curp "+curp);
+		log.info("convenio "+idConvenio);
+		
+		ResponseContratanteRfcCurp resp = new ResponseContratanteRfcCurp();
+
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPA conveniosPA = session.getMapper(ConvenioPA.class);
+			ConvenioPF conveniosPF = session.getMapper(ConvenioPF.class);
+
+			try {
+				Integer contratanteRfc = 0;
+				Integer contratanteCurp = 0;
+				switch (idFlujo) {
+					case 1:
+						contratanteRfc = conveniosPA.consultaRfcRepetido(idConvenio,rfc);
+						contratanteCurp = conveniosPA.consultaCurpRepetido(idConvenio,curp);
+						
+						resp.setCurp(curp);
+						resp.setRfc(rfc);
+						resp.setIdConvenio(idConvenio);
+		
+						if ( contratanteRfc > 0 ){
+							resp.isRfcDuplicado();
+						}
+						if ( contratanteCurp > 0 ){
+							resp.isCurpDuplicada();
+						}
+						break;
+				
+					case 2:
+						contratanteRfc = conveniosPF.consultaRfcRepetido(idConvenio,rfc);
+						contratanteCurp = conveniosPF.consultaCurpRepetido(idConvenio,curp);
+						
+						resp.setCurp(curp);
+						resp.setRfc(rfc);
+						resp.setIdConvenio(idConvenio);
+		
+						if ( contratanteRfc > 0 ){
+							resp.isRfcDuplicado();
+						}
+						if ( contratanteCurp > 0 ){
+							resp.isCurpDuplicada();
+						}
+						
+						break;
+					
+					case 3:
+						contratanteRfc = conveniosPF.consultaRfcRepetido(idConvenio,rfc);
+						contratanteCurp = conveniosPF.consultaCurpRepetido(idConvenio,curp);
+						
+						resp.setCurp(curp);
+						resp.setRfc(rfc);
+						resp.setIdConvenio(idConvenio);
+		
+						if ( contratanteRfc > 0 ){
+							resp.isRfcDuplicado();
+						}
+						if ( contratanteCurp > 0 ){
+							resp.isCurpDuplicada();
+						}
+						
+						break;	
+					
+					default:
+						break;
+				}
+
+				
+
+			} catch (Exception e) {
+				session.rollback();
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+			}
+
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, resp);
+		}
+	}
 
 	@Override
-	public Response<Object>  actDesactConvenio(Integer idFlujo,Integer idConvenioPf) {
+	public Response<Object>  actDesactConvenio(DatosRequest request) {
 		/*
 		 * localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/activar/desactivar/1/28
 		 * localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/activar/desactivar/2/9
 		 * localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/activar/desactivar/3/1
 		 * 
 		 */
+
+		Gson gson = new Gson();
+		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		log.info(datos);
+		Flujos request1 = new Flujos();
+
+		request1 = gson.fromJson(datos, Flujos.class);
+		Integer idFlujo =   request1.getIdFLujo() ;
+		Integer idConvenioPf =  request1.getIdConvenio();
+		log.info("idFlujo "+idFlujo);
+		log.info("idConvenioPf "+idConvenioPf);
+		
 		int result = 0;
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		
@@ -76,41 +185,35 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 						result = convenios.activarDesactivarConvenioPA(idConvenioPf);
 						session.commit();
 						
-						/* 
-						Response<Object> aa = preRegXConvenios( idFlujo,  idConvenioPf);
+						Response<Object> aa = preRegXConvenios( request );
 						PreRegistrosXPAConBeneficiarios convenioPA = (PreRegistrosXPAConBeneficiarios) aa.getDatos();
 						log.info("result "+convenioPA.getPreRegistro().getActivo());
 						
 						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, convenioPA.getPreRegistro().getActivo());
-						*/
-						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
+						
 					case 2:
 						log.info("Flujo " + idFlujo);
 						result = convenios.activarDesactivarConvenioPF(idConvenioPf);
 						session.commit();
 						
-						/* 
-						Response<Object> cc = preRegXConvenios( idFlujo,  idConvenioPf);
+						Response<Object> cc = preRegXConvenios( request );
 						PreRegistrosXPFEmpresaConSolicitantes convenioPFEmpresa = (PreRegistrosXPFEmpresaConSolicitantes) cc.getDatos();
 						log.info("result "+convenioPFEmpresa.getEmpresa().getActivo());
 
 						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, convenioPFEmpresa.getEmpresa().getActivo());
-						*/
-						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
+						
 					case 3:
 						log.info("Flujo " + idFlujo);
 						
 						result = convenios.activarDesactivarConvenioPF(idConvenioPf);
 						session.commit();
-						
-						/* 
-						Response<Object> dd = preRegXConvenios( idFlujo,  idConvenioPf);
+						 
+						Response<Object> dd = preRegXConvenios( request );
 						PreRegistrosXPFPersonaConBeneficiarios detalleConvenioPFPersona = (PreRegistrosXPFPersonaConBeneficiarios) dd.getDatos();
 						log.info("result "+detalleConvenioPFPersona.getDetalleConvenioPFModel().getActivo());
 						
 						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFPersona.getDetalleConvenioPFModel().getActivo());
-						*/
-						return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
+						
 				}
 
 				
@@ -145,16 +248,16 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	@Override
 	public Response<Object> preRegXConvenios(DatosRequest request) {
 		Gson gson = new Gson();
-		Flujos request1 = gson.fromJson(String.valueOf(request.getDatos().get(AppConstantes.DATOS)), Flujos.class);
-		Integer idFlujo =  Integer.parseInt( request.getDatos().get("idFLujo").toString() );
-		Integer idConvenioPf =  Integer.parseInt( request.getDatos().get("idConvenio").toString() );
-		
-		/* 
-		if ( idFlujo == null ){
-			return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
-		}
-		*/
+		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		log.info(datos);
+		Flujos request1 = new Flujos();
 
+		request1 = gson.fromJson(datos, Flujos.class);
+		Integer idFlujo =   request1.getIdFLujo() ;
+		Integer idConvenioPf =  request1.getIdConvenio();
+		log.info("idFlujo "+idFlujo);
+		log.info("idConvenioPf "+idConvenioPf);
+		
 		switch (idFlujo) {
 			case 1:
 				PreRegistrosXPAConBeneficiarios preRegistro = consultaConveniosPA(idConvenioPf);
@@ -188,14 +291,23 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 					preRegistro.setPreRegistro(consultaPreRegistrosXPA);
 
 					if ( consultaPreRegistrosXPA != null ){
-						BenefXPA beneficiarioPA1 = conveniosPA.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario1());
-						BenefXPA beneficiarioPA2 = conveniosPA.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario2());
-						BenefXPA titularSustituto = conveniosPA.consultaTitularSust(consultaPreRegistrosXPA.getIdTitularSust());
-
 						ArrayList<BenefXPA> beneficiarios = new ArrayList<>();
-						beneficiarios.add(beneficiarioPA1);
-						beneficiarios.add(beneficiarioPA2);
-						preRegistro.setSustituto(titularSustituto);
+						
+						if (consultaPreRegistrosXPA.getBeneficiario1() > 0){
+							BenefXPA beneficiarioPA1 = conveniosPA.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario1());
+							beneficiarios.add(beneficiarioPA1);
+						}
+						
+						if (consultaPreRegistrosXPA.getBeneficiario2()>0){
+							BenefXPA beneficiarioPA2 = conveniosPA.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario2());
+							beneficiarios.add(beneficiarioPA2);
+						}
+						
+						if ( consultaPreRegistrosXPA.getIdTitularSust()>0 ){
+							BenefXPA titularSustituto = conveniosPA.consultaTitularSust(consultaPreRegistrosXPA.getIdTitularSust());
+							preRegistro.setSustituto(titularSustituto);
+						}
+
 						preRegistro.setBeneficiarios(beneficiarios);
 					}
 					
@@ -256,11 +368,18 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	}
 	
 	@Override
-	public Response<Object> preRegXConveniosDocs(Integer idFlujo, Integer idConvenioPf) {
-		if ( idFlujo == null ){
-			return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
-		}
-		
+	public Response<Object> preRegXConveniosDocs(DatosRequest request) {
+		Gson gson = new Gson();
+		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		log.info(datos);
+		Flujos request1 = new Flujos();
+
+		request1 = gson.fromJson(datos, Flujos.class);
+		Integer idFlujo =   request1.getIdFLujo() ;
+		Integer idConvenioPf =  request1.getIdConvenio();
+		log.info("idFlujo "+idFlujo);
+		log.info("idConvenioPf "+idConvenioPf);
+
 		switch (idFlujo) {
 			case 1:
 				PreRegistrosXPAConBeneficiarios preRegistro = consultaConveniosPA(idConvenioPf);
