@@ -323,8 +323,10 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	}
 
 	public PreRegistrosXPFEmpresaConSolicitantes consultaConveniosPFEmpresa ( Integer idConvenioPf ){
+		log.info("idConvenioPf "+idConvenioPf);
+
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
-		DetalleConvenioPFXEmpresa detalleConvenioPFModel = null;
+		DetalleConvenioPFXEmpresa detalleConvenioPFModel = new DetalleConvenioPFXEmpresa();
 		ArrayList<DetalleConvenioPFXEmpresaSolicitantes> solicitantes = new ArrayList<>();
 		PreRegistrosXPFEmpresaConSolicitantes convenioPFEmpresa = new PreRegistrosXPFEmpresaConSolicitantes();
 		ArrayList<DetalleConvenioPFXEmpresaBeneficiarios> beneficiarios = new ArrayList<>();

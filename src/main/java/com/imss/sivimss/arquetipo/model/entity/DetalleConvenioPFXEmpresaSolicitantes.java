@@ -1,7 +1,5 @@
 package com.imss.sivimss.arquetipo.model.entity;
 
-import java.sql.Date;
-
 import lombok.Data;
 
 @Data
@@ -25,6 +23,7 @@ public class DetalleConvenioPFXEmpresaSolicitantes  {
     private int idLugarNac;
     private String telefono;
     private String correo;
+    private String tipoPaquete;
 
 	
 }

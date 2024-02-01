@@ -222,7 +222,10 @@ public interface ConvenioPF {
 		+ " INNER JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE "
 		+ " INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = EMP.ID_PAIS "
 		+ "WHERE "
-		+ "			EMP.ID_CONVENIO_PF = #{idConvenioPf} ")
+		+ "			PF.ID_CONVENIO_PF = #{idConvenioPf} "
+		+ "GROUP BY PF.ID_CONVENIO_PF"
+		
+		)
 		public DetalleConvenioPFXEmpresa consultaDetalleConvenioXEmpresa( @Param("idConvenioPf") Integer idConvenioPf );
 
 		@Select(" SELECT  " +  
