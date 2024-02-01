@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.Null;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPA;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPF;
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
+import com.imss.sivimss.arquetipo.model.entity.ContratanteRfcCurp;
 import com.imss.sivimss.arquetipo.model.entity.DatosConvenio;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiarios;
@@ -33,6 +36,8 @@ import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFEmpresaConSolicita
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFPersonaConBeneficiarios;
 import com.imss.sivimss.arquetipo.model.request.Flujos;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
+import com.imss.sivimss.arquetipo.model.request.ValidarRfcCurpContratante;
+import com.imss.sivimss.arquetipo.model.response.ResponseContratanteRfcCurp;
 import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
 import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
 import com.imss.sivimss.arquetipo.utils.AppConstantes;
@@ -55,6 +60,98 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	
 	private static final String ERROR = "ERROR"; 
 
+	@Override
+	public Response<Object>  validarRfcCurpContratante(DatosRequest request) {
+		Gson gson = new Gson();
+		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		log.info(datos);
+		ValidarRfcCurpContratante request1 = new ValidarRfcCurpContratante();
+
+		request1 = gson.fromJson(datos, ValidarRfcCurpContratante.class);
+		String rfc = request1.getRfc();
+		String curp = request1.getCurp();
+		Integer idConvenio = request1.getIdConvenio();
+		Integer idFlujo = request1.getIdFlujo();
+		
+		log.info("rfc "+rfc);
+		log.info("curp "+curp);
+		log.info("convenio "+idConvenio);
+		
+		ResponseContratanteRfcCurp resp = new ResponseContratanteRfcCurp();
+
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPA conveniosPA = session.getMapper(ConvenioPA.class);
+			ConvenioPF conveniosPF = session.getMapper(ConvenioPF.class);
+
+			try {
+				Integer contratanteRfc = 0;
+				Integer contratanteCurp = 0;
+				switch (idFlujo) {
+					case 1:
+						contratanteRfc = conveniosPA.consultaRfcRepetido(idConvenio,rfc);
+						contratanteCurp = conveniosPA.consultaCurpRepetido(idConvenio,curp);
+						
+						resp.setCurp(curp);
+						resp.setRfc(rfc);
+						resp.setIdConvenio(idConvenio);
+		
+						if ( contratanteRfc > 0 ){
+							resp.isRfcDuplicado();
+						}
+						if ( contratanteCurp > 0 ){
+							resp.isCurpDuplicada();
+						}
+						break;
+				
+					case 2:
+						contratanteRfc = conveniosPF.consultaRfcRepetido(idConvenio,rfc);
+						contratanteCurp = conveniosPF.consultaCurpRepetido(idConvenio,curp);
+						
+						resp.setCurp(curp);
+						resp.setRfc(rfc);
+						resp.setIdConvenio(idConvenio);
+		
+						if ( contratanteRfc > 0 ){
+							resp.isRfcDuplicado();
+						}
+						if ( contratanteCurp > 0 ){
+							resp.isCurpDuplicada();
+						}
+						
+						break;
+					
+					case 3:
+						contratanteRfc = conveniosPF.consultaRfcRepetido(idConvenio,rfc);
+						contratanteCurp = conveniosPF.consultaCurpRepetido(idConvenio,curp);
+						
+						resp.setCurp(curp);
+						resp.setRfc(rfc);
+						resp.setIdConvenio(idConvenio);
+		
+						if ( contratanteRfc > 0 ){
+							resp.isRfcDuplicado();
+						}
+						if ( contratanteCurp > 0 ){
+							resp.isCurpDuplicada();
+						}
+						
+						break;	
+					
+					default:
+						break;
+				}
+
+				
+
+			} catch (Exception e) {
+				session.rollback();
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+			}
+
+		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, resp);
+		}
+	}
 
 	@Override
 	public Response<Object>  actDesactConvenio(DatosRequest request) {

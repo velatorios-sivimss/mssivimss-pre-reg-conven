@@ -3,6 +3,7 @@ package com.imss.sivimss.arquetipo.configuration.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
+import com.imss.sivimss.arquetipo.model.entity.ContratanteRfcCurp;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
 
 /*
@@ -11,6 +12,32 @@ import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
 
 
 public interface ConvenioPA {
+
+	@Select("SELECT " + 
+			"    COUNT(SP.CVE_RFC) AS rfc " + 
+			"     " + 
+			"FROM " + 
+			"    SVT_PLAN_SFPA SPS " + 
+			"JOIN SVC_CONTRATANTE sc 	ON sc.ID_CONTRATANTE = SPS.ID_TITULAR " + 
+			"JOIN SVC_PERSONA SP 		ON SP.ID_PERSONA = sc.ID_PERSONA " + 
+			"WHERE " + 
+			"    SPS.ID_PLAN_SFPA != #{idConvenioPf} " + 
+			"AND " + 
+			"	SP.CVE_RFC LIKE #{identificacion};   ")
+	public Integer consultaRfcRepetido( @Param("idConvenioPf") Integer idConvenioPf,@Param("identificacion") String identificacion );
+
+	@Select("SELECT " + 
+			"    COUNT(SP.CVE_CURP) AS curp " + 
+			"     " + 
+			"FROM " + 
+			"    SVT_PLAN_SFPA SPS " + 
+			"JOIN SVC_CONTRATANTE sc 	ON sc.ID_CONTRATANTE = SPS.ID_TITULAR " + 
+			"JOIN SVC_PERSONA SP 		ON SP.ID_PERSONA = sc.ID_PERSONA " + 
+			"WHERE " + 
+			"    SPS.ID_PLAN_SFPA != #{idConvenioPf} " + 
+			"AND  " + 
+			"	SP.CVE_CURP LIKE #{identificacion};    ")
+	public Integer consultaCurpRepetido( @Param("idConvenioPf") Integer idConvenioPf,@Param("identificacion") String identificacion );
 
 		@Select(" "
 		+ "SELECT "

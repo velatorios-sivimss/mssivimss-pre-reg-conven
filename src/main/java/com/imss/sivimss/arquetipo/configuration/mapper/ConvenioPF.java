@@ -20,6 +20,31 @@ import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersonaBenefici
 
 public interface ConvenioPF {
 
+	@Select("SELECT " + 
+			"    COUNT(SP.CVE_RFC) rfc " + 
+			"FROM " + 
+			"    SVT_CONVENIO_PF SCP " + 
+			"INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPA 	ON SCP.ID_CONVENIO_PF = SCPA.ID_CONVENIO_PF " + 
+			"INNER JOIN SVC_CONTRATANTE SC 					ON SCPA.ID_CONTRATANTE = SC.ID_CONTRATANTE " + 
+			"INNER JOIN SVC_PERSONA SP 						ON SC.ID_PERSONA = SP.ID_PERSONA " + 
+			" " + 
+			"WHERE " + 
+			"    SCP.ID_CONVENIO_PF != #{idConvenioPf} AND SP.CVE_RFC LIKE #{identificacion};    ")
+	public Integer consultaRfcRepetido( @Param("idConvenioPf") Integer idConvenioPf,@Param("identificacion") String identificacion );
+
+	@Select("SELECT " + 
+			"    COUNT(SP.CVE_CURP) curp " + 
+			"FROM " + 
+			"    SVT_CONVENIO_PF SCP " + 
+			"INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPA 	ON SCP.ID_CONVENIO_PF = SCPA.ID_CONVENIO_PF " + 
+			"INNER JOIN SVC_CONTRATANTE SC 					ON SCPA.ID_CONTRATANTE = SC.ID_CONTRATANTE " + 
+			"INNER JOIN SVC_PERSONA SP 						ON SC.ID_PERSONA = SP.ID_PERSONA " + 
+			" " + 
+			"WHERE " + 
+			"    SCP.ID_CONVENIO_PF != #{idConvenioPf} AND SP.CVE_CURP LIKE #{identificacion};  ")
+	public Integer consultaCurpRepetido( @Param("idConvenioPf") Integer idConvenioPf,@Param("identificacion") String identificacion );
+
+
 	@Update("UPDATE SVT_CONVENIO_PF SET IND_ACTIVO = !IND_ACTIVO WHERE ID_CONVENIO_PF = #{idConvenioPf}")
 	public int activarDesactivarConvenioPF (@Param("idConvenioPf") Integer idConvenioPf);
 
@@ -30,7 +55,7 @@ public interface ConvenioPF {
 			"SELECT " +  
 			"    IFNULL(sc.CVE_MATRICULA, '') AS matricula, " +  
 			"    SCP.DES_FOLIO folioConvenio, " +  
-			"    sp.CVE_RFC rfc, " +  
+			"    SP.CVE_RFC rfc, " +  
 			"    SP.CVE_CURP curp, " +  
 			"    SP.NOM_PERSONA AS nombre, " +  
 			"    SP.NOM_PRIMER_APELLIDO AS primerApellido, " +  

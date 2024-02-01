@@ -114,6 +114,17 @@ public class PreRegConvController {
 	}
 	
 	
+	@PostMapping("/validar/rfc/curp")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> validarRfcCurpContratante(@RequestBody DatosRequest request,	Authentication authentication) throws Throwable {
+		
+		Response<Object> response = pprc2.validarRfcCurpContratante(request);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
+	
 	
 	
 	
