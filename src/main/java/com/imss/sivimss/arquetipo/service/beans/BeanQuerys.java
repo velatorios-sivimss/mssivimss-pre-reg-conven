@@ -48,7 +48,7 @@ public class BeanQuerys {
 		queryEmpPer.append(" JOIN SVC_CONTRATANTE SC ON SC.ID_CONTRATANTE = SCPCP.ID_CONTRATANTE ");
 		queryEmpPer.append(" LEFT JOIN SVC_PERSONA SP ON SP.ID_PERSONA = SC.ID_PERSONA ");
 		queryEmpPer.append(" JOIN SVT_PAQUETE SP2 ON SP2.ID_PAQUETE = SCPCP.ID_PAQUETE");
-		queryEmpPer.append(" WHERE SCP.ID_ESTATUS_CONVENIO = 5 AND SCP.IND_TIPO_CONTRATACION = 1");
+		queryEmpPer.append(" WHERE SCP.ID_ESTATUS_CONVENIO = 5 AND SCP.IND_TIPO_CONTRATACION = 1 GROUP BY SCP.ID_CONVENIO_PF,IFNULL(SCP.DES_FOLIO, '') ");
 		
 		if ( request.getIdVelatorio() != null ){
 			queryPers.append(" AND SPS.ID_VELATORIO  = '" + request.getIdVelatorio() + "' ");	
