@@ -193,24 +193,24 @@ public interface ConvenioPF {
 		
 		@Select(" "
 		+ "SELECT "
-		+ "	EMP.REF_NOMBRE AS nombre, "
-		+ "			EMP.REF_RAZON_SOCIAL AS razonSocial, "
-		+ "			EMP.CVE_RFC AS rfc, "
+		+ "	IFNULL(EMP.REF_NOMBRE,'')  AS nombre, "
+		+ "			IFNULL(EMP.REF_RAZON_SOCIAL,'')  AS razonSocial, "
+		+ "			IFNULL(EMP.CVE_RFC,'')  AS rfc, "
 		+ "			EMP.ID_PAIS AS idPais, "
-		+ "			PAI.DES_PAIS as pais, "
-		+ "			DOM.REF_CP AS cp, "
-		+ "			DOM.REF_COLONIA AS colonia, "
-		+ "			DOM.REF_ESTADO AS estado, "
-		+ "			DOM.REF_MUNICIPIO AS municipio, "
-		+ "			DOM.REF_CALLE AS calle, "
-		+ "			DOM.NUM_INTERIOR AS numInterior, "
-		+ "			DOM.NUM_EXTERIOR AS numExterior, "
-		+ "			EMP.REF_TELEFONO AS telefono, "
-		+ "			EMP.REF_CORREO AS correo, "
+		+ "			IFNULL(PAI.DES_PAIS,'')  as pais, "
+		+ "			IFNULL(DOM.REF_CP,'')  AS cp, "
+		+ "			IFNULL(DOM.REF_COLONIA,'')  AS colonia, "
+		+ "			IFNULL(DOM.REF_ESTADO,'')  AS estado, "
+		+ "			IFNULL(DOM.REF_MUNICIPIO,'')  AS municipio, "
+		+ "			IFNULL(DOM.REF_CALLE,'')  AS calle, "
+		+ "			IFNULL(DOM.NUM_INTERIOR,'') AS numInterior, "
+		+ "			IFNULL(DOM.NUM_EXTERIOR,'')  AS numExterior, "
+		+ "			IFNULL(EMP.REF_TELEFONO,'')  AS telefono, "
+		+ "			IFNULL(EMP.REF_CORREO,'')  AS correo, "
 		+ "			EMP.ID_CONVENIO_PF AS idConvenio, "
 		+ "			EMP.ID_EMPRESA_CONVENIO_PF AS idEmpresa, "
 		+ "			PF.ID_PROMOTOR AS idPromotor, "
-		+ "			PA.REF_PAQUETE_NOMBRE tipoPaquete, "
+		//+ "			PA.REF_PAQUETE_NOMBRE tipoPaquete, "
 		+ "			PF.DES_FOLIO folioConvenio, PF.IND_ACTIVO activo "
 		+ "FROM "
 		+ "			SVT_CONVENIO_PF PF "
@@ -230,25 +230,25 @@ public interface ConvenioPF {
 
 		@Select(" SELECT  " +  
 				"    PAQ.ID_CONTRA_PAQ_CONVENIO_PF idPaquete, " +  
-				"    PER.CVE_RFC rfc, " +  
-				"    PER.CVE_CURP curp, " +  
-				"    PER.NOM_PERSONA nombre, " +  
-				"    PER.NOM_PRIMER_APELLIDO primerApellido, " +  
-				"    PER.NOM_SEGUNDO_APELLIDO segundoApellido, " +  
-				"    DOM.REF_CALLE calle, " +  
-				"    DOM.NUM_EXTERIOR numExterior, " +  
-				"    DOM.NUM_INTERIOR numInterior, " +  
-				"    DOM.REF_CP cp, " +  
-				"    DOM.REF_COLONIA colonia, " +  
-				"    DOM.REF_MUNICIPIO municipio, " +  
-				"    DOM.REF_ESTADO estado, " +  
-				"    PAI.DES_PAIS pais, " +  
+				"    IFNULL(PER.CVE_RFC,'') rfc, " +  
+				"    IFNULL(PER.CVE_CURP,'') curp, " +  
+				"    IFNULL(PER.NOM_PERSONA,'') nombre, " +  
+				"    IFNULL(PER.NOM_PRIMER_APELLIDO,'') primerApellido, " +  
+				"    IFNULL(PER.NOM_SEGUNDO_APELLIDO,'') segundoApellido, " +  
+				"    IFNULL(DOM.REF_CALLE,'') calle, " +  
+				"    IFNULL(DOM.NUM_EXTERIOR,'') numExterior, " +  
+				"    IFNULL(DOM.NUM_INTERIOR,'') numInterior, " +  
+				"    IFNULL(DOM.REF_CP,'') cp, " +  
+				"    IFNULL(DOM.REF_COLONIA,'') colonia, " +  
+				"    IFNULL(DOM.REF_MUNICIPIO,'') municipio, " +  
+				"    IFNULL(DOM.REF_ESTADO,'') estado, " +  
+				"    IFNULL(PAI.DES_PAIS,'') pais, " +  
 				"    PAI.ID_PAIS idPais, " +  
-				"    ES.DES_ESTADO lugarNac, " +  
+				"    IFNULL(ES.DES_ESTADO,'') lugarNac, " +  
 				"    ES.ID_ESTADO idLugarNac, " +  
-				"    PER.REF_TELEFONO telefono, " +  
-				"	 PAQ.REF_PAQUETE_NOMBRE tipoPaquete, " +
-				"    PER.REF_CORREO correo " +  
+				"    IFNULL(PER.REF_TELEFONO,'') telefono, " +  
+				"	 IFNULL(PA.REF_PAQUETE_NOMBRE,'') tipoPaquete, " +
+				"    IFNULL(PER.REF_CORREO,'') correo " +  
 				" " +  
 				"FROM " +  
 				"    SVT_CONVENIO_PF PF " +  
@@ -259,7 +259,7 @@ public interface ConvenioPF {
 				"INNER JOIN SVT_DOMICILIO DOM ON DOM.ID_DOMICILIO = CON.ID_DOMICILIO  " +  //-- domicilio del contratante
 				"INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
 				"INNER JOIN SVC_ESTADO ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
-				" " +  
+				"LEFT JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE  " +  
 				"WHERE PF.ID_CONVENIO_PF = #{idConvenioPf} and CON.IND_ACTIVO = 1")
 		public ArrayList<DetalleConvenioPFXEmpresaSolicitantes> 
 		consultaDetalleConvenioXEmpresaSolicitantes( @Param("idConvenioPf") Integer idConvenioPf );
@@ -301,12 +301,12 @@ public interface ConvenioPF {
 		consultaDetalleConvenioXEmpresaBeneficiarios( @Param("idConvenioPf") Integer idConvenioPf );
 
 		@Select("SELECT  " +  
-				"\tBEN.ID_CONTRATANTE_BENEFICIARIOS idBeneficiario, " +  
-				"    BEN.REF_UBICACION_INE_BENEFICIARIO refUbicacionIneBeneficiario, " +  
-				"    BEN.REF_UBICACION_ACTA_NACIMIENTO refUbicacionActaNac, " +  
-				"\tBEN.REF_DOC_ACTA_NACIMIENTO_BENEFICIARIO refDocActaNacBeneficiario, " +  
-				"\tBEN.REF_DOC_INE_BENEFICIARIO refDocIneBeneficiario, " +  
-				"    BEN.REF_DOCUMENTO_BENEFICIARIO refDocBeneficiario " +  
+				"	BEN.ID_CONTRATANTE_BENEFICIARIOS idBeneficiario, " +  
+				"   BEN.REF_UBICACION_INE_BENEFICIARIO refUbicacionIneBeneficiario, " +  
+				"   BEN.REF_UBICACION_ACTA_NACIMIENTO refUbicacionActaNac, " +  
+				"	BEN.REF_DOC_ACTA_NACIMIENTO_BENEFICIARIO refDocActaNacBeneficiario, " +  
+				"	BEN.REF_DOC_INE_BENEFICIARIO refDocIneBeneficiario, " +  
+				"   BEN.REF_DOCUMENTO_BENEFICIARIO refDocBeneficiario " +  
 				"FROM " +  
 				"    SVT_CONVENIO_PF PF " +  
 				"INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF PAQ ON PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF " +  
@@ -314,7 +314,7 @@ public interface ConvenioPF {
 				"INNER JOIN SVC_PARENTESCO PAR ON PAR.ID_PARENTESCO = BEN.ID_PARENTESCO " +  
 				"INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = BEN.ID_PERSONA  " +  
 				"WHERE BEN.IND_ACTIVO = 1  " +  
-				"AND \tBEN.ID_CONTRA_PAQ_CONVENIO_PF IN " +  
+				"AND 	BEN.ID_CONTRA_PAQ_CONVENIO_PF IN " +  
 				"( " +  
 				"    SELECT  " +  
 				"        PAQ.ID_CONTRA_PAQ_CONVENIO_PF idPaquete " +  
