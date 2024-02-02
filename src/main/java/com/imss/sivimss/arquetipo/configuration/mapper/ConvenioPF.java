@@ -55,53 +55,52 @@ public interface ConvenioPF {
 			"SELECT " +  
 			"    IFNULL(SC.CVE_MATRICULA, '') AS matricula, " +  
 			"    SCP.DES_FOLIO folioConvenio, " +  
-			"    SP.CVE_RFC rfc, " +  
-			"    SP.CVE_CURP curp, " +  
-			"    SP.NOM_PERSONA AS nombre, " +  
-			"    SP.NOM_PRIMER_APELLIDO AS primerApellido, " +  
-			"    SP.NOM_SEGUNDO_APELLIDO AS segundoApellido, " +  
-			"    SD.REF_CALLE AS calle, " +  
-			"    SD.NUM_EXTERIOR AS numExt, " +  
-			"    SD.NUM_INTERIOR AS numInt, " +  
-			"    SD.REF_CP AS cp, " +  
-			"\tSD.REF_COLONIA AS colonia, " +  
-			"\tSD.REF_MUNICIPIO AS municipio, " +  
-			"\tSD.REF_ESTADO AS estado, " +  
-			"    PAI.DES_PAIS PAIS, " +  
-			"\tSP.ID_PAIS AS idPais, " +  
-			"    se.DES_ESTADO AS lugarNac, " +  
-			"\tSP.ID_ESTADO AS idLugarNac, " +  
-			"    SP.REF_CORREO AS correo, " +  
-			"    SP.REF_TELEFONO AS telCelular, " +  
-			"\tSCPA.ID_PAQUETE idPaquete, " +  
-			"\tPA.REF_PAQUETE_NOMBRE tipoPaquete, " +  
+			"    IFNULL(SP.CVE_RFC, '') rfc, " +  
+			"    IFNULL(SP.CVE_CURP, '') curp, " +  
+			"    IFNULL(SP.NOM_PERSONA, '') AS nombre, " +  
+			"    IFNULL(SP.NOM_PRIMER_APELLIDO, '') AS primerApellido, " +  
+			"    IFNULL(SP.NOM_SEGUNDO_APELLIDO, '') AS segundoApellido, " +  
+			"    IFNULL(SD.REF_CALLE, '') AS calle, " +  
+			"    IFNULL(SD.NUM_EXTERIOR, '') AS numExt, " +  
+			"    IFNULL(SD.NUM_INTERIOR, '') AS numInt, " +  
+			"    IFNULL(SD.REF_CP, '') AS cp, " +  
+			"	 IFNULL(SD.REF_COLONIA, '') AS colonia, " +  
+			"	 IFNULL(SD.REF_MUNICIPIO, '') AS municipio, " +  
+			"	 IFNULL(SD.REF_ESTADO, '') AS estado, " +  
+			"    IFNULL(PAI.DES_PAIS, '') PAIS, " +  
+			"	 SP.ID_PAIS AS idPais, " +  
+			"    IFNULL(se.DES_ESTADO, '') AS lugarNac, " +  
+			"	 SP.ID_ESTADO AS idLugarNac, " +  
+			"    IFNULL(SP.REF_CORREO, '') AS correo, " +  
+			"    IFNULL(SP.REF_TELEFONO, '') AS telCelular, " +  
+			"	 SCPA.ID_PAQUETE idPaquete, " +  
+			"	 IFNULL(PA.REF_PAQUETE_NOMBRE, '') tipoPaquete, " +  
 			"    ENF.IND_ENFERMEDAD_PREXISTENTE enfermedadPre, " +  
-			"    ENF.REF_OTRA_ENFERMEDAD otraEnfermedad, SCP.IND_ACTIVO activo " +  
+			"    IFNULL(ENF.REF_OTRA_ENFERMEDAD, '') otraEnfermedad, SCP.IND_ACTIVO activo " +  
 			"FROM " +  
 			"    SVT_CONVENIO_PF SCP " +  
-			"INNER JOIN SVC_ESTATUS_CONVENIO_PF SECP \tON SCP.ID_ESTATUS_CONVENIO = SECP.ID_ESTATUS_CONVENIO_PF " +  
-			"INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPA \tON SCP.ID_CONVENIO_PF = SCPA.ID_CONVENIO_PF " +  
-			"INNER JOIN SVT_PAQUETE \t\t\t\t\t\tPA ON PA.ID_PAQUETE = SCPA.ID_PAQUETE " +  
-			"INNER JOIN SVC_CONTRATANTE SC \t\t\t\tON SCPA.ID_CONTRATANTE = SC.ID_CONTRATANTE " +  
-			"INNER JOIN SVT_DOMICILIO SD \t\t\t\tON SC.ID_DOMICILIO = SD.ID_DOMICILIO " +  
-			"INNER JOIN SVC_PERSONA SP \t\t\t\t\tON SC.ID_PERSONA = SP.ID_PERSONA " +  
-			"INNER JOIN SVC_VELATORIO V \t\t\t\t\tON V.ID_VELATORIO = SCP.ID_VELATORIO " +  
-			"LEFT JOIN SVC_PAIS PAI \t\t\t\t\t\tON PAI.ID_PAIS = SP.ID_PAIS " +  
-			"LEFT JOIN SVC_ESTADO se \t\t\t\t\tON se.ID_ESTADO = SP.ID_ESTADO " +  
-			"LEFT JOIN SVT_CONTRA_PAQ_CONVENIO_PF ENF\tON ENF.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF " +  
-			"WHERE SCP.ID_CONVENIO_PF = #{idConvenioPf} " +  
-			"   ")
+			"INNER JOIN SVC_ESTATUS_CONVENIO_PF SECP 		ON SCP.ID_ESTATUS_CONVENIO = SECP.ID_ESTATUS_CONVENIO_PF " +  
+			"INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF SCPA 	ON SCP.ID_CONVENIO_PF = SCPA.ID_CONVENIO_PF " +  
+			"INNER JOIN SVT_PAQUETE PA 						ON PA.ID_PAQUETE = SCPA.ID_PAQUETE " +  
+			"INNER JOIN SVC_CONTRATANTE SC 					ON SCPA.ID_CONTRATANTE = SC.ID_CONTRATANTE " +  
+			"INNER JOIN SVT_DOMICILIO SD 					ON SC.ID_DOMICILIO = SD.ID_DOMICILIO " +  
+			"INNER JOIN SVC_PERSONA SP 						ON SC.ID_PERSONA = SP.ID_PERSONA " +  
+			"INNER JOIN SVC_VELATORIO V 					ON V.ID_VELATORIO = SCP.ID_VELATORIO " +  
+			"LEFT JOIN SVC_PAIS PAI 						ON PAI.ID_PAIS = SP.ID_PAIS " +  
+			"LEFT JOIN SVC_ESTADO se 						ON se.ID_ESTADO = SP.ID_ESTADO " +  
+			"LEFT JOIN SVT_CONTRA_PAQ_CONVENIO_PF ENF		ON ENF.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF " +  
+			"WHERE SCP.ID_CONVENIO_PF = #{idConvenioPf} "   )
 	public DetalleConvenioPFXPersona consultaDetalleConvenioXPersona( @Param("idConvenioPf") Integer idConvenioPf );
 
 	@Select("  SELECT  " +   
-			"BEN.ID_CONTRATANTE_BENEFICIARIOS  idBeneficiario, BEN.ID_CONTRATANTE_BENEFICIARIOS idBeneficiario,  " +   
+			"BEN.ID_CONTRATANTE_BENEFICIARIOS  idBeneficiario,  " +   
 			"CONCAT(PER.NOM_PERSONA,' ',PER.NOM_PRIMER_APELLIDO,' ',PER.NOM_SEGUNDO_APELLIDO) nombre,  " +   
 			"TIMESTAMPDIFF(YEAR, PER.FEC_NAC, CURDATE()) AS edad,  " +   
-			"PAR.DES_PARENTESCO,  " +   
-			"PER.CVE_CURP curp,  " +   
-			"PER.CVE_RFC rfc,  " +   
-			"PER.REF_CORREO correo,  " +   
-			"PER.REF_TELEFONO telefono,  " +   
+			"IFNULL(PAR.DES_PARENTESCO, '') parentesco,  " +   
+			"IFNULL(PER.CVE_CURP, '') curp,  " +   
+			"IFNULL(PER.CVE_RFC, '') rfc,  " +   
+			"IFNULL(PER.REF_CORREO, '') correo,  " +   
+			"IFNULL(PER.REF_TELEFONO, '') telefono,  " +   
 			"PAQ.ID_CONTRATANTE idContratante  " +   
 			"  " +   
 			"  " +   
@@ -268,11 +267,11 @@ public interface ConvenioPF {
 				"  	 BEN.ID_CONTRATANTE_BENEFICIARIOS idBeneficiario, " +  
 				"    CONCAT(PER.NOM_PERSONA,' ',PER.NOM_PRIMER_APELLIDO,' ',PER.NOM_SEGUNDO_APELLIDO) nombre, " +  
 				"    TIMESTAMPDIFF(YEAR, PER.FEC_NAC, CURDATE()) AS edad, " +  
-				"    PAR.DES_PARENTESCO, " +  
-				"    PER.CVE_CURP curp, " +  
-				"    PER.CVE_RFC rfc, " +  
-				"    PER.REF_CORREO correo, " +  
-				"    PER.REF_TELEFONO telefono, " +  
+				"    IFNULL(PAR.DES_PARENTESCO,'') parentesco, " +  
+				"    IFNULL(PER.CVE_CURP,'')  curp, " +  
+				"    IFNULL(PER.CVE_RFC ,'') rfc, " +  
+				"    IFNULL(PER.REF_CORREO,'')  correo, " +  
+				"    IFNULL(PER.REF_TELEFONO,'')  telefono, " +  
 				"    PAQ.ID_CONTRATANTE idContratante " +  
 				" " +  
 				" " +  
