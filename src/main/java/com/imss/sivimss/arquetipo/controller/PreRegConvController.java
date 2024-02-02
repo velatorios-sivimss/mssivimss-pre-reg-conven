@@ -113,7 +113,7 @@ public class PreRegConvController {
 
 	}
 	
-	
+	/* OK */
 	@PostMapping("/validar/rfc/curp")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
@@ -126,7 +126,17 @@ public class PreRegConvController {
 	}
 	
 	
-	
+	@PostMapping("/buscar/paquetes")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsulta")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsulta")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> catPaquetes( 
+			Authentication authentication) throws Throwable {
+		
+		Response<Object> response = pprc.catPaquetes();
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
 	
 	/* -------------FLUJOS REVALIDAR-------------------- 	*/
 
@@ -183,17 +193,7 @@ public class PreRegConvController {
 	
 	
 
-	@GetMapping("/buscar/paquetes")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsulta")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackConsulta")
-	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object> catPaquetes( 
-			Authentication authentication) throws Throwable {
-		
-		Response<Object> response = pprc.catPaquetes();
-		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
-	}
 	
 
 	@GetMapping("/buscar/titularSustituto/{idTitSust}")
