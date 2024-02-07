@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.constraints.Null;
-
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
@@ -17,12 +15,14 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
-import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPA;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPF;
+import com.imss.sivimss.arquetipo.configuration.mapper.Empresas;
+import com.imss.sivimss.arquetipo.model.entity.ActualizarDatosEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
-import com.imss.sivimss.arquetipo.model.entity.ContratanteRfcCurp;
 import com.imss.sivimss.arquetipo.model.entity.DatosConvenio;
+import com.imss.sivimss.arquetipo.model.entity.DatosEmpresa;
+import com.imss.sivimss.arquetipo.model.entity.DatosEmpresaSolicitante;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiariosDocs;
@@ -59,6 +59,47 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	private PaginadoUtil paginadoUtil;
 	
 	private static final String ERROR = "ERROR"; 
+
+	@Override
+	public Response<Object> actualizarDatosEmpresa(DatosRequest request) {
+		Gson gson = new Gson();
+		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		log.info(datos);
+
+		ActualizarDatosEmpresa actualizarDatosEmpresa = gson.fromJson(datos, ActualizarDatosEmpresa.class); 
+		DatosEmpresa datosEmpresa = actualizarDatosEmpresa.getEmpresa();
+		ArrayList<DatosEmpresaSolicitante> solicitantes = actualizarDatosEmpresa.getSolicitantes();
+		
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			Empresas empresasMap = session.getMapper(Empresas.class);
+			
+			try {
+				empresasMap.actualizarDatosEmpresa(datosEmpresa);
+				empresasMap.actualizarDomicilioEmpresa(datosEmpresa);
+				
+				for ( DatosEmpresaSolicitante solicitante : solicitantes ){
+					log.info(" == >> Persona " + solicitante.getIdPersona());
+					empresasMap.actualizarSolicitante(solicitante);
+					empresasMap.actualizarDomicilioSolicitante(solicitante);
+				}
+
+				session.commit();
+				log.info("==> commit() ");
+				
+			} catch (Exception e) {
+				log.info(e.getMessage());
+				
+				log.info("==> rollback() ");
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+			}
+			
+			PreRegistrosXPFEmpresaConSolicitantes detalleConvenioPFEmpresa = consultaConveniosPFEmpresa(datosEmpresa.getIdConvenioPf());
+			return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFEmpresa);
+			
+		}
+
+	}
 
 	@Override
 	public Response<Object>  validarRfcCurpContratante(DatosRequest request) {
@@ -438,4 +479,6 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		}
 		return beneficiariosDocs;
 	}
+
+	
 }
