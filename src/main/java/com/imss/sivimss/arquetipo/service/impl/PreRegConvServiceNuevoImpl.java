@@ -22,6 +22,7 @@ import com.imss.sivimss.arquetipo.model.entity.ActualizarDatosEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
 import com.imss.sivimss.arquetipo.model.entity.DatosConvenio;
 import com.imss.sivimss.arquetipo.model.entity.DatosEmpresa;
+import com.imss.sivimss.arquetipo.model.entity.DatosEmpresaBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.DatosEmpresaSolicitante;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiarios;
@@ -69,7 +70,8 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		ActualizarDatosEmpresa actualizarDatosEmpresa = gson.fromJson(datos, ActualizarDatosEmpresa.class); 
 		DatosEmpresa datosEmpresa = actualizarDatosEmpresa.getEmpresa();
 		ArrayList<DatosEmpresaSolicitante> solicitantes = actualizarDatosEmpresa.getSolicitantes();
-		
+		ArrayList<DatosEmpresaBeneficiarios> beneficiarios = actualizarDatosEmpresa.getBeneficiarios();
+
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		try(SqlSession session = sqlSessionFactory.openSession()) {
 			Empresas empresasMap = session.getMapper(Empresas.class);
@@ -82,6 +84,12 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 					log.info(" == >> Persona " + solicitante.getIdPersona());
 					empresasMap.actualizarSolicitante(solicitante);
 					empresasMap.actualizarDomicilioSolicitante(solicitante);
+				}
+
+				for ( DatosEmpresaBeneficiarios beneficiario : beneficiarios ){
+					log.info(" == >> Persona " + beneficiario.getIdPersona());
+					empresasMap.actualizarBeneficiarios(beneficiario);
+					empresasMap.actualizarBeneficiarios2(beneficiario);
 				}
 
 				session.commit();

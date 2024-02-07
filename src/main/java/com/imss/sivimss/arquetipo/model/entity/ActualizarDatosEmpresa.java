@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class ActualizarDatosEmpresa  {
-    private ArrayList<DatosEmpresaSolicitante> solicitantes;
     private DatosEmpresa empresa;
-   
+    private ArrayList<DatosEmpresaBeneficiarios> beneficiarios;
+    private ArrayList<DatosEmpresaSolicitante> solicitantes;
 }

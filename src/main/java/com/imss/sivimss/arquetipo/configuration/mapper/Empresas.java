@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
 import com.imss.sivimss.arquetipo.model.entity.DatosEmpresa;
+import com.imss.sivimss.arquetipo.model.entity.DatosEmpresaBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.DatosEmpresaSolicitante;
 
 /*
@@ -98,4 +99,30 @@ public interface Empresas {
 				"ID_DOMICILIO  		= #{solicitante.idDomicilio} ;"
 			)	
 	public int actualizarDomicilioSolicitante (@Param("solicitante") DatosEmpresaSolicitante empresa);
+
+	@Update(
+			"UPDATE " + 
+			"	SVT_CONTRATANTE_BENEFICIARIOS " + 
+			"SET     " + 
+			"	ID_PARENTESCO = #{beneficiario.idParentesco} " + 
+			"WHERE     " + 
+			"	ID_CONTRATANTE_BENEFICIARIOS = #{beneficiario.idBeneficiario} ;"
+			)	
+	public int actualizarBeneficiarios (@Param("beneficiario") DatosEmpresaBeneficiarios empresa);
+
+	@Update(
+			"UPDATE  " + 
+			"	SVC_PERSONA  " + 
+			"SET  " + 
+			"	NOM_PERSONA 		= #{beneficiario.nombre},  " + 
+			"   NOM_PRIMER_APELLIDO = #{beneficiario.primerApe},  " + 
+			"   NOM_SEGUNDO_APELLIDO= #{beneficiario.segunApe},  " + 
+			"   CVE_CURP 			= #{beneficiario.curp},  " + 
+			"	CVE_RFC 			= #{beneficiario.rfc},  " + 
+			"	REF_TELEFONO 		= #{beneficiario.telefonoSol},  " + 
+			"   REF_CORREO 			= #{beneficiario.correoSol} " + 
+			"WHERE  " + 
+			"	ID_PERSONA 			= #{beneficiario.idPersona} ;"
+			)	
+	public int actualizarBeneficiarios2 (@Param("beneficiario") DatosEmpresaBeneficiarios empresa);
 }

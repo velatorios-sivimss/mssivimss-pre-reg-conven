@@ -266,7 +266,7 @@ public interface ConvenioPF {
 		consultaDetalleConvenioXEmpresaSolicitantes( @Param("idConvenioPf") Integer idConvenioPf );
 
 		@Select("SELECT  " +  
-				"  	 BEN.ID_CONTRATANTE_BENEFICIARIOS idBeneficiario, " +  
+				"  	 BEN.ID_CONTRATANTE_BENEFICIARIOS idBeneficiario, PER.ID_PERSONA idPersona, " +  
 				"    CONCAT(PER.NOM_PERSONA,' ',PER.NOM_PRIMER_APELLIDO,' ',PER.NOM_SEGUNDO_APELLIDO) nombre, " +  
 				"    TIMESTAMPDIFF(YEAR, PER.FEC_NAC, CURDATE()) AS edad, " +  
 				"    IFNULL(PAR.DES_PARENTESCO,'') parentesco, " +  
