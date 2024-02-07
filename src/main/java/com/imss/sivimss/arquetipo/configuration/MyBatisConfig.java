@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPA;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPF;
+import com.imss.sivimss.arquetipo.configuration.mapper.Empresas;
 
 @Service
 public class MyBatisConfig {
@@ -42,6 +43,7 @@ public class MyBatisConfig {
 	    configuration.addMapper(Consultas.class);
 	    configuration.addMapper(ConvenioPF.class);
 		configuration.addMapper(ConvenioPA.class);
+		configuration.addMapper(Empresas.class);
 
 	    
 	    SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();

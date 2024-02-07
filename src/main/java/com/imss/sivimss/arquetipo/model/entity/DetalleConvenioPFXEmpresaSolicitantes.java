@@ -24,6 +24,7 @@ public class DetalleConvenioPFXEmpresaSolicitantes  {
     private String telefono;
     private String correo;
     private String tipoPaquete;
-
+    private Integer idPersona;
+    private Integer idDomicilio;
 	
 }

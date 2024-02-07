@@ -125,7 +125,7 @@ public class PreRegConvController {
 
 	}
 	
-	
+	/* OK */
 	@PostMapping("/buscar/paquetes")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsulta")
 	@Retry(name = "msflujo", fallbackMethod = "fallbackConsulta")
@@ -134,6 +134,18 @@ public class PreRegConvController {
 			Authentication authentication) throws Throwable {
 		
 		Response<Object> response = pprc.catPaquetes();
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
+
+	
+	@PostMapping("/actualizar/convenios-pf/datos-empresa")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> actualizarDatosEmpresa( @RequestBody DatosRequest request,	Authentication authentication) throws Throwable {
+		
+		Response<Object> response = pprc2.actualizarDatosEmpresa(request);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}

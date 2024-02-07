@@ -247,7 +247,9 @@ public interface ConvenioPF {
 				"    ES.ID_ESTADO idLugarNac, " +  
 				"    IFNULL(PER.REF_TELEFONO,'') telefono, " +  
 				"	 IFNULL(PA.REF_PAQUETE_NOMBRE,'') tipoPaquete, " +
-				"    IFNULL(PER.REF_CORREO,'') correo " +  
+				"    IFNULL(PER.REF_CORREO,'') correo, " +  
+				"    PER.ID_PERSONA idPersona, " +  
+				"    DOM.ID_DOMICILIO idDomicilio " +  
 				" " +  
 				"FROM " +  
 				"    SVT_CONVENIO_PF PF " +  
@@ -257,8 +259,8 @@ public interface ConvenioPF {
 				"INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = CON.ID_PERSONA  " +  //-- persona contratante
 				"INNER JOIN SVT_DOMICILIO DOM ON DOM.ID_DOMICILIO = CON.ID_DOMICILIO  " +  //-- domicilio del contratante
 				"INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
-				"INNER JOIN SVC_ESTADO ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
-				"LEFT JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE  " +  
+				"LEFT  JOIN SVC_ESTADO ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
+				"LEFT  JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE  " +  
 				"WHERE PF.ID_CONVENIO_PF = #{idConvenioPf} and CON.IND_ACTIVO = 1")
 		public ArrayList<DetalleConvenioPFXEmpresaSolicitantes> 
 		consultaDetalleConvenioXEmpresaSolicitantes( @Param("idConvenioPf") Integer idConvenioPf );
@@ -294,7 +296,7 @@ public interface ConvenioPF {
 				"    INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = CON.ID_PERSONA  " +  // -- persona contratante
 				"    INNER JOIN SVT_DOMICILIO DOM ON DOM.ID_DOMICILIO = CON.ID_DOMICILIO  " +  // -- domicilio del contratante
 				"    INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
-				"    INNER JOIN SVC_ESTADO ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
+				"    LEFT  JOIN SVC_ESTADO ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
 				"    WHERE PF.ID_CONVENIO_PF = #{idConvenioPf} and CON.IND_ACTIVO = 1 )")
 		public ArrayList<DetalleConvenioPFXEmpresaBeneficiarios> 
 		consultaDetalleConvenioXEmpresaBeneficiarios( @Param("idConvenioPf") Integer idConvenioPf );

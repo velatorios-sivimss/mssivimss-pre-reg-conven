@@ -1,5 +1,6 @@
 package com.imss.sivimss.arquetipo.service;
 
+import com.imss.sivimss.arquetipo.model.entity.DatosEmpresa;
 import com.imss.sivimss.arquetipo.utils.DatosRequest;
 import com.imss.sivimss.arquetipo.utils.Response;
 
@@ -10,7 +11,8 @@ public interface PreRegConvServiceNuevo {
 	public Response<Object> preRegXConvenios(DatosRequest request);
 	public Response<Object> preRegXConveniosDocs(DatosRequest request);
 	public Response<Object> actDesactConvenio(DatosRequest request);
-	public Response<Object>  validarRfcCurpContratante(DatosRequest request);
+	public Response<Object> validarRfcCurpContratante(DatosRequest request);
+	public Response<Object> actualizarDatosEmpresa (DatosRequest request);
 	
 	/*
 	public Response<Object> benefXPersona(Integer idBenef);
