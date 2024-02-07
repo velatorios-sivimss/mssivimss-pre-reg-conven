@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class DetalleConvenioPFXEmpresaBeneficiarios  {
     private Integer idBeneficiario;
+    private Integer idPersona;
     private String nombre;
     private int edad;
     private String parentesco;
