@@ -13,6 +13,7 @@ public interface PreRegConvServiceNuevo {
 	public Response<Object> actDesactConvenio(DatosRequest request);
 	public Response<Object> validarRfcCurpContratante(DatosRequest request);
 	public Response<Object> actualizarDatosEmpresa (DatosRequest request);
+	public Response<Object> actualizarDatosPersona (DatosRequest request);
 	
 	/*
 	public Response<Object> benefXPersona(Integer idBenef);

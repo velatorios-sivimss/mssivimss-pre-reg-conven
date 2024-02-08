@@ -18,12 +18,14 @@ import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPA;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPF;
 import com.imss.sivimss.arquetipo.configuration.mapper.Empresas;
-import com.imss.sivimss.arquetipo.model.entity.ActualizarDatosEmpresa;
+import com.imss.sivimss.arquetipo.configuration.mapper.Personas;
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
 import com.imss.sivimss.arquetipo.model.entity.DatosConvenio;
 import com.imss.sivimss.arquetipo.model.entity.DatosEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.DatosEmpresaBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.DatosEmpresaSolicitante;
+import com.imss.sivimss.arquetipo.model.entity.DatosPersonaBeneficiarios;
+import com.imss.sivimss.arquetipo.model.entity.DatosPersonaConvenio;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresa;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaBeneficiariosDocs;
@@ -35,6 +37,8 @@ import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPAConBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFEmpresaConSolicitantes;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFPersonaConBeneficiarios;
+import com.imss.sivimss.arquetipo.model.request.ActualizarConvenioPersona;
+import com.imss.sivimss.arquetipo.model.request.ActualizarDatosEmpresa;
 import com.imss.sivimss.arquetipo.model.request.Flujos;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.model.request.ValidarRfcCurpContratante;
@@ -60,6 +64,48 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	private PaginadoUtil paginadoUtil;
 	
 	private static final String ERROR = "ERROR"; 
+
+	@Override
+	public Response<Object> actualizarDatosPersona(DatosRequest request) {
+		Gson gson = new Gson();
+		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		log.info(datos);
+
+		ActualizarConvenioPersona actualizarConvenioPersona = gson.fromJson(datos, ActualizarConvenioPersona.class);
+		ArrayList<DatosPersonaBeneficiarios> beneficiarios = actualizarConvenioPersona.getBeneficiarios();
+		DatosPersonaConvenio personaConvenio = actualizarConvenioPersona.getConvenio();
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			Personas personasMap = session.getMapper(Personas.class);
+
+			try {
+				log.info(" == >> Persona " + personaConvenio.getIdPersona());
+				personasMap.actualizarDatosContratante(personaConvenio);
+				personasMap.actualizarDomicilioContratante(personaConvenio);
+				personasMap.actualizarPaqueteContratante(personaConvenio);
+				
+				
+				for ( DatosPersonaBeneficiarios beneficiario : beneficiarios ){
+					log.info(" == >> Persona " + beneficiario.getIdPersona());
+					personasMap.actualizarBeneficiariosParentesco(beneficiario);
+					personasMap.actualizarBeneficiarios(beneficiario);
+				}
+
+				session.commit();
+				log.info("==> commit() ");
+
+				PreRegistrosXPFPersonaConBeneficiarios detalleConvenioPFPersona = consultaConveniosPFPersona(personaConvenio.getIdConvenioPF());
+				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFPersona);
+			} catch (Exception e) {
+				log.info(e.getMessage());
+				
+				log.info("==> rollback() ");
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+			}
+		}
+
+		// throw new UnsupportedOperationException("Unimplemented method 'actualizarDatosPersona'");
+	}
 
 	@Override
 	public Response<Object> actualizarDatosEmpresa(DatosRequest request) {
@@ -487,6 +533,8 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		}
 		return beneficiariosDocs;
 	}
+
+	
 
 	
 }

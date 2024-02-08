@@ -29,4 +29,8 @@ public class DetalleConvenioPFXPersona  {
     private String enfermedadPre;
     private String otraEnfermedad;
 	private int activo;
+    private Long idPersona;
+    private Long idEstado;
+    private Long idDomicilio;
+    private Long idContraPaqPF;
 }
