@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 public class PreRegistrosXPA {
 
-	private int idPersona;
-	private int idContratante;
-	private int idDomicilio;
+	private Long idPersona;
+	private Long idContratante;
+	
 	private String folioConvenio;
 	private String curp;
 	private String rfc;
@@ -36,13 +36,15 @@ public class PreRegistrosXPA {
 	private String colonia;
 	private String municipio;
 	private String estado;
-	private int idPaquete;
+	private Long idPaquete;
 	private int numPagos;
 	private String nomPaquete;
 	private String titularSust;
-	private int idTitularSust;
-	private int beneficiario1;
-	private int beneficiario2;
+	private Long idTitularSust;
+	private Long beneficiario1;
+	private Long beneficiario2;
 	private Boolean gestionPromotor;
 	private int activo;
+	private Long idPersonaContratante;
+	private Long idDomicilio;
 }
