@@ -73,11 +73,18 @@ public class PreRegConvController {
 	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> preRegXConvenios(@RequestBody DatosRequest request, Authentication authentication) throws Throwable {
-		/* Consulta Detalle 
+		/* Flujos
 		 * 
 		 * 1 PA
 		 * 2 PF Empresa
 		 * 3 PF Persona
+		*/
+
+		/* Seccion (aplica para flujo por empresa) 
+		 * 
+		 * 1 Datos empresa
+		 * 2 Datos solicitantes
+		 * 3 Datos Beneficiarios
 		*/
 		Response<Object> response = pprc2.preRegXConvenios(request);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
