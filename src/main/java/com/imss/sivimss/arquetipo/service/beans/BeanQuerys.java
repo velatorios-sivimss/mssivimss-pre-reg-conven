@@ -48,33 +48,37 @@ public class BeanQuerys {
 		queryEmpPer.append(" JOIN SVC_CONTRATANTE SC ON SC.ID_CONTRATANTE = SCPCP.ID_CONTRATANTE ");
 		queryEmpPer.append(" LEFT JOIN SVC_PERSONA SP ON SP.ID_PERSONA = SC.ID_PERSONA ");
 		queryEmpPer.append(" JOIN SVT_PAQUETE SP2 ON SP2.ID_PAQUETE = SCPCP.ID_PAQUETE");
-		queryEmpPer.append(" WHERE SCP.ID_ESTATUS_CONVENIO = 5 AND SCP.IND_TIPO_CONTRATACION = 1 GROUP BY SCP.ID_CONVENIO_PF,IFNULL(SCP.DES_FOLIO, '') ");
+		queryEmpPer.append(" WHERE SCP.ID_ESTATUS_CONVENIO = 5 AND SCP.IND_TIPO_CONTRATACION = 1 ");
 		
 		if ( request.getIdVelatorio() != null ){
 			queryPers.append(" AND SPS.ID_VELATORIO  = '" + request.getIdVelatorio() + "' ");	
 			queryEmp.append(" AND SCP.ID_VELATORIO = '" + request.getIdVelatorio() + "' ");
 			queryEmpPer.append(" AND SCP.ID_VELATORIO = '" + request.getIdVelatorio() + "' ");	
 		}
-		if(request.getConvenioPSFPA() != null){
+		if(request.getConvenioPSFPA() != null && request.getConvenioPSFPA().length()>0 ){
 			queryPers.append(" AND SPS.NUM_FOLIO_PLAN_SFPA = '" + request.getConvenioPSFPA() + "' ");	
 		}
-		if (request.getConvenioPF() != null) {
-			queryEmp.append(" AND SCP.DES_FOLIO = '" + request.getConvenioPF() + "' ");
-			queryEmpPer.append(" AND SCP.DES_FOLIO = '" + request.getConvenioPF() + "' ");	
+		if (request.getConvenioPF() != null && request.getConvenioPF().length()>0 ) {
+			queryEmp.append(" AND SCP.DES_FOLIO LIKE '" + request.getConvenioPF() + "' ");
+			queryEmpPer.append(" AND SCP.DES_FOLIO LIKE '" + request.getConvenioPF() + "' ");	
 		}
-		if(request.getRfc() != null) {
+		if(request.getRfc() != null && request.getRfc().length()>0) {
 			queryPers.append(rfcPer);
 			queryEmp.append(" AND SECP.CVE_RFC = '" + request.getRfc() + "'");
 			queryEmpPer.append(rfcPer);
 		}
 		
-		
-		if((request.getConvenioPSFPA() == null && request.getConvenioPF() == null && request.getRfc() == null) || (request.getConvenioPSFPA() != null && request.getConvenioPF() != null && request.getRfc() != null) || request.getRfc() != null)
+		queryEmpPer.append(" GROUP BY SCP.ID_CONVENIO_PF,IFNULL(SCP.DES_FOLIO, '') ");
+
+		// || (request.getConvenioPSFPA() != null && request.getConvenioPF() != null && request.getRfc() != null) || request.getRfc() != null
+		if((request.getConvenioPSFPA() == null && request.getConvenioPF() == null && request.getRfc() == null) )
 			query.append(queryPers).append(union).append(queryEmp).append(union).append(queryEmpPer);
 		else if(request.getConvenioPSFPA() != null && request.getConvenioPF() == null)
 			query.append(queryPers);
 		else if(request.getConvenioPSFPA() == null && request.getConvenioPF() != null )
-			query.append(queryEmp).append(queryEmpPer);
+			query.append(queryEmp).append(union).append(queryEmpPer);
+		else if( request.getRfc() != null )
+			query.append(queryPers).append(union).append(queryEmp).append(union).append(queryEmpPer);
 		
 		log.info(query.toString());
 		return query.toString();
