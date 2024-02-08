@@ -129,8 +129,8 @@ public class PreRegConvServiceImpl implements PreRegConvService {
 				preRegistro.setPreRegistro(consultaPreRegistroXPersona);
 
 				if ( consultaPreRegistroXPersona != null ){
-					consultaBenefXPA1 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario1()));
-					consultaBenefXPA2 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario2()));
+					//consultaBenefXPA1 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario1()));
+					//consultaBenefXPA2 =consultas.selectBenefxPersona(query.queryBenefxPersona(consultaPreRegistroXPersona.getBeneficiario2()));
 					
 					/* Si llegan null se deben setear objetos instanciados vacios */
 					

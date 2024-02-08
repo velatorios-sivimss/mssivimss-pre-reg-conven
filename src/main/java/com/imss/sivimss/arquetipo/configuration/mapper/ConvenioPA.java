@@ -44,7 +44,7 @@ public interface ConvenioPA {
 		+ "SP.ID_PERSONA AS idPersona, "
 		+ "		sc.ID_CONTRATANTE AS idContratante, "
 		+ "		SD.ID_DOMICILIO AS idDomicilio, "
-		+ "		SPS.ID_PLAN_SFPA AS folioConvenio, "
+		+ "		SPS.NUM_FOLIO_PLAN_SFPA AS folioConvenio, "
 		+ "		SP.CVE_CURP AS curp, "
 		+ "		SP.CVE_RFC AS rfc, "
 		+ "		IFNULL(sc.CVE_MATRICULA, '') AS matricula, "
