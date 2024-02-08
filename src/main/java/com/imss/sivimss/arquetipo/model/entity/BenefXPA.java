@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class BenefXPA {
 
-	private int idBeneficiario;
+	private Long idBeneficiario;
 	private String curp;
 	private String rfc;
 	private String matricula;
@@ -13,11 +13,11 @@ public class BenefXPA {
 	private String nombre;
 	private String primerApellido;
 	private String segundoApellido;
-	private String idSexo;
+	private int idSexo;
 	private String sexo;
 	private String otroSexo;
 	private String fecNacimiento;
-	private String idPais;
+	private int idPais;
 	private String pais;
 	private String lugarNac;
 	private String telFijo;
@@ -29,7 +29,8 @@ public class BenefXPA {
 	private String cp;
 	private String colonia;
 	private String municipio;
-	private String idEstado;
+	private int idEstado;
 	private String estado;
-	
+	private Long idPersonaTitular;
+	private Long idDomicilio;
 }
