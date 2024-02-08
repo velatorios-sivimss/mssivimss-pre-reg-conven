@@ -148,7 +148,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 			}
 			
-			PreRegistrosXPFEmpresaConSolicitantes detalleConvenioPFEmpresa = consultaConveniosPFEmpresa(datosEmpresa.getIdConvenioPf());
+			PreRegistrosXPFEmpresaConSolicitantes detalleConvenioPFEmpresa = consultaConveniosPFEmpresa(datosEmpresa.getIdConvenioPf(),1);
 			return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFEmpresa);
 			
 		}
@@ -359,7 +359,8 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/1/30
 				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, preRegistro);
 			case 2:
-				PreRegistrosXPFEmpresaConSolicitantes detalleConvenioPFEmpresa = consultaConveniosPFEmpresa(idConvenioPf);
+				Integer seccion = request1.getSeccion();
+				PreRegistrosXPFEmpresaConSolicitantes detalleConvenioPFEmpresa = consultaConveniosPFEmpresa(idConvenioPf,seccion);
 				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/2/2
 				// localhost:8001/mssivimss-pre-reg-conven/v1/sivimss/buscar/2/9
 				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPFEmpresa);
@@ -417,7 +418,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		return preRegistro;
 	}
 
-	public PreRegistrosXPFEmpresaConSolicitantes consultaConveniosPFEmpresa ( Integer idConvenioPf ){
+	public PreRegistrosXPFEmpresaConSolicitantes consultaConveniosPFEmpresa ( Integer idConvenioPf, Integer seccion ){
 		log.info("idConvenioPf "+idConvenioPf);
 
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
@@ -428,11 +429,26 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
 			try {
-				detalleConvenioPFModel = convenios.consultaDetalleConvenioXEmpresa(idConvenioPf);
-				solicitantes = convenios.consultaDetalleConvenioXEmpresaSolicitantes(idConvenioPf);
-				beneficiarios = convenios.consultaDetalleConvenioXEmpresaBeneficiarios(idConvenioPf);
+				switch (seccion) {
+					case 1:
+					detalleConvenioPFModel = convenios.consultaDetalleConvenioXEmpresa(idConvenioPf);
+					convenioPFEmpresa.setEmpresa(detalleConvenioPFModel != null ? detalleConvenioPFModel : new DetalleConvenioPFXEmpresa());
+					break;
 
-				convenioPFEmpresa.setEmpresa(detalleConvenioPFModel != null ? detalleConvenioPFModel : new DetalleConvenioPFXEmpresa());
+					case 2:
+					solicitantes = convenios.consultaDetalleConvenioXEmpresaSolicitantes(idConvenioPf);
+					
+					break;
+
+					case 3:
+					beneficiarios = convenios.consultaDetalleConvenioXEmpresaBeneficiarios(idConvenioPf);
+					
+					break;
+				
+					default:
+						break;
+				}
+				
 				convenioPFEmpresa.setSolicitantes(solicitantes != null ? solicitantes : new ArrayList<DetalleConvenioPFXEmpresaSolicitantes>() );
 				convenioPFEmpresa.setBeneficiarios(beneficiarios != null ? beneficiarios : new ArrayList<DetalleConvenioPFXEmpresaBeneficiarios>());
 			} catch (Exception e) {

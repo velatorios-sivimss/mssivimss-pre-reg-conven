@@ -12,4 +12,6 @@ public class Flujos {
 	@Min(value=1,message = "Tamanio Minimo 1")
 	private Integer idConvenio;
 	
+	@Min(value=1,message = "Tamanio Minimo 1")
+	private Integer seccion;
 }
