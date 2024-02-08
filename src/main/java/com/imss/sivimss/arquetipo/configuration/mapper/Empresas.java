@@ -145,7 +145,7 @@ public interface Empresas {
 			+ "REF_UBICACION_INE_BENEFICIARIO = #{in.nombreIne}, "
 			+ "IND_ACTA_NACIMIENTO  = #{in.validaActa},"
 			+ "REF_UBICACION_ACTA_NACIMIENTO=#{in.nombreActa},"
-			+ "REF_DOCUMENTO_BENEFICIARIO=#{in.documento} "
+			+ "REF_DOCUMENTO_BENEFICIARIO=#{in.archivo} "
 			+ "WHERE ID_CONTRATANTE_BENEFICIARIOS = (SELECT cb.ID_CONTRATANTE_BENEFICIARIOS " +
 			" from SVT_CONTRATANTE_BENEFICIARIOS cb " +
 			" WHERE cb.ID_CONTRA_PAQ_CONVENIO_PF= (" +
