@@ -425,19 +425,22 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				if (consultaPreRegistrosXPA != null) {
 					ArrayList<BenefXPA> beneficiarios = new ArrayList<>();
 
-					if (consultaPreRegistrosXPA.getBeneficiario1() > 0) {
+					if (consultaPreRegistrosXPA.getBeneficiario1() != null
+							&& consultaPreRegistrosXPA.getBeneficiario1() > 0) {
 						BenefXPA beneficiarioPA1 = conveniosPA
 								.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario1());
 						beneficiarios.add(beneficiarioPA1);
 					}
 
-					if (consultaPreRegistrosXPA.getBeneficiario2() > 0) {
+					if (consultaPreRegistrosXPA.getBeneficiario2() != null
+							&& consultaPreRegistrosXPA.getBeneficiario2() > 0) {
 						BenefXPA beneficiarioPA2 = conveniosPA
 								.consultaBeneficiariosConvenioPA(consultaPreRegistrosXPA.getBeneficiario2());
 						beneficiarios.add(beneficiarioPA2);
 					}
 
-					if (consultaPreRegistrosXPA.getIdTitularSust() > 0) {
+					if (consultaPreRegistrosXPA.getIdTitularSust() != null
+							&& consultaPreRegistrosXPA.getIdTitularSust() > 0) {
 						BenefXPA titularSustituto = conveniosPA
 								.consultaTitularSust(consultaPreRegistrosXPA.getIdTitularSust());
 						preRegistro.setSustituto(titularSustituto);
@@ -471,14 +474,10 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 						detalleConvenioPFModel = convenios.consultaDetalleConvenioXEmpresa(idConvenioPf);
 						convenioPFEmpresa.setEmpresa(detalleConvenioPFModel != null ? detalleConvenioPFModel
 								: new DetalleConvenioPFXEmpresa());
+						solicitantes = convenios.consultaDetalleConvenioXEmpresaSolicitantes(idConvenioPf);
 						break;
 
 					case 2:
-						solicitantes = convenios.consultaDetalleConvenioXEmpresaSolicitantes(idConvenioPf);
-
-						break;
-
-					case 3:
 						beneficiarios = convenios.consultaDetalleConvenioXEmpresaBeneficiarios(idConvenioPf);
 
 						break;
@@ -590,6 +589,14 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 			}
 		}
 		return beneficiariosDocs;
+	}
+
+	@Override
+	public Response<Object> actualizarDatosPA(DatosRequest request) {
+		Gson gson = new Gson();
+		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
+		log.info(datos);
+		throw new UnsupportedOperationException("Unimplemented method 'actualizarDatosPA'");
 	}
 
 }
