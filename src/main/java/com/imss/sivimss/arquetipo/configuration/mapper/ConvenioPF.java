@@ -53,8 +53,8 @@ public interface ConvenioPF {
 	
 	@Select("  " +  
 			"SELECT " +  
-			"    IFNULL(SC.CVE_MATRICULA, '') AS matricula, " +  
-			"    SCP.DES_FOLIO folioConvenio, " +  
+			"    IFNULL(SC.CVE_MATRICULA, '') AS matricula, SP.ID_PERSONA idPersona, SP.ID_ESTADO idEstado,SD.ID_DOMICILIO idDomicilio, " +  
+			"    SCP.DES_FOLIO folioConvenio, SCPA.ID_CONVENIO_PF idContraPaqPF, " +  
 			"    IFNULL(SP.CVE_RFC, '') rfc, " +  
 			"    IFNULL(SP.CVE_CURP, '') curp, " +  
 			"    IFNULL(SP.NOM_PERSONA, '') AS nombre, " +  
@@ -93,7 +93,7 @@ public interface ConvenioPF {
 	public DetalleConvenioPFXPersona consultaDetalleConvenioXPersona( @Param("idConvenioPf") Integer idConvenioPf );
 
 	@Select("  SELECT  " +   
-			"BEN.ID_CONTRATANTE_BENEFICIARIOS  idBeneficiario,  " +   
+			"BEN.ID_CONTRATANTE_BENEFICIARIOS  idBeneficiario, PER.ID_PERSONA idPersona, " +   
 			"CONCAT(PER.NOM_PERSONA,' ',PER.NOM_PRIMER_APELLIDO,' ',PER.NOM_SEGUNDO_APELLIDO) nombre,  " +   
 			"TIMESTAMPDIFF(YEAR, PER.FEC_NAC, CURDATE()) AS edad,  " +   
 			"IFNULL(PAR.DES_PARENTESCO, '') parentesco,  " +   

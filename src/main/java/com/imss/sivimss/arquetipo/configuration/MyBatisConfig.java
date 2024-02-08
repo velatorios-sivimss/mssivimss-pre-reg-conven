@@ -15,6 +15,7 @@ import com.imss.sivimss.arquetipo.configuration.mapper.Consultas;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPA;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPF;
 import com.imss.sivimss.arquetipo.configuration.mapper.Empresas;
+import com.imss.sivimss.arquetipo.configuration.mapper.Personas;
 
 @Service
 public class MyBatisConfig {
@@ -44,6 +45,7 @@ public class MyBatisConfig {
 	    configuration.addMapper(ConvenioPF.class);
 		configuration.addMapper(ConvenioPA.class);
 		configuration.addMapper(Empresas.class);
+		configuration.addMapper(Personas.class);
 
 	    
 	    SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();

@@ -150,6 +150,17 @@ public class PreRegConvController {
 
 	}
 	
+	@PostMapping("/actualizar/convenios-pf/datos-persona")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsultaPaginada")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> actualizarDatosPersona( @RequestBody DatosRequest request,	Authentication authentication) throws Throwable {
+		
+		Response<Object> response = pprc2.actualizarDatosPersona(request);
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+
+	}
+
 	/* -------------FLUJOS REVALIDAR-------------------- 	*/
 
 	@GetMapping("/buscar/empresa/{idPreReg}")
