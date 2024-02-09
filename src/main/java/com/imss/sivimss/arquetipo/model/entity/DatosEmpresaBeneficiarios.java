@@ -21,7 +21,8 @@ public class DatosEmpresaBeneficiarios {
     private String archivoIne;
     private boolean validaActa;
     private String archivoActa;
-    private String archivoBeneficiario;
+    private String archivo;
     private Integer idConvenio;
+    private String nombreDocumento;
 
 }
