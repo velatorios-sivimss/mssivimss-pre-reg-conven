@@ -10,7 +10,6 @@ import com.imss.sivimss.arquetipo.model.entity.DatosEmpresaSolicitante;
 public interface Empresas {
 
 	@Update("UPDATE " +
-			"     " +
 			"    SVT_EMPRESA_CONVENIO_PF " +
 			"SET " +
 			"REF_NOMBRE = #{empresa.nombreEmpresa}, " +
@@ -18,7 +17,9 @@ public interface Empresas {
 			"CVE_RFC = #{empresa.rfc}, " +
 			"ID_PAIS = #{empresa.idPaisEmpresa}, " +
 			"REF_TELEFONO = #{empresa.telefonoEmpresa}, " +
-			"REF_CORREO = #{empresa.correoEmpresa} " +
+			"REF_CORREO = #{empresa.correoEmpresa}, " +
+			"ID_USUARIO_MODIFICA = #{empresa.idUsuario},  " +
+			"FEC_ACTUALIZACION = CURRENT_DATE() " +
 			"WHERE " +
 			"    ID_EMPRESA_CONVENIO_PF =( " +
 			"    SELECT " +
@@ -42,7 +43,9 @@ public interface Empresas {
 			"REF_MUNICIPIO = #{empresa.municipio} , " +
 			"REF_CALLE = #{empresa.calle} , " +
 			"NUM_INTERIOR = #{empresa.numInterior} , " +
-			"NUM_EXTERIOR = #{empresa.numExterior}  " +
+			"NUM_EXTERIOR = #{empresa.numExterior} , " +
+			"ID_USUARIO_MODIFICA = #{empresa.idUsuario},  " +
+			"FEC_ACTUALIZACION = CURRENT_DATE() " +
 			"WHERE " +
 			"ID_DOMICILIO = ( " +
 			"  SELECT " +
