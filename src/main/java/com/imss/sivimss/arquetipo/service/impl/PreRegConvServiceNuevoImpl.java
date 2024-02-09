@@ -44,6 +44,7 @@ import com.imss.sivimss.arquetipo.model.request.Flujos;
 import com.imss.sivimss.arquetipo.model.request.PlanPAData;
 import com.imss.sivimss.arquetipo.model.request.PlanPASustituto;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
+import com.imss.sivimss.arquetipo.model.request.UsuarioDto;
 import com.imss.sivimss.arquetipo.model.request.ValidarRfcCurpContratante;
 import com.imss.sivimss.arquetipo.model.response.ResponseContratanteRfcCurp;
 import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
@@ -52,6 +53,7 @@ import com.imss.sivimss.arquetipo.utils.AppConstantes;
 import com.imss.sivimss.arquetipo.utils.DatosRequest;
 import com.imss.sivimss.arquetipo.utils.PaginadoUtil;
 import com.imss.sivimss.arquetipo.utils.Response;
+import org.springframework.security.core.Authentication;
 
 @Service
 public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
@@ -67,6 +69,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	private PaginadoUtil paginadoUtil;
 
 	private static final String ERROR = "ERROR";
+	Gson json = new Gson();
 
 	@Override
 	public Response<Object> actualizarDatosPersona(DatosRequest request) {
@@ -113,13 +116,12 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	}
 
 	@Override
-	public Response<Object> actualizarDatosEmpresa(DatosRequest request) {
+	public Response<Object> actualizarDatosEmpresa(DatosRequest request, Authentication authentication) {
+		UsuarioDto usuarioDto = json.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+		Integer idUsuario = usuarioDto.getIdUsuario();
 		Gson gson = new Gson();
 		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		log.info(datos);
-
-		Integer idUsuario = null; // falta agregar el id del usuario logueado para poder pasarlo en la
-									// actualizacion
 
 		ActualizarDatosEmpresa actualizarDatosEmpresa = gson.fromJson(datos, ActualizarDatosEmpresa.class);
 		DatosEmpresa datosEmpresa = actualizarDatosEmpresa.getEmpresa();
@@ -132,6 +134,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 			try {
 
+				datosEmpresa.setIdUsuario(idUsuario);
 				empresasMap.actualizarDatosEmpresa(datosEmpresa);
 				empresasMap.actualizarDomicilioEmpresa(datosEmpresa);
 				// se agrega el actualizar documentos
@@ -173,7 +176,11 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 				}
 
-				session.commit();
+				// cambio de estatus al plan pre fune
+				log.info("Se cambia el estatus de plan pre fune a Generado ");
+				empresasMap.actualizarEstatusConvenioPF(datosEmpresa);
+
+				// session.commit();
 				log.info("==> commit() ");
 
 			} catch (Exception e) {
