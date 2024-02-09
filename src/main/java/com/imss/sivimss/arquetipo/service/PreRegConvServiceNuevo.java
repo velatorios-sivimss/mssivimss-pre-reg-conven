@@ -20,7 +20,7 @@ public interface PreRegConvServiceNuevo {
 
 	public Response<Object> actualizarDatosPersona(DatosRequest request);
 
-	public Response<Object> actualizarDatosPA(DatosRequest request);
+	public Response<Object> actualizarDatosPA(DatosRequest request, Authentication authentication);
 
 	/*
 	 * public Response<Object> benefXPersona(Integer idBenef);

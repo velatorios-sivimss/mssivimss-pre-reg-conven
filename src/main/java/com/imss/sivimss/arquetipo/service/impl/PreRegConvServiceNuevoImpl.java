@@ -603,10 +603,13 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	}
 
 	@Override
-	public Response<Object> actualizarDatosPA(DatosRequest request) {
+	public Response<Object> actualizarDatosPA(DatosRequest request,Authentication authentication) {
 		Gson gson = new Gson();
 		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		log.info(datos);
+
+		UsuarioDto usuarioDto = json.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+		Integer idUsuario = usuarioDto.getIdUsuario();
 
 		ActualizarDatosPA datosPlanPA = gson.fromJson(datos, ActualizarDatosPA.class);
 		PlanPAData plan = datosPlanPA.getPlan();
@@ -630,6 +633,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 
 				// pasar a generado 1
+				conveniosPA.actualizarEstatusConvenio(idUsuario, plan.getIdConvenio());
 
 
 				PreRegistrosXPAConBeneficiarios detalleConvenioPAPersona = consultaConveniosPA(plan.getIdConvenio());

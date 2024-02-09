@@ -285,4 +285,10 @@ public interface ConvenioPA {
 						"\tID_DOMICILIO = #{titSust.idDomicilio} ;"
 		)	
 	public int actualizarDomicilioSustituto (@Param("titSust") PlanPASustituto empresa);
+
+	@Update("UPDATE SVT_PLAN_SFPA SET ID_ESTATUS_PLAN_SFPA  = 1 , " +
+			"ID_USUARIO_MODIFICA= #{idUsuario}, " +
+			"FEC_ACTUALIZACION = CURRENT_DATE() " +
+			"WHERE ID_PLAN_SFPA  = #{idConvenio} ")
+	public int actualizarEstatusConvenio(@Param("idUsuario") Integer idUsuario,@Param("idConvenio") Integer idConvenio );
 }
