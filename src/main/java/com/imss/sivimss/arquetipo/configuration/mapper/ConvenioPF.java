@@ -249,7 +249,7 @@ public interface ConvenioPF {
 				"	 IFNULL(PA.REF_PAQUETE_NOMBRE,'') tipoPaquete, " +
 				"    IFNULL(PER.REF_CORREO,'') correo, " +  
 				"    PER.ID_PERSONA idPersona, " +  
-				"    DOM.ID_DOMICILIO idDomicilio " +  
+				"    DOM.ID_DOMICILIO idDomicilio, SVT_CONTRA_PAQ_CONVENIO_PF.ID_CONTRA_PAQ_CONVENIO_PF idPaqueteConvenio " +  
 				" " +  
 				"FROM " +  
 				"    SVT_CONVENIO_PF PF " +  

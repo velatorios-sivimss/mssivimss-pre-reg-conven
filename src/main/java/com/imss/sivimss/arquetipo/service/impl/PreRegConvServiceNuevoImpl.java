@@ -95,6 +95,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 				session.commit();
 				log.info("==> commit() ");
+				// pasar a generado id 1
 
 				PreRegistrosXPFPersonaConBeneficiarios detalleConvenioPFPersona = consultaConveniosPFPersona(
 						personaConvenio.getIdConvenioPF());
@@ -619,6 +620,8 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 				session.commit();
 				log.info("==> commit() ");
+
+				// pasar a generado 1
 
 				PreRegistrosXPAConBeneficiarios detalleConvenioPAPersona = consultaConveniosPA(plan.getIdConvenio());
 				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPAPersona);
