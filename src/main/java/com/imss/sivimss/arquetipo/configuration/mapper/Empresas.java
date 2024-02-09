@@ -115,22 +115,22 @@ public interface Empresas {
 	public int actualizarBeneficiarios2(@Param("beneficiario") DatosEmpresaBeneficiarios empresa);
 
 	@Update("UPDATE SVC_VALIDA_DOCS_CONVENIO_PF SET IND_INE_AFILIADO=1," +
-			"REF_UBICACION_INE = #{beneficiario.archivoIne}," +
-			"ID_USUARIO_MODIFICA= #{beneficiario.idUsuario}," +
+			"REF_UBICACION_INE = #{in.archivoIne}," +
+			"ID_USUARIO_MODIFICA= #{in.idUsuario}," +
 			"FEC_ACTUALIZACION = CURRENT_DATE()" +
-			"WHERE ID_VALIDACION_DOCUMENTO = #{beneficiario.idValidaDocumento}")
+			"WHERE ID_VALIDACION_DOCUMENTO = #{in.idValidaDocumento}")
 	public int actualizarArchivoIne(@Param("in") DatosEmpresaSolicitante empresa);
 
 	@Update("UPDATE SVC_VALIDA_DOCS_CONVENIO_PF SET IND_CURP=1," +
-			"REF_UBICACION_CURP = #{beneficiario.archivoCurp}," +
-			"ID_USUARIO_MODIFICA= #{beneficiario.idUsuario}," +
+			"REF_UBICACION_CURP = #{in.archivoCurp}," +
+			"ID_USUARIO_MODIFICA= #{in.idUsuario}," +
 			"FEC_ACTUALIZACION = CURRENT_DATE()" +
-			"WHERE ID_VALIDACION_DOCUMENTO = #{beneficiario.idValidaDocumento}")
+			"WHERE ID_VALIDACION_DOCUMENTO = #{in.idValidaDocumento}")
 	public int actualizarArchivoCurp(@Param("in") DatosEmpresaSolicitante empresa);
 
 	@Update("UPDATE SVC_VALIDA_DOCS_CONVENIO_PF SET IND_RFC=1," +
-			"REF_UBICACION_RFC = #{beneficiario.archivoRFC}," +
-			"ID_USUARIO_MODIFICA= #{beneficiario.idUsuario}," +
+			"REF_UBICACION_RFC = #{in.archivoRFC}," +
+			"ID_USUARIO_MODIFICA= #{in.idUsuario}," +
 			"FEC_ACTUALIZACION = CURRENT_DATE()" +
 			"WHERE ID_VALIDACION_DOCUMENTO = #{beneficiario.idValidaDocumento}")
 	public int actualizarArchivoRfc(@Param("in") DatosEmpresaSolicitante empresa);
