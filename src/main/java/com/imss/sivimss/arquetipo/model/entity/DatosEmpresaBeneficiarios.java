@@ -18,9 +18,9 @@ public class DatosEmpresaBeneficiarios {
     // actualiza documentos
     private Integer idUsuario;
     private boolean validaIne;
-    private String archivoIne;
+    private String nombreIne;
     private boolean validaActa;
-    private String archivoActa;
+    private String nombreActa;
     private String archivo;
     private Integer idConvenio;
     private String nombreDocumento;
