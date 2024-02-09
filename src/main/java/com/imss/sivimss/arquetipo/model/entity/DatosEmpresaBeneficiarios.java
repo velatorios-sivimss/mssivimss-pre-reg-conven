@@ -24,5 +24,6 @@ public class DatosEmpresaBeneficiarios {
     private String archivo;
     private Integer idConvenio;
     private String nombreDocumento;
-
+    private Integer idPaqueteConvenio;
+    private Integer idContratanteBeneficiario;
 }

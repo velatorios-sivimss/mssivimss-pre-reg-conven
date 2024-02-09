@@ -146,13 +146,8 @@ public interface Empresas {
 			+ "IND_ACTA_NACIMIENTO  = #{in.validaActa},"
 			+ "REF_UBICACION_ACTA_NACIMIENTO=#{in.nombreActa},"
 			+ "REF_DOCUMENTO_BENEFICIARIO=#{in.archivo} "
-			+ "WHERE ID_CONTRATANTE_BENEFICIARIOS = (SELECT cb.ID_CONTRATANTE_BENEFICIARIOS " +
-			" from SVT_CONTRATANTE_BENEFICIARIOS cb " +
-			" WHERE cb.ID_CONTRA_PAQ_CONVENIO_PF= (" +
-			" SELECT pc.ID_CONTRA_PAQ_CONVENIO_PF " +
-			" FROM SVT_CONVENIO_PF pf " +
-			" join SVT_CONTRA_PAQ_CONVENIO_PF pc ON pc.ID_CONVENIO_PF=pf.ID_CONVENIO_PF" +
-			" WHERE pf.ID_CONVENIO_PF = #{in.idConvenio})) "
+			+ "WHERE ID_CONTRATANTE_BENEFICIARIOS =  #{in.idContratanteBeneficiario}" +
+			" AND ID_CONTRA_PAQ_CONVENIO_PF =  #{in.idPaqueteConvenio}"
 			+ " AND ID_PERSONA = #{in.idPersona}")
 	public int actualizarArchivoBeneficiario(@Param("in") DatosEmpresaBeneficiarios persona);
 
