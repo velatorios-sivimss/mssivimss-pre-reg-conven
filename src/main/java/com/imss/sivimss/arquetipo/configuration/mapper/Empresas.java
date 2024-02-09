@@ -132,7 +132,7 @@ public interface Empresas {
 			"REF_UBICACION_RFC = #{in.archivoRFC}," +
 			"ID_USUARIO_MODIFICA= #{in.idUsuario}," +
 			"FEC_ACTUALIZACION = CURRENT_DATE()" +
-			"WHERE ID_VALIDACION_DOCUMENTO = #{beneficiario.idValidaDocumento}")
+			"WHERE ID_VALIDACION_DOCUMENTO = #{in.idValidaDocumento}")
 	public int actualizarArchivoRfc(@Param("in") DatosEmpresaSolicitante empresa);
 
 	@Update(value = ""

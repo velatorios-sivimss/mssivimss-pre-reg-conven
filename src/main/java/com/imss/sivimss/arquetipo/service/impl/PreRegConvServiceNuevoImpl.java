@@ -172,7 +172,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 				}
 
-				session.commit();
+				// session.commit();
 				log.info("==> commit() ");
 
 			} catch (Exception e) {
