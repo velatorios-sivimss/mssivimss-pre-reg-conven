@@ -152,7 +152,8 @@ public interface Empresas {
 			" SELECT pc.ID_CONTRA_PAQ_CONVENIO_PF " +
 			" FROM SVT_CONVENIO_PF pf " +
 			" join SVT_CONTRA_PAQ_CONVENIO_PF pc ON pc.ID_CONVENIO_PF=pf.ID_CONVENIO_PF" +
-			" WHERE pf.ID_CONVENIO_PF = #{in.idConvenio})) "
+			" WHERE pf.ID_CONVENIO_PF = #{in.idConvenio})) " +
+			" AND ID_CONTRA_PAQ_CONVENIO_PF =  #{in.idPaqueteConvenio}"
 			+ " AND ID_PERSONA = #{in.idPersona}")
 	public int actualizarArchivoBeneficiario(@Param("in") DatosEmpresaBeneficiarios persona);
 
