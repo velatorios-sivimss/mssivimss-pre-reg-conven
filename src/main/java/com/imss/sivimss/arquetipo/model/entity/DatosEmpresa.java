@@ -3,7 +3,7 @@ package com.imss.sivimss.arquetipo.model.entity;
 import lombok.Data;
 
 @Data
-public class DatosEmpresa  {
+public class DatosEmpresa {
     private String nombreEmpresa;
     private String razonSocial;
     private String rfc;
@@ -17,11 +17,8 @@ public class DatosEmpresa  {
     private String calle;
     private String numInterior;
     private String numExterior;
-	private Integer idConvenioPf;
+    private Integer idConvenioPf;
     private Integer idConvenioPf2;
-    
-   
+    private Integer idUsuario;
 
-
-	
 }
