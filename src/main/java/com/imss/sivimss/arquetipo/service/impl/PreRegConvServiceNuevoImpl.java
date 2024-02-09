@@ -173,7 +173,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				}
 
 				// cambio de estatus al plan pre fune
-				log.info("Se cambia el estatus a Generado ");
+				log.info("Se cambia el estatus de plan pre fune a Generado ");
 				empresasMap.actualizarEstatusConvenioPF(datosEmpresa);
 
 				// session.commit();
