@@ -152,7 +152,7 @@ public class PreRegConvController {
 	@TimeLimiter(name = "msflujo")
 	public CompletableFuture<Object> actualizarDatosEmpresa( @RequestBody DatosRequest request,	Authentication authentication) throws Throwable {
 		
-		Response<Object> response = pprc2.actualizarDatosEmpresa(request);
+		Response<Object> response = pprc2.actualizarDatosEmpresa(request, authentication);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
