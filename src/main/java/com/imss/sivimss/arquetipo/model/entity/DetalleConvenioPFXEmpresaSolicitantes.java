@@ -26,5 +26,5 @@ public class DetalleConvenioPFXEmpresaSolicitantes  {
     private String tipoPaquete;
     private Integer idPersona;
     private Integer idDomicilio;
-	
+	private Long idPaqueteConvenio;
 }
