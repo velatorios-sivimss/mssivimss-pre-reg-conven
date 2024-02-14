@@ -130,7 +130,7 @@ public interface ConvenioPA {
 				+ " 	SP.CVE_CURP AS cp, "
 				+ " 	SD.REF_COLONIA AS colonia, "
 				+ " 	SD.REF_MUNICIPIO AS municipio, "
-				+ " 	SP.ID_ESTADO AS idEstado, "
+				+ " 	IFNULL(SP.ID_ESTADO,0) AS idEstado, "
 				+ " 	SD.REF_ESTADO AS estado "
 				+ " FROM "
 				+ " 	SVT_TITULAR_BENEFICIARIOS stb "
@@ -138,9 +138,9 @@ public interface ConvenioPA {
 				+ " 	SP.ID_PERSONA = stb.ID_PERSONA "
 				+ "	JOIN SVC_PAIS SP2 ON "
 				+ "		SP2.ID_PAIS = SP.ID_PAIS "
-				+ " JOIN SVC_ESTADO se ON "
+				+ " LEFT JOIN SVC_ESTADO se ON "
 				+ " 	se.ID_ESTADO = SP.ID_ESTADO "
-				+ " JOIN SVT_DOMICILIO SD ON "
+				+ " LEFT JOIN SVT_DOMICILIO SD ON "
 				+ " 	SD.ID_DOMICILIO = stb.ID_DOMICILIO "
 				+ "WHERE stb.ID_TITULAR_BENEFICIARIOS =  #{idBeneficiario} " )
 	public BenefXPA consultaBeneficiariosConvenioPA( @Param("idBeneficiario") Long idBeneficiario );
