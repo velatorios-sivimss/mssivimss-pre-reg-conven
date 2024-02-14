@@ -163,7 +163,7 @@ public interface ConvenioPA {
 		"		PER.REF_TELEFONO_FIJO AS telFijo,  " +
 		"		PER.REF_TELEFONO AS telCelular,  " +
 		"		PER.REF_CORREO AS correo,  " +
-		"		PER.CVE_CURP AS cp,  " +
+		//"		PER.CVE_CURP AS cp,  " +
 		"		PER.ID_ESTADO AS idEstado,  " +
 		"		PER.REF_OTRO_SEXO otroSexo,  " +
 		"				 " +
@@ -178,7 +178,7 @@ public interface ConvenioPA {
 		"		DOM.NUM_INTERIOR AS numInt,  " +
 		"		DOM.REF_COLONIA AS colonia,  " +
 		"		DOM.REF_MUNICIPIO AS municipio,  " +
-		"		DOM.REF_ESTADO AS estado   " +
+		"		DOM.REF_ESTADO AS estado, DOM.REF_CP cp   " +
 		"		 " +
 		"FROM	SVT_TITULAR_BENEFICIARIOS TIT  " +
 		"INNER	JOIN SVC_PERSONA PER ON PER.ID_PERSONA = TIT.ID_PERSONA  " +
