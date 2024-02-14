@@ -149,10 +149,10 @@ public interface Empresas {
 			+ " AND ID_PERSONA = #{in.idPersona}")
 	public int actualizarArchivoBeneficiario(@Param("in") DatosEmpresaBeneficiarios persona);
 
-	@Update("UPDATE SVT_CONVENIO_PF SET ID_ESTATUS_CONVENIO = 1 ," +
-			"ID_USUARIO_MODIFICA= #{in.idUsuario}," +
-			"FEC_ACTUALIZACION = CURRENT_DATE()" +
-			"WHERE ID_CONVENIO_PF = #{in.idConvenioPf}")
+	@Update("UPDATE SVT_CONVENIO_PF SET ID_ESTATUS_CONVENIO = 1 , " +
+			"ID_USUARIO_MODIFICA= #{in.idUsuario}, " +
+			"FEC_ACTUALIZACION = CURRENT_DATE() " +
+			"WHERE ID_CONVENIO_PF = #{in.idConvenioPf} ")
 	public int actualizarEstatusConvenioPF(@Param("in") DatosEmpresa empresa);
 
 }

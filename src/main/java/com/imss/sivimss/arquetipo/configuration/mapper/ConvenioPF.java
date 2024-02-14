@@ -217,8 +217,8 @@ public interface ConvenioPF {
 		+ "			PF.ID_CONVENIO_PF = EMP.ID_CONVENIO_PF "
 		+ "INNER JOIN SVT_DOMICILIO DOM ON "
 		+ "			EMP.ID_DOMICILIO = DOM.ID_DOMICILIO "
-		+ "INNER JOIN SVT_CONTRA_PAQ_CONVENIO_PF PAQ ON PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF "
-		+ " INNER JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE "
+		+ "LEFT JOIN SVT_CONTRA_PAQ_CONVENIO_PF PAQ ON PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF "
+		//+ " INNER JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE "
 		+ " INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = EMP.ID_PAIS "
 		+ "WHERE "
 		+ "			PF.ID_CONVENIO_PF = #{idConvenioPf} "
@@ -249,7 +249,7 @@ public interface ConvenioPF {
 				"	 IFNULL(PA.REF_PAQUETE_NOMBRE,'') tipoPaquete, " +
 				"    IFNULL(PER.REF_CORREO,'') correo, " +  
 				"    PER.ID_PERSONA idPersona, " +  
-				"    DOM.ID_DOMICILIO idDomicilio " +  
+				"    DOM.ID_DOMICILIO idDomicilio, PAQ.ID_CONTRA_PAQ_CONVENIO_PF idPaqueteConvenio " +  
 				" " +  
 				"FROM " +  
 				"    SVT_CONVENIO_PF PF " +  

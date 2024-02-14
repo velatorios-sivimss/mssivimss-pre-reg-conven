@@ -39,7 +39,10 @@ import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFEmpresaConSolicita
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFPersonaConBeneficiarios;
 import com.imss.sivimss.arquetipo.model.request.ActualizarConvenioPersona;
 import com.imss.sivimss.arquetipo.model.request.ActualizarDatosEmpresa;
+import com.imss.sivimss.arquetipo.model.request.ActualizarDatosPA;
 import com.imss.sivimss.arquetipo.model.request.Flujos;
+import com.imss.sivimss.arquetipo.model.request.PlanPAData;
+import com.imss.sivimss.arquetipo.model.request.PlanPASustituto;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.model.request.UsuarioDto;
 import com.imss.sivimss.arquetipo.model.request.ValidarRfcCurpContratante;
@@ -95,6 +98,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 				session.commit();
 				log.info("==> commit() ");
+				// pasar a generado id 1
 
 				PreRegistrosXPFPersonaConBeneficiarios detalleConvenioPFPersona = consultaConveniosPFPersona(
 						personaConvenio.getIdConvenioPF());
@@ -599,11 +603,51 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	}
 
 	@Override
-	public Response<Object> actualizarDatosPA(DatosRequest request) {
+	public Response<Object> actualizarDatosPA(DatosRequest request,Authentication authentication) {
 		Gson gson = new Gson();
 		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		log.info(datos);
-		throw new UnsupportedOperationException("Unimplemented method 'actualizarDatosPA'");
+
+		UsuarioDto usuarioDto = json.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+		Integer idUsuario = usuarioDto.getIdUsuario();
+
+		ActualizarDatosPA datosPlanPA = gson.fromJson(datos, ActualizarDatosPA.class);
+		PlanPAData plan = datosPlanPA.getPlan();
+		PlanPASustituto titularSustituto = datosPlanPA.getTitularSustituto();
+
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPA conveniosPA = session.getMapper(ConvenioPA.class);
+
+			try {
+				conveniosPA.actualizarDatosPlan(plan);
+				conveniosPA.actualizarDatosContratante(plan);
+				conveniosPA.actualizarDomicilioContratante(plan);
+
+				conveniosPA.actualizarDatosSustituto(titularSustituto);
+				conveniosPA.actualizarDomicilioSustituto(titularSustituto);
+
+				session.commit();
+				log.info("==> commit() ");
+
+
+				// pasar a generado 1
+				conveniosPA.actualizarEstatusConvenio(idUsuario, plan.getIdConvenio());
+
+
+				PreRegistrosXPAConBeneficiarios detalleConvenioPAPersona = consultaConveniosPA(plan.getIdConvenio());
+				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPAPersona);
+			} catch (Exception e) {
+				log.info(e.getMessage());
+				
+				log.info("==> rollback() ");
+				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
+			}
+
+		}
+
+		// throw new UnsupportedOperationException("Unimplemented method 'actualizarDatosPA'");
 	}
 
 }
