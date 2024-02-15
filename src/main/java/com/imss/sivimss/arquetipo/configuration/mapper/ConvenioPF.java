@@ -359,7 +359,8 @@ public interface ConvenioPF {
 				"    CVE_FOLIO, " +
 				"    IMP_VALOR, " +
 				"    CVE_ESTATUS_PAGO, " +
-				"    ID_USUARIO_ALTA " +
+				"    ID_USUARIO_ALTA, " +
+				"    ID_PLATAFORMA " +
 				") " +
 				"VALUES( " +
 				"	#{registroPagoPlanPF.idConvenioPf}, " +
@@ -370,7 +371,8 @@ public interface ConvenioPF {
 				"	#{registroPagoPlanPF.cveFolio}, " +
 				"	#{registroPagoPlanPF.importe}, " +
 				"	#{registroPagoPlanPF.cvdEstatusPago}, " +
-				"	#{registroPagoPlanPF.idUsuarioAlta} ) " +
+				"	#{registroPagoPlanPF.idUsuarioAlta}, " +
+				"	#{registroPagoPlanPF.idPlataforma} ) " +
 				";" )
 		public int insertaPago (@Param("registroPagoPlanPF") RegistroPagoPlanPF registroCOnvenio);
 }

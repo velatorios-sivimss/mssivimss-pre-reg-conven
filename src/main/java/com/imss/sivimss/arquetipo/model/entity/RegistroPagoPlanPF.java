@@ -14,6 +14,6 @@ public class RegistroPagoPlanPF {
 	private Double importe;
 	private Integer cvdEstatusPago;
 	private Integer idUsuarioAlta;
-	
+	private Integer idPlataforma;
 	
 }
