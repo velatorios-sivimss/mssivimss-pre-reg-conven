@@ -37,6 +37,7 @@ import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPAConBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFEmpresaConSolicitantes;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPFPersonaConBeneficiarios;
+import com.imss.sivimss.arquetipo.model.entity.RegistroPagoPlanPF;
 import com.imss.sivimss.arquetipo.model.request.ActualizarConvenioPersona;
 import com.imss.sivimss.arquetipo.model.request.ActualizarDatosEmpresa;
 import com.imss.sivimss.arquetipo.model.request.ActualizarDatosPA;
@@ -71,8 +72,13 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	private static final String ERROR = "ERROR";
 	Gson json = new Gson();
 
+	private static final Integer PLATAFORMA_LINEA = 2;
+	
 	@Override
-	public Response<Object> actualizarDatosPersona(DatosRequest request) {
+	public Response<Object> actualizarDatosPersona(DatosRequest request, Authentication authentication) {
+		UsuarioDto usuarioDto = json.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
+		Integer idUsuario = usuarioDto.getIdUsuario();
+		Integer idVelatorio = usuarioDto.getIdVelatorio();
 		Gson gson = new Gson();
 		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		log.info(datos);
@@ -83,6 +89,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			Personas personasMap = session.getMapper(Personas.class);
+			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
 
 			try {
 				log.info(" == >> Persona " + personaConvenio.getIdPersona());
@@ -96,7 +103,20 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 					personasMap.actualizarBeneficiarios(beneficiario);
 				}
 
+				Double importe = convenios.consultaImportePaquetesConvenio(personaConvenio.getIdConvenioPF());
+				RegistroPagoPlanPF registro = new RegistroPagoPlanPF();
+
+				registro.setIdConvenioPf(  personaConvenio.getIdConvenioPF());
+				registro.setIdFlujo(1);
+				registro.setIdVelatorio(idVelatorio); // revalidar
+				registro.setNomContratante(personaConvenio.getNombreCompleto()); // revalidar
+				registro.setCveFolio("x.x"); // revalidar
+				registro.setImporte(importe);
+				registro.setCvdEstatusPago(1); // revalidar
+				registro.setIdUsuarioAlta(idUsuario);
+
 				session.commit();
+				//convenios.insertaPago(registro);
 				log.info("==> commit() ");
 				// pasar a generado id 1
 
@@ -119,6 +139,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	public Response<Object> actualizarDatosEmpresa(DatosRequest request, Authentication authentication) {
 		UsuarioDto usuarioDto = json.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
 		Integer idUsuario = usuarioDto.getIdUsuario();
+		Integer idVelatorio = usuarioDto.getIdVelatorio();
 		Gson gson = new Gson();
 		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		log.info(datos);
@@ -131,6 +152,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			Empresas empresasMap = session.getMapper(Empresas.class);
+			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
 
 			try {
 
@@ -180,7 +202,21 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				log.info("Se cambia el estatus de plan pre fune a Generado ");
 				empresasMap.actualizarEstatusConvenioPF(datosEmpresa);
 
-				// session.commit();
+				Double importe = convenios.consultaImportePaquetesConvenio(datosEmpresa.getIdConvenioPf());
+				RegistroPagoPlanPF registro = new RegistroPagoPlanPF();
+
+				registro.setIdConvenioPf( datosEmpresa.getIdConvenioPf() );
+				registro.setIdFlujo(2);
+				registro.setIdVelatorio(idVelatorio); 
+				registro.setNomContratante( datosEmpresa.getNombreEmpresa() );
+				registro.setCveFolio( datosEmpresa.getFolioConvenioPf() );
+				registro.setImporte(importe);
+				registro.setCvdEstatusPago(2);
+				registro.setIdUsuarioAlta(idUsuario);
+				registro.setIdPlataforma( PLATAFORMA_LINEA );
+				convenios.insertaPago(registro);
+				session.commit();
+				
 				log.info("==> commit() ");
 
 			} catch (Exception e) {

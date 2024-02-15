@@ -34,5 +34,8 @@ public class DatosPersonaConvenio  {
     private boolean indEnfermedad;
     private String otraEnfermedad;
     
-	
+	public String getNombreCompleto (){
+    
+        return this.nombre + " " + this.primerApe + " " + this.segunApe;
+    }
 }
