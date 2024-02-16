@@ -212,7 +212,6 @@ public interface ConvenioPF {
 		+ "			EMP.ID_CONVENIO_PF AS idConvenio, "
 		+ "			EMP.ID_EMPRESA_CONVENIO_PF AS idEmpresa, "
 		+ "			PF.ID_PROMOTOR AS idPromotor, "
-		//+ "			PA.REF_PAQUETE_NOMBRE tipoPaquete, "
 		+ "			PF.DES_FOLIO folioConvenio, PF.IND_ACTIVO activo "
 		+ "FROM "
 		+ "			SVT_CONVENIO_PF PF "
@@ -220,18 +219,14 @@ public interface ConvenioPF {
 		+ "			PF.ID_CONVENIO_PF = EMP.ID_CONVENIO_PF "
 		+ "INNER JOIN SVT_DOMICILIO DOM ON "
 		+ "			EMP.ID_DOMICILIO = DOM.ID_DOMICILIO "
-		+ "LEFT JOIN SVT_CONTRA_PAQ_CONVENIO_PF PAQ ON PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF "
-		//+ " INNER JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE "
 		+ " INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = EMP.ID_PAIS "
 		+ "WHERE "
 		+ "			PF.ID_CONVENIO_PF = #{idConvenioPf} "
-		+ "GROUP BY PF.ID_CONVENIO_PF"
-		
 		)
 		public DetalleConvenioPFXEmpresa consultaDetalleConvenioXEmpresa( @Param("idConvenioPf") Integer idConvenioPf );
 
 		@Select(" SELECT  " +  
-				"    PAQ.ID_CONTRA_PAQ_CONVENIO_PF idPaquete, " +  
+				"    PAQ.ID_PAQUETE idPaquete, " +  
 				"    IFNULL(PER.CVE_RFC,'') rfc, " +  
 				"    IFNULL(PER.CVE_CURP,'') curp, " +  
 				"    IFNULL(PER.NOM_PERSONA,'') nombre, " +  
@@ -261,9 +256,9 @@ public interface ConvenioPF {
 				"INNER JOIN SVC_CONTRATANTE CON ON CON.ID_CONTRATANTE = PAQ.ID_CONTRATANTE " +  
 				"INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = CON.ID_PERSONA  " +  //-- persona contratante
 				"INNER JOIN SVT_DOMICILIO DOM ON DOM.ID_DOMICILIO = CON.ID_DOMICILIO  " +  //-- domicilio del contratante
-				"INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
+				"LEFT JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
 				"LEFT  JOIN SVC_ESTADO ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
-				"LEFT  JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE  " +  
+				"INNER  JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE  " +  
 				"WHERE PF.ID_CONVENIO_PF = #{idConvenioPf} and CON.IND_ACTIVO = 1")
 		public ArrayList<DetalleConvenioPFXEmpresaSolicitantes> 
 		consultaDetalleConvenioXEmpresaSolicitantes( @Param("idConvenioPf") Integer idConvenioPf );
