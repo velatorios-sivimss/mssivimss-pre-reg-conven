@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.imss.sivimss.arquetipo.model.request.PersonaNombres;
-import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
 import com.imss.sivimss.arquetipo.service.PreRegConvService;
 import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
 import com.imss.sivimss.arquetipo.utils.DatosRequest;
@@ -179,6 +177,15 @@ public class PreRegConvController {
 
 	}
 
+	@PostMapping("/buscar/promotores")
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsulta")
+	@Retry(name = "msflujo", fallbackMethod = "fallbackConsulta")
+	@TimeLimiter(name = "msflujo")
+	public CompletableFuture<Object> promotores(Authentication authentication) throws Throwable {
+		Response<Object> response = pprc.catPromotores();
+		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+	
 	/* -------------FLUJOS REVALIDAR-------------------- 	*/
 
 	@GetMapping("/buscar/empresa/{idPreReg}")
@@ -228,14 +235,7 @@ public class PreRegConvController {
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 
 	}
-	
-	
-	
-	
-	
-
-
-	
+		
 
 	@GetMapping("/buscar/titularSustituto/{idTitSust}")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
@@ -255,19 +255,7 @@ public class PreRegConvController {
 			Authentication authentication) throws Throwable {
 		Response<Object> response = pprc.benefXPersona(idBenef);
 		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
-	}
-
-	@GetMapping("/buscar/promotores")
-	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsulta")
-	@Retry(name = "msflujo", fallbackMethod = "fallbackConsulta")
-	@TimeLimiter(name = "msflujo")
-	public CompletableFuture<Object> promotores(Authentication authentication) throws Throwable {
-		Response<Object> response = pprc.catPromotores();
-		return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
-	}
-	
-
-	
+	}	
 
 	@PutMapping("/guardar/documentos/{idPreReg}")
 	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerica")
