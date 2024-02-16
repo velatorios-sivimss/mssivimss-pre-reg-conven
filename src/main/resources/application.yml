@@ -60,7 +60,6 @@ endpoints:
   ms-principal-endpoint: ""
 
 jwt:
-  login: funcionamuybienlogin
   secretkey-flujo: ${msit_SECRET_KEY}
   expiration-milliseconds: 360
 
