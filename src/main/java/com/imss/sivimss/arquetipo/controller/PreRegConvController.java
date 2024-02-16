@@ -269,6 +269,16 @@ public class PreRegConvController {
 
 	}
 	
+	@CircuitBreaker(name = "msflujo", fallbackMethod = "fallbackConsultaGenerico")
+    @Retry(name = "msflujo", fallbackMethod = "fallbackConsultaGenerico")
+    @TimeLimiter(name = "msflujo")
+    @PostMapping("/descargar-documentos")
+    public CompletableFuture<Object> buscarReportes(@RequestBody DatosRequest request, Authentication authentication) throws IOException{
+        Response<?> response = pprc2.descargarDocumentos(request, authentication);
+        return CompletableFuture
+                .supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+    }
+	
 	/*
 	 * 
 	 * FallBack
@@ -325,5 +335,17 @@ public class PreRegConvController {
 		return CompletableFuture
 				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
 	}
+	
+	@SuppressWarnings("unused")
+	private CompletableFuture<Object> fallbackConsultaGenerico(@RequestBody DatosRequest paginado,Authentication authentication,
+			CallNotPermittedException e) throws IOException {
+		Response<?> response = providerRestTemplate.respuestaProvider(e.getMessage());
+		 logUtil.crearArchivoLog(Level.INFO.toString(),this.getClass().getSimpleName(),this.getClass().getPackage().toString(),e.getMessage(),CONSULTA + " " + paginado,authentication);
+
+		return CompletableFuture
+				.supplyAsync(() -> new ResponseEntity<>(response, HttpStatus.valueOf(response.getCodigo())));
+	}
+
+	
 	
 }

@@ -78,7 +78,10 @@ public interface ConvenioPF {
 			"    IFNULL(SP.REF_TELEFONO, '') AS telCelular, " +  
 			"	 SCPA.ID_PAQUETE idPaquete, " +  
 			"	 IFNULL(PA.REF_PAQUETE_NOMBRE, '') tipoPaquete, " +  
-			"    ENF.IND_ENFERMEDAD_PREXISTENTE enfermedadPre, " +  
+			"    ENF.IND_ENFERMEDAD_PREXISTENTE enfermedadPre, " +  //
+			"    IFNULL(DOC.IND_INE_AFILIADO, 0) AS docIne,  " +  
+			"    IFNULL(DOC.IND_CURP, 0) AS docCurp,  " +  
+			"    IFNULL(DOC.IND_RFC, 0) AS docRfc,  " +  
 			"    IFNULL(ENF.REF_OTRA_ENFERMEDAD, '') otraEnfermedad, SCP.IND_ACTIVO activo " +  
 			"FROM " +  
 			"    SVT_CONVENIO_PF SCP " +  
@@ -92,6 +95,7 @@ public interface ConvenioPF {
 			"LEFT JOIN SVC_PAIS PAI 						ON PAI.ID_PAIS = SP.ID_PAIS " +  
 			"LEFT JOIN SVC_ESTADO se 						ON se.ID_ESTADO = SP.ID_ESTADO " +  
 			"LEFT JOIN SVT_CONTRA_PAQ_CONVENIO_PF ENF		ON ENF.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF " +  
+			"INNER JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC	    ON ENF.ID_CONTRA_PAQ_CONVENIO_PF = DOC.ID_CONTRA_PAQ_CONVENIO_PF " +  
 			"WHERE SCP.ID_CONVENIO_PF = #{idConvenioPf} "   )
 	public DetalleConvenioPFXPersona consultaDetalleConvenioXPersona( @Param("idConvenioPf") Integer idConvenioPf );
 
@@ -104,6 +108,8 @@ public interface ConvenioPF {
 			"IFNULL(PER.CVE_RFC, '') rfc,  " +   
 			"IFNULL(PER.REF_CORREO, '') correo,  " +   
 			"IFNULL(PER.REF_TELEFONO, '') telefono,  " +   
+			"IFNULL(BEN.IND_INE_BENEFICIARIO, 0) docIne,  " +   
+			"IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
 			"PAQ.ID_CONTRATANTE idContratante  " +   
 			"  " +   
 			"  " +   
@@ -114,11 +120,11 @@ public interface ConvenioPF {
 			"INNER JOIN SVC_PARENTESCO PAR ON PAR.ID_PARENTESCO = BEN.ID_PARENTESCO  " +   
 			"INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = BEN.ID_PERSONA  " +   
 			"WHERE BEN.IND_ACTIVO = 1  " +   
-			"AND  PAR.ID_PARENTESCO IN (5,8,9,10,11,12,17)  " +   
+			//"AND  PAR.ID_PARENTESCO IN (5,8,9,10,11,12,17)  " +   
 			"AND  BEN.ID_CONTRA_PAQ_CONVENIO_PF IN  " +   
 			"(  " +   
 			"SELECT  " +   
-			"    SCPA.ID_PAQUETE idPaquete  " +   
+			"    SCPA.ID_CONTRA_PAQ_CONVENIO_PF idPaquete  " +   
 			"FROM  " +   
 			"    SVT_CONVENIO_PF SCP  " +   
 			"INNER JOIN SVC_ESTATUS_CONVENIO_PF SECP ON  " +   
@@ -212,7 +218,6 @@ public interface ConvenioPF {
 		+ "			EMP.ID_CONVENIO_PF AS idConvenio, "
 		+ "			EMP.ID_EMPRESA_CONVENIO_PF AS idEmpresa, "
 		+ "			PF.ID_PROMOTOR AS idPromotor, "
-		//+ "			PA.REF_PAQUETE_NOMBRE tipoPaquete, "
 		+ "			PF.DES_FOLIO folioConvenio, PF.IND_ACTIVO activo "
 		+ "FROM "
 		+ "			SVT_CONVENIO_PF PF "
@@ -220,18 +225,15 @@ public interface ConvenioPF {
 		+ "			PF.ID_CONVENIO_PF = EMP.ID_CONVENIO_PF "
 		+ "INNER JOIN SVT_DOMICILIO DOM ON "
 		+ "			EMP.ID_DOMICILIO = DOM.ID_DOMICILIO "
-		+ "LEFT JOIN SVT_CONTRA_PAQ_CONVENIO_PF PAQ ON PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF "
-		//+ " INNER JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE "
 		+ " INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = EMP.ID_PAIS "
 		+ "WHERE "
 		+ "			PF.ID_CONVENIO_PF = #{idConvenioPf} "
-		+ "GROUP BY PF.ID_CONVENIO_PF"
-		
 		)
 		public DetalleConvenioPFXEmpresa consultaDetalleConvenioXEmpresa( @Param("idConvenioPf") Integer idConvenioPf );
 
 		@Select(" SELECT  " +  
-				"    PAQ.ID_CONTRA_PAQ_CONVENIO_PF idPaquete, " +  
+				"    PAQ.ID_PAQUETE idPaquete, " +  
+				"    CON.ID_CONTRATANTE idContratante, " +  
 				"    IFNULL(PER.CVE_RFC,'') rfc, " +  
 				"    IFNULL(PER.CVE_CURP,'') curp, " +  
 				"    IFNULL(PER.NOM_PERSONA,'') nombre, " +  
@@ -252,6 +254,9 @@ public interface ConvenioPF {
 				"	 IFNULL(PA.REF_PAQUETE_NOMBRE,'') tipoPaquete, " +
 				"    IFNULL(PER.REF_CORREO,'') correo, " +  
 				"    PER.ID_PERSONA idPersona, " +  
+				"    IFNULL(DOC.IND_INE_AFILIADO, 0) AS docIne, " +  
+				"    IFNULL(DOC.IND_CURP, 0) AS docCurp, " +  
+				"    IFNULL(DOC.IND_RFC, 0) AS docRfc, " +  
 				"    DOM.ID_DOMICILIO idDomicilio, PAQ.ID_CONTRA_PAQ_CONVENIO_PF idPaqueteConvenio " +  
 				" " +  
 				"FROM " +  
@@ -261,9 +266,10 @@ public interface ConvenioPF {
 				"INNER JOIN SVC_CONTRATANTE CON ON CON.ID_CONTRATANTE = PAQ.ID_CONTRATANTE " +  
 				"INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = CON.ID_PERSONA  " +  //-- persona contratante
 				"INNER JOIN SVT_DOMICILIO DOM ON DOM.ID_DOMICILIO = CON.ID_DOMICILIO  " +  //-- domicilio del contratante
-				"INNER JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
+				"LEFT JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
 				"LEFT  JOIN SVC_ESTADO ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
-				"LEFT  JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE  " +  
+				"INNER  JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE  " +  
+				"INNER  JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC  ON PAQ.ID_CONTRA_PAQ_CONVENIO_PF  = DOC.ID_CONTRA_PAQ_CONVENIO_PF  " +  
 				"WHERE PF.ID_CONVENIO_PF = #{idConvenioPf} and CON.IND_ACTIVO = 1")
 		public ArrayList<DetalleConvenioPFXEmpresaSolicitantes> 
 		consultaDetalleConvenioXEmpresaSolicitantes( @Param("idConvenioPf") Integer idConvenioPf );
@@ -277,6 +283,8 @@ public interface ConvenioPF {
 				"    IFNULL(PER.CVE_RFC ,'') rfc, " +  
 				"    IFNULL(PER.REF_CORREO,'')  correo, " +  
 				"    IFNULL(PER.REF_TELEFONO,'')  telefono, " +  
+				"    IFNULL(BEN.IND_INE_BENEFICIARIO, 0) docIne,  " +   
+				"    IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
 				"    PAQ.ID_CONTRATANTE idContratante " +  
 				" " +  
 				" " +  
@@ -375,4 +383,43 @@ public interface ConvenioPF {
 				"	#{registroPagoPlanPF.idPlataforma} ) " +
 				";" )
 		public int insertaPago (@Param("registroPagoPlanPF") RegistroPagoPlanPF registroCOnvenio);
+		
+		@Select("SELECT DOC.REF_DOC_INE_AFILIADO AS documento "
+				+ " FROM SVT_CONTRA_PAQ_CONVENIO_PF SCPCP "
+				+ " INNER JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC  ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF  = DOC.ID_CONTRA_PAQ_CONVENIO_PF  "
+				+"WHERE " + 
+				"    SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = #{idPaqueteConvenio} AND SCPCP.ID_CONTRATANTE = #{idContratante}  AND DOC.IND_INE_AFILIADO = #{tipoDocumento};    ")
+		public String consultaInePDFContratante( @Param("idPaqueteConvenio") Integer idPaqueteConvenio,@Param("idContratante") Integer idContratante,@Param("tipoDocumento") Integer tipoDocumento  );
+
+		@Select("SELECT DOC.REF_DOC_RFC_AFILIADO AS documento "
+				+ " FROM SVT_CONTRA_PAQ_CONVENIO_PF SCPCP "
+				+ " INNER JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC  ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF  = DOC.ID_CONTRA_PAQ_CONVENIO_PF  "
+				+"WHERE " + 
+				"    SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = #{idPaqueteConvenio} AND SCPCP.ID_CONTRATANTE = #{idContratante}  AND DOC.IND_RFC = #{tipoDocumento};    ")
+		public String consultaRfcPDFContratante( @Param("idPaqueteConvenio") Integer idPaqueteConvenio,@Param("idContratante") Integer idContratante,@Param("tipoDocumento") Integer tipoDocumento  );
+		
+		@Select("SELECT DOC.REF_DOC_CURP_AFILIADO AS documento "
+				+ " FROM SVT_CONTRA_PAQ_CONVENIO_PF SCPCP "
+				+ " INNER JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC  ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF  = DOC.ID_CONTRA_PAQ_CONVENIO_PF  "
+				+"WHERE " + 
+				"    SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = #{idPaqueteConvenio} AND SCPCP.ID_CONTRATANTE = #{idContratante}  AND DOC.IND_CURP = #{tipoDocumento};    ")
+		public String consultaCurpPDFContratante( @Param("idPaqueteConvenio") Integer idPaqueteConvenio,@Param("idContratante") Integer idContratante,@Param("tipoDocumento") Integer tipoDocumento  );
+		
+		
+		@Select("SELECT SCB.REF_DOCUMENTO_BENEFICIARIO  AS documento "
+				+ " FROM SVT_CONTRA_PAQ_CONVENIO_PF SCPCP "
+				+ " INNER JOIN SVT_CONTRATANTE_BENEFICIARIOS SCB  ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF  = SCB.ID_CONTRA_PAQ_CONVENIO_PF   "
+				+"WHERE " + 
+				"    SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = #{idPaqueteConvenio} AND SCB.ID_PERSONA = #{idPersona}  AND SCB.IND_INE_BENEFICIARIO = #{tipoDocumento};    ")
+		public String consultaInePDFBeneficiario( @Param("idPaqueteConvenio") Integer idPaqueteConvenio,@Param("idPersona") Integer idPersona,@Param("tipoDocumento") Integer tipoDocumento  );
+
+		@Select("SELECT SCB.REF_DOCUMENTO_BENEFICIARIO  AS documento "
+				+ " FROM SVT_CONTRA_PAQ_CONVENIO_PF SCPCP "
+				+ " INNER JOIN SVT_CONTRATANTE_BENEFICIARIOS SCB  ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF  = SCB.ID_CONTRA_PAQ_CONVENIO_PF   "
+				+"WHERE " + 
+				"    SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = #{idPaqueteConvenio} AND SCB.ID_PERSONA = #{idPersona}  AND SCB.IND_ACTA_NACIMIENTO = #{tipoDocumento};    ")
+		public String consultaActaPDFBeneficiario( @Param("idPaqueteConvenio") Integer idPaqueteConvenio,@Param("idPersona") Integer idPersona,@Param("tipoDocumento") Integer tipoDocumento  );
+
+		
+
 }

@@ -1,8 +1,11 @@
 package com.imss.sivimss.arquetipo.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -11,8 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.imss.sivimss.arquetipo.configuration.MyBatisConfig;
 import com.imss.sivimss.arquetipo.configuration.mapper.ConvenioPA;
@@ -53,9 +59,9 @@ import com.imss.sivimss.arquetipo.service.PreRegConvServiceNuevo;
 import com.imss.sivimss.arquetipo.service.beans.BeanQuerys;
 import com.imss.sivimss.arquetipo.utils.AppConstantes;
 import com.imss.sivimss.arquetipo.utils.DatosRequest;
+import com.imss.sivimss.arquetipo.utils.LogUtil;
 import com.imss.sivimss.arquetipo.utils.PaginadoUtil;
 import com.imss.sivimss.arquetipo.utils.Response;
-import org.springframework.security.core.Authentication;
 
 @Service
 public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
@@ -74,6 +80,9 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	Gson json = new Gson();
 
 	private static final Integer PLATAFORMA_LINEA = 2;
+	
+	@Autowired
+	private LogUtil logUtil;
 	
 	@Override
 	public Response<Object> actualizarDatosPersona(DatosRequest request, Authentication authentication) {
@@ -696,5 +705,94 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 
 		// throw new UnsupportedOperationException("Unimplemented method 'actualizarDatosPA'");
 	}
+
+	@Override
+	public Response<Object> descargarDocumentos(DatosRequest request, Authentication authentication) throws IOException {
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode datos = mapper.readTree(request.getDatos().get(AppConstantes.DATOS)
+                    .toString());
+			Integer idPaqueteConvenio=datos.get("idPaqueteConvenio").asInt();
+			Integer idContratante=datos.get("idContratante").asInt();
+			Integer idPersona=datos.get("idPersona").asInt();
+			Integer tipoDocumento=datos.get("tipoDocumento").asInt();
+			Integer tipoPersona=datos.get("tipoPersona").asInt();
+			
+			switch (tipoPersona) {
+			case 1:
+
+				return this.consultarDocumentoContratante(idPaqueteConvenio, idContratante, tipoDocumento);
+				
+				
+			case 2:
+
+				return this.consultarDocumentoBeneficiario(idPaqueteConvenio, idPersona, tipoDocumento);
+				
+		
+			}
+			
+			return new Response<>(true, HttpStatus.INTERNAL_SERVER_ERROR.value(), AppConstantes.OCURRIO_ERROR_GENERICO,
+					Arrays.asList());
+			
+		} catch (Exception e) {
+			log.info(ERROR, e.getCause().getMessage());
+			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
+					this.getClass().getPackage().toString(),
+					AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_CONSULTAR, AppConstantes.CONSULTA,
+					authentication);
+			return new Response<>(true, HttpStatus.INTERNAL_SERVER_ERROR.value(), AppConstantes.OCURRIO_ERROR_GENERICO,
+					Arrays.asList());
+		}
+		
+	}
+	
+	
+	private Response<Object>consultarDocumentoContratante(Integer idPaqueteConvenio, Integer idContratante, Integer tipoDocumento){
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		String documento=null;
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
+		   switch (tipoDocumento) {
+			case 1:
+				documento=convenios.consultaInePDFContratante(idPaqueteConvenio, idContratante, tipoDocumento);
+				break;
+			case 2:
+				documento=convenios.consultaCurpPDFContratante(idPaqueteConvenio, idContratante, tipoDocumento);
+				break;
+			case 3:
+				documento=convenios.consultaRfcPDFContratante(idPaqueteConvenio, idContratante, tipoDocumento);
+				break;
+				
+			default:
+				break;
+			}
+		} 
+		return new Response<>(false,HttpStatus.OK.value(), "Exito",documento);
+	}
+	
+    private Response<Object>consultarDocumentoBeneficiario(Integer idPaqueteConvenio, Integer idPersona, Integer tipoDocumento){
+    	SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+		
+		String documento=null;
+		try(SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
+		   switch (tipoDocumento) {
+			case 1:
+				documento=convenios.consultaInePDFBeneficiario(idPaqueteConvenio, idPersona, tipoDocumento);
+				break;
+
+			case 4:
+				documento=convenios.consultaActaPDFBeneficiario(idPaqueteConvenio, idPersona, tipoDocumento);
+				break;
+				
+			default:
+				break;
+			}
+		} 
+		return new Response<>(false,HttpStatus.OK.value(), "Exito",documento);
+	}
+	
+	
 
 }
