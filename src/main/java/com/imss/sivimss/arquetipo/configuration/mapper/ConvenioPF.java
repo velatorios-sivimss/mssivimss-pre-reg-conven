@@ -120,11 +120,11 @@ public interface ConvenioPF {
 			"INNER JOIN SVC_PARENTESCO PAR ON PAR.ID_PARENTESCO = BEN.ID_PARENTESCO  " +   
 			"INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = BEN.ID_PERSONA  " +   
 			"WHERE BEN.IND_ACTIVO = 1  " +   
-			"AND  PAR.ID_PARENTESCO IN (5,8,9,10,11,12,17)  " +   
+			//"AND  PAR.ID_PARENTESCO IN (5,8,9,10,11,12,17)  " +   
 			"AND  BEN.ID_CONTRA_PAQ_CONVENIO_PF IN  " +   
 			"(  " +   
 			"SELECT  " +   
-			"    SCPA.ID_PAQUETE idPaquete  " +   
+			"    SCPA.ID_CONTRA_PAQ_CONVENIO_PF idPaquete  " +   
 			"FROM  " +   
 			"    SVT_CONVENIO_PF SCP  " +   
 			"INNER JOIN SVC_ESTATUS_CONVENIO_PF SECP ON  " +   
