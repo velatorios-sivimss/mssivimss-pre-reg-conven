@@ -13,6 +13,8 @@ public class DetalleConvenioPFXPersonaBeneficiarios  {
     private String rfc;
     private String correo;
     private String telefono;
+    private int docIne;
+    private int docActa;
     private Long idContratante;
 	
 }

@@ -33,4 +33,8 @@ public class DetalleConvenioPFXPersona  {
     private Long idEstado;
     private Long idDomicilio;
     private Long idContraPaqPF;
+    private int docIne;
+    private int docCurp;
+    private int docRfc;
+
 }
