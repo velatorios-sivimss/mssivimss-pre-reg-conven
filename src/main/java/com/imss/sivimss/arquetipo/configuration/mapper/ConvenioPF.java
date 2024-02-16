@@ -371,4 +371,43 @@ public interface ConvenioPF {
 				"	#{registroPagoPlanPF.idPlataforma} ) " +
 				";" )
 		public int insertaPago (@Param("registroPagoPlanPF") RegistroPagoPlanPF registroCOnvenio);
+		
+		@Select("SELECT DOC.REF_DOC_INE_AFILIADO AS documento "
+				+ " FROM SVT_CONTRA_PAQ_CONVENIO_PF SCPCP "
+				+ " INNER JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC  ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF  = DOC.ID_CONTRA_PAQ_CONVENIO_PF  "
+				+"WHERE " + 
+				"    SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = #{idPaqueteConvenio} AND SCPCP.ID_CONTRATANTE = #{idContratante}  AND DOC.IND_INE_AFILIADO = #{tipoDocumento};    ")
+		public String consultaInePDFContratante( @Param("idPaqueteConvenio") Integer idPaqueteConvenio,@Param("idContratante") Integer idContratante,@Param("tipoDocumento") Integer tipoDocumento  );
+
+		@Select("SELECT DOC.REF_DOC_RFC_AFILIADO AS documento "
+				+ " FROM SVT_CONTRA_PAQ_CONVENIO_PF SCPCP "
+				+ " INNER JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC  ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF  = DOC.ID_CONTRA_PAQ_CONVENIO_PF  "
+				+"WHERE " + 
+				"    SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = #{idPaqueteConvenio} AND SCPCP.ID_CONTRATANTE = #{idContratante}  AND DOC.IND_RFC = #{tipoDocumento};    ")
+		public String consultaRfcPDFContratante( @Param("idPaqueteConvenio") Integer idPaqueteConvenio,@Param("idContratante") Integer idContratante,@Param("tipoDocumento") Integer tipoDocumento  );
+		
+		@Select("SELECT DOC.REF_DOC_CURP_AFILIADO AS documento "
+				+ " FROM SVT_CONTRA_PAQ_CONVENIO_PF SCPCP "
+				+ " INNER JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC  ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF  = DOC.ID_CONTRA_PAQ_CONVENIO_PF  "
+				+"WHERE " + 
+				"    SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = #{idPaqueteConvenio} AND SCPCP.ID_CONTRATANTE = #{idContratante}  AND DOC.IND_CURP = #{tipoDocumento};    ")
+		public String consultaCurpPDFContratante( @Param("idPaqueteConvenio") Integer idPaqueteConvenio,@Param("idContratante") Integer idContratante,@Param("tipoDocumento") Integer tipoDocumento  );
+		
+		
+		@Select("SELECT SCB.REF_DOCUMENTO_BENEFICIARIO  AS documento "
+				+ " FROM SVT_CONTRA_PAQ_CONVENIO_PF SCPCP "
+				+ " INNER JOIN SVT_CONTRATANTE_BENEFICIARIOS SCB  ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF  = SCB.ID_CONTRA_PAQ_CONVENIO_PF   "
+				+"WHERE " + 
+				"    SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = #{idPaqueteConvenio} AND SCB.ID_PERSONA = #{idPersona}  AND SCB.IND_INE_BENEFICIARIO = #{tipoDocumento};    ")
+		public String consultaInePDFBeneficiario( @Param("idPaqueteConvenio") Integer idPaqueteConvenio,@Param("idPersona") Integer idPersona,@Param("tipoDocumento") Integer tipoDocumento  );
+
+		@Select("SELECT SCB.REF_DOCUMENTO_BENEFICIARIO  AS documento "
+				+ " FROM SVT_CONTRA_PAQ_CONVENIO_PF SCPCP "
+				+ " INNER JOIN SVT_CONTRATANTE_BENEFICIARIOS SCB  ON SCPCP.ID_CONTRA_PAQ_CONVENIO_PF  = SCB.ID_CONTRA_PAQ_CONVENIO_PF   "
+				+"WHERE " + 
+				"    SCPCP.ID_CONTRA_PAQ_CONVENIO_PF = #{idPaqueteConvenio} AND SCB.ID_PERSONA = #{idPersona}  AND SCB.IND_ACTA_NACIMIENTO = #{tipoDocumento};    ")
+		public String consultaActaPDFBeneficiario( @Param("idPaqueteConvenio") Integer idPaqueteConvenio,@Param("idPersona") Integer idPersona,@Param("tipoDocumento") Integer tipoDocumento  );
+
+		
+
 }
