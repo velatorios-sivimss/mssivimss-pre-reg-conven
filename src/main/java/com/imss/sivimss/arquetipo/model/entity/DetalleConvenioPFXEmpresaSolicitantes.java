@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class DetalleConvenioPFXEmpresaSolicitantes  {
     private int idPaquete;
+    private int idContratante;
     private String rfc;
     private String curp;
     private String nombre;
