@@ -28,4 +28,7 @@ public class DetalleConvenioPFXEmpresaSolicitantes  {
     private Integer idPersona;
     private Integer idDomicilio;
 	private Long idPaqueteConvenio;
+	private int docIne;
+	private int docCurp;
+	private int docRfc;
 }
