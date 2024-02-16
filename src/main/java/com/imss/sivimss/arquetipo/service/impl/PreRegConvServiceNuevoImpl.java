@@ -42,6 +42,7 @@ import com.imss.sivimss.arquetipo.model.request.ActualizarConvenioPersona;
 import com.imss.sivimss.arquetipo.model.request.ActualizarDatosEmpresa;
 import com.imss.sivimss.arquetipo.model.request.ActualizarDatosPA;
 import com.imss.sivimss.arquetipo.model.request.Flujos;
+import com.imss.sivimss.arquetipo.model.request.PlanPABeneficiario;
 import com.imss.sivimss.arquetipo.model.request.PlanPAData;
 import com.imss.sivimss.arquetipo.model.request.PlanPASustituto;
 import com.imss.sivimss.arquetipo.model.request.RequestFiltroPaginado;
@@ -650,7 +651,9 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		ActualizarDatosPA datosPlanPA = gson.fromJson(datos, ActualizarDatosPA.class);
 		PlanPAData plan = datosPlanPA.getPlan();
 		PlanPASustituto titularSustituto = datosPlanPA.getTitularSustituto();
-
+		PlanPABeneficiario beneficiario1 = datosPlanPA.getBeneficiario1();
+		PlanPABeneficiario beneficiario2 = datosPlanPA.getBeneficiario2();
+		
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 
 		try(SqlSession session = sqlSessionFactory.openSession()) {
@@ -664,13 +667,21 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				conveniosPA.actualizarDatosSustituto(titularSustituto);
 				conveniosPA.actualizarDomicilioSustituto(titularSustituto);
 
-				session.commit();
-				log.info("==> commit() ");
-
-
+				if( beneficiario1 != null ) {
+					conveniosPA.actualizarDatosBeneficiario(beneficiario1);
+					conveniosPA.actualizarDomicilioBeneficiario(beneficiario1);
+				}
+				
+				if( beneficiario2 != null ) {
+					conveniosPA.actualizarDatosBeneficiario(beneficiario2);
+					conveniosPA.actualizarDomicilioBeneficiario(beneficiario2);
+				}
+				
 				// pasar a generado 1
 				conveniosPA.actualizarEstatusConvenio(idUsuario, plan.getIdConvenio());
-
+				
+				session.commit();
+				log.info("==> commit() ");
 
 				PreRegistrosXPAConBeneficiarios detalleConvenioPAPersona = consultaConveniosPA(plan.getIdConvenio());
 				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPAPersona);
