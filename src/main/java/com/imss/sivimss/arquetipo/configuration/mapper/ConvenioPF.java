@@ -227,6 +227,7 @@ public interface ConvenioPF {
 
 		@Select(" SELECT  " +  
 				"    PAQ.ID_PAQUETE idPaquete, " +  
+				"    CON.ID_CONTRATANTE idContratante, " +  
 				"    IFNULL(PER.CVE_RFC,'') rfc, " +  
 				"    IFNULL(PER.CVE_CURP,'') curp, " +  
 				"    IFNULL(PER.NOM_PERSONA,'') nombre, " +  
