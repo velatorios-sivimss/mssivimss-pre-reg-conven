@@ -2,6 +2,9 @@ package com.imss.sivimss.arquetipo.service;
 
 import com.imss.sivimss.arquetipo.utils.DatosRequest;
 import com.imss.sivimss.arquetipo.utils.Response;
+
+import java.io.IOException;
+
 import org.springframework.security.core.Authentication;
 
 public interface PreRegConvServiceNuevo {
@@ -39,4 +42,6 @@ public interface PreRegConvServiceNuevo {
 	 * public Response<Object> catPromotores();
 	 * public Response<Object> beneficiarios(Integer idPreReg);
 	 */
+	public Response<Object> descargarDocumentos(DatosRequest request, Authentication authentication)throws IOException;
+	
 }
