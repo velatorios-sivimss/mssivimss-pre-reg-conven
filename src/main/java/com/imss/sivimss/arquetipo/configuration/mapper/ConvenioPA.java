@@ -5,9 +5,8 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.imss.sivimss.arquetipo.model.entity.BenefXPA;
-import com.imss.sivimss.arquetipo.model.entity.ContratanteRfcCurp;
-import com.imss.sivimss.arquetipo.model.entity.DatosPersonaConvenio;
 import com.imss.sivimss.arquetipo.model.entity.PreRegistrosXPA;
+import com.imss.sivimss.arquetipo.model.request.PlanPABeneficiario;
 import com.imss.sivimss.arquetipo.model.request.PlanPAData;
 import com.imss.sivimss.arquetipo.model.request.PlanPASustituto;
 
@@ -131,7 +130,9 @@ public interface ConvenioPA {
 				+ " 	IFNULL(SD.REF_COLONIA,'')  AS colonia, "
 				+ " 	IFNULL(SD.REF_MUNICIPIO,'')  AS municipio, "
 				+ " 	IFNULL(SP.ID_ESTADO,0) AS idEstado, "
-				+ " 	IFNULL(SD.REF_ESTADO,'') AS estado, SP.ID_PERSONA idPersonaTitular, SD.ID_DOMICILIO idDomicilio"
+				+ " 	IFNULL(SD.REF_ESTADO,'') AS estado, "
+				+ "		SP.ID_PERSONA idPersonaTitular, "
+				+ "		SD.ID_DOMICILIO idDomicilio"
 				+ " FROM "
 				+ " 	SVT_TITULAR_BENEFICIARIOS stb "
 				+ " JOIN SVC_PERSONA SP ON "
@@ -291,4 +292,47 @@ public interface ConvenioPA {
 			"FEC_ACTUALIZACION = CURRENT_DATE() " +
 			"WHERE ID_PLAN_SFPA  = #{idConvenio} ")
 	public int actualizarEstatusConvenio(@Param("idUsuario") Integer idUsuario,@Param("idConvenio") Integer idConvenio );
+	
+	@Update(
+			"UPDATE\r\n" + //
+							"\tSVC_PERSONA\r\n" + //
+							"SET\r\n" + //
+							"\t\r\n" + //
+							"    CVE_CURP            = #{ben.curp}, \r\n" + //
+							"    CVE_RFC             = #{ben.rfc}, \r\n" + //
+							"    CVE_NSS             = #{ben.nss}, \r\n" + //
+							"    NOM_PERSONA         = #{ben.nombre}, \r\n" + //
+							"    NOM_PRIMER_APELLIDO = #{ben.primerApellido}, \r\n" + //
+							"    NOM_SEGUNDO_APELLIDO= #{ben.segundoApellido}, \r\n" + //
+							"    NUM_SEXO            = #{ben.idSexo}, \r\n" + //
+							"    FEC_NAC             = #{ben.fecNacimiento}, \r\n" + //
+							"    ID_PAIS             = #{ben.idPais}, \r\n" + //
+							"    REF_TELEFONO_FIJO   = #{ben.telFijo}, \r\n" + //
+							"    REF_TELEFONO        = #{ben.telCelular}, \r\n" + //
+							"    REF_CORREO          = #{ben.correo}, \r\n" + //
+							"    ID_ESTADO           = #{ben.idEstado}, \r\n" + //
+							"    REF_OTRO_SEXO       = #{ben.otroSexo}\r\n" + //
+							"    \r\n" + //
+							"WHERE\t\r\n" + //
+							"\tID_PERSONA = #{ben.idPersonaTitular}   "
+			)	
+		public int actualizarDatosBeneficiario (@Param("ben") PlanPABeneficiario ben);
+	
+	@Update(
+			"UPDATE \r\n" + //
+							"\tSVT_DOMICILIO \r\n" + //
+							"SET \r\n" + //
+							" \r\n" + //
+							"\tREF_CALLE \t\t= #{ben.calle}, \r\n" + //
+							"\tNUM_EXTERIOR \t= #{ben.numExt}, \r\n" + //
+							"\tNUM_INTERIOR \t= #{ben.numInt}, \r\n" + //
+							"\tREF_CP \t= #{ben.cp}, \r\n" + //
+							"\tREF_COLONIA \t= #{ben.colonia}, \r\n" + //
+							"\tREF_MUNICIPIO \t= #{ben.municipio}, \r\n" + //
+							"\tREF_ESTADO \t\t= #{ben.estado} \r\n" + //
+							" \r\n" + //
+							"WHERE \r\n" + //
+							"\tID_DOMICILIO = #{bens.idDomicilio} ;"
+			)	
+		public int actualizarDomicilioBeneficiario (@Param("ben") PlanPABeneficiario ben);
 }
