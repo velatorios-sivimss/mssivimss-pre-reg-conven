@@ -1,6 +1,8 @@
 package com.imss.sivimss.arquetipo.configuration.mapper;
 
 import java.util.ArrayList;
+
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -12,6 +14,7 @@ import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXEmpresaSolicita
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersona;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersonaBeneficiarios;
 import com.imss.sivimss.arquetipo.model.entity.DetalleConvenioPFXPersonaBeneficiariosDocs;
+import com.imss.sivimss.arquetipo.model.entity.RegistroPagoPlanPF;
 
 /*
  * Este es un ejemplo de cómo se pueden implementar querys a través de interfaces con MyBatis.
@@ -332,4 +335,44 @@ public interface ConvenioPF {
 				"    WHERE PF.ID_CONVENIO_PF = #{idConvenioPf}  and CON.IND_ACTIVO = 1 )")
 		public ArrayList<DetalleConvenioPFXEmpresaBeneficiariosDocs> 
 		consultaDetalleConvenioXEmpresaBeneficiariosDocs( @Param("idConvenioPf") Integer idConvenioPf );
+
+		@Select("SELECT " +
+				"    SUM(PA.MON_PRECIO) " +
+				"FROM " +
+				"    SVT_CONVENIO_PF PF " +
+				"LEFT JOIN SVT_EMPRESA_CONVENIO_PF EMP ON " +
+				"    PF.ID_CONVENIO_PF = EMP.ID_CONVENIO_PF " +
+				"LEFT JOIN SVT_CONTRA_PAQ_CONVENIO_PF PAQ ON " +
+				"    PAQ.ID_CONVENIO_PF = PF.ID_CONVENIO_PF " +
+				"INNER JOIN SVT_PAQUETE PA ON " +
+				"    PA.ID_PAQUETE = PAQ.ID_PAQUETE " +
+				"     " +
+				"    WHERE PF.ID_CONVENIO_PF = #{idConvenioPf}")
+		public Double consultaImportePaquetesConvenio( @Param("idConvenioPf") Integer idConvenioPf );
+
+		@Insert("INSERT INTO SVT_PAGO_BITACORA( " +
+				"    ID_REGISTRO, " +
+				"    ID_FLUJO_PAGOS, " +
+				"    ID_VELATORIO, " +
+				"    FEC_ODS, " +
+				"    NOM_CONTRATANTE,  " +
+				"    CVE_FOLIO, " +
+				"    IMP_VALOR, " +
+				"    CVE_ESTATUS_PAGO, " +
+				"    ID_USUARIO_ALTA, " +
+				"    ID_PLATAFORMA " +
+				") " +
+				"VALUES( " +
+				"	#{registroPagoPlanPF.idConvenioPf}, " +
+				"	#{registroPagoPlanPF.idFlujo}, " +
+				"	#{registroPagoPlanPF.idVelatorio}, " +
+				"	NOW(), " +
+				"	#{registroPagoPlanPF.nomContratante}, " +
+				"	#{registroPagoPlanPF.cveFolio}, " +
+				"	#{registroPagoPlanPF.importe}, " +
+				"	#{registroPagoPlanPF.cvdEstatusPago}, " +
+				"	#{registroPagoPlanPF.idUsuarioAlta}, " +
+				"	#{registroPagoPlanPF.idPlataforma} ) " +
+				";" )
+		public int insertaPago (@Param("registroPagoPlanPF") RegistroPagoPlanPF registroCOnvenio);
 }

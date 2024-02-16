@@ -18,7 +18,7 @@ public interface PreRegConvServiceNuevo {
 
 	public Response<Object> actualizarDatosEmpresa(DatosRequest request, Authentication authentication);
 
-	public Response<Object> actualizarDatosPersona(DatosRequest request);
+	public Response<Object> actualizarDatosPersona(DatosRequest request, Authentication authentication);
 
 	public Response<Object> actualizarDatosPA(DatosRequest request, Authentication authentication);
 

@@ -19,6 +19,7 @@ public class DatosEmpresa {
     private String numExterior;
     private Integer idConvenioPf;
     private Integer idConvenioPf2;
+    private String folioConvenioPf;
     private Integer idUsuario;
-
+    
 }
