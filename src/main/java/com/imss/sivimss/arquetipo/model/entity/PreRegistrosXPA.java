@@ -1,7 +1,5 @@
 package com.imss.sivimss.arquetipo.model.entity;
 
-import java.util.Date;
-
 import lombok.Data;
 
 @Data
@@ -47,4 +45,5 @@ public class PreRegistrosXPA {
 	private int activo;
 	private Long idPersonaContratante;
 	private Long idDomicilio;
+	private Long idPromotor;
 }

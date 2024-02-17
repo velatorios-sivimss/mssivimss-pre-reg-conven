@@ -14,4 +14,7 @@ public class DetalleConvenioPFXEmpresaBeneficiarios  {
     private String correo;
     private String telefono;
     private Integer idContratante;
+    private int docIne;
+    private int docActa;
+    private int idParentesco;
 }

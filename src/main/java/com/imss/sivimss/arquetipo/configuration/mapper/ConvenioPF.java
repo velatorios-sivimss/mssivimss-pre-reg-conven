@@ -57,7 +57,7 @@ public interface ConvenioPF {
 	@Select("  " +  
 			"SELECT " +  
 			"    IFNULL(SC.CVE_MATRICULA, '') AS matricula, SP.ID_PERSONA idPersona, SP.ID_ESTADO idEstado,SD.ID_DOMICILIO idDomicilio, " +  
-			"    SCP.DES_FOLIO folioConvenio, SCPA.ID_CONVENIO_PF idContraPaqPF, " +  
+			"    SCP.DES_FOLIO folioConvenio, SCPA.ID_CONTRA_PAQ_CONVENIO_PF idContraPaqPF, " +  
 			"    IFNULL(SP.CVE_RFC, '') rfc, " +  
 			"    IFNULL(SP.CVE_CURP, '') curp, " +  
 			"    IFNULL(SP.NOM_PERSONA, '') AS nombre, " +  
@@ -78,7 +78,10 @@ public interface ConvenioPF {
 			"    IFNULL(SP.REF_TELEFONO, '') AS telCelular, " +  
 			"	 SCPA.ID_PAQUETE idPaquete, " +  
 			"	 IFNULL(PA.REF_PAQUETE_NOMBRE, '') tipoPaquete, " +  
-			"    ENF.IND_ENFERMEDAD_PREXISTENTE enfermedadPre, " +  
+			"    ENF.IND_ENFERMEDAD_PREXISTENTE enfermedadPre, " +  //
+			"    IFNULL(DOC.IND_INE_AFILIADO, 0) AS docIne,  " +  
+			"    IFNULL(DOC.IND_CURP, 0) AS docCurp,  " +  
+			"    IFNULL(DOC.IND_RFC, 0) AS docRfc,  " +  
 			"    IFNULL(ENF.REF_OTRA_ENFERMEDAD, '') otraEnfermedad, SCP.IND_ACTIVO activo " +  
 			"FROM " +  
 			"    SVT_CONVENIO_PF SCP " +  
@@ -92,6 +95,7 @@ public interface ConvenioPF {
 			"LEFT JOIN SVC_PAIS PAI 						ON PAI.ID_PAIS = SP.ID_PAIS " +  
 			"LEFT JOIN SVC_ESTADO se 						ON se.ID_ESTADO = SP.ID_ESTADO " +  
 			"LEFT JOIN SVT_CONTRA_PAQ_CONVENIO_PF ENF		ON ENF.ID_CONVENIO_PF = SCP.ID_CONVENIO_PF " +  
+			"INNER JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC	    ON ENF.ID_CONTRA_PAQ_CONVENIO_PF = DOC.ID_CONTRA_PAQ_CONVENIO_PF " +  
 			"WHERE SCP.ID_CONVENIO_PF = #{idConvenioPf} "   )
 	public DetalleConvenioPFXPersona consultaDetalleConvenioXPersona( @Param("idConvenioPf") Integer idConvenioPf );
 
@@ -104,6 +108,9 @@ public interface ConvenioPF {
 			"IFNULL(PER.CVE_RFC, '') rfc,  " +   
 			"IFNULL(PER.REF_CORREO, '') correo,  " +   
 			"IFNULL(PER.REF_TELEFONO, '') telefono,  " +   
+			"IFNULL(BEN.IND_INE_BENEFICIARIO, 0) docIne,  " +   
+			"IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
+			"IFNULL(BEN.ID_PARENTESCO, '') idParentesco,  " +   
 			"PAQ.ID_CONTRATANTE idContratante  " +   
 			"  " +   
 			"  " +   
@@ -114,11 +121,11 @@ public interface ConvenioPF {
 			"INNER JOIN SVC_PARENTESCO PAR ON PAR.ID_PARENTESCO = BEN.ID_PARENTESCO  " +   
 			"INNER JOIN SVC_PERSONA PER ON PER.ID_PERSONA = BEN.ID_PERSONA  " +   
 			"WHERE BEN.IND_ACTIVO = 1  " +   
-			"AND  PAR.ID_PARENTESCO IN (5,8,9,10,11,12,17)  " +   
+			//"AND  PAR.ID_PARENTESCO IN (5,8,9,10,11,12,17)  " +   
 			"AND  BEN.ID_CONTRA_PAQ_CONVENIO_PF IN  " +   
 			"(  " +   
 			"SELECT  " +   
-			"    SCPA.ID_PAQUETE idPaquete  " +   
+			"    SCPA.ID_CONTRA_PAQ_CONVENIO_PF idPaquete  " +   
 			"FROM  " +   
 			"    SVT_CONVENIO_PF SCP  " +   
 			"INNER JOIN SVC_ESTATUS_CONVENIO_PF SECP ON  " +   
@@ -248,6 +255,9 @@ public interface ConvenioPF {
 				"	 IFNULL(PA.REF_PAQUETE_NOMBRE,'') tipoPaquete, " +
 				"    IFNULL(PER.REF_CORREO,'') correo, " +  
 				"    PER.ID_PERSONA idPersona, " +  
+				"    IFNULL(DOC.IND_INE_AFILIADO, 0) AS docIne, " +  
+				"    IFNULL(DOC.IND_CURP, 0) AS docCurp, " +  
+				"    IFNULL(DOC.IND_RFC, 0) AS docRfc, " +  
 				"    DOM.ID_DOMICILIO idDomicilio, PAQ.ID_CONTRA_PAQ_CONVENIO_PF idPaqueteConvenio " +  
 				" " +  
 				"FROM " +  
@@ -260,6 +270,7 @@ public interface ConvenioPF {
 				"LEFT JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
 				"LEFT  JOIN SVC_ESTADO ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
 				"INNER  JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE  " +  
+				"INNER  JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC  ON PAQ.ID_CONTRA_PAQ_CONVENIO_PF  = DOC.ID_CONTRA_PAQ_CONVENIO_PF  " +  
 				"WHERE PF.ID_CONVENIO_PF = #{idConvenioPf} and CON.IND_ACTIVO = 1")
 		public ArrayList<DetalleConvenioPFXEmpresaSolicitantes> 
 		consultaDetalleConvenioXEmpresaSolicitantes( @Param("idConvenioPf") Integer idConvenioPf );
@@ -273,6 +284,9 @@ public interface ConvenioPF {
 				"    IFNULL(PER.CVE_RFC ,'') rfc, " +  
 				"    IFNULL(PER.REF_CORREO,'')  correo, " +  
 				"    IFNULL(PER.REF_TELEFONO,'')  telefono, " +  
+				"    IFNULL(BEN.IND_INE_BENEFICIARIO, 0) docIne,  " +   
+				"    IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
+				"    IFNULL(BEN.ID_PARENTESCO, '') idParentesco,  " +  
 				"    PAQ.ID_CONTRATANTE idContratante " +  
 				" " +  
 				" " +  
