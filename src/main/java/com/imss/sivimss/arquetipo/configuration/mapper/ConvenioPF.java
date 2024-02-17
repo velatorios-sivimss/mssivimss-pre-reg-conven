@@ -57,7 +57,7 @@ public interface ConvenioPF {
 	@Select("  " +  
 			"SELECT " +  
 			"    IFNULL(SC.CVE_MATRICULA, '') AS matricula, SP.ID_PERSONA idPersona, SP.ID_ESTADO idEstado,SD.ID_DOMICILIO idDomicilio, " +  
-			"    SCP.DES_FOLIO folioConvenio, SCPA.ID_CONVENIO_PF idContraPaqPF, " +  
+			"    SCP.DES_FOLIO folioConvenio, SCPA.ID_CONTRA_PAQ_CONVENIO_PF idContraPaqPF, " +  
 			"    IFNULL(SP.CVE_RFC, '') rfc, " +  
 			"    IFNULL(SP.CVE_CURP, '') curp, " +  
 			"    IFNULL(SP.NOM_PERSONA, '') AS nombre, " +  
