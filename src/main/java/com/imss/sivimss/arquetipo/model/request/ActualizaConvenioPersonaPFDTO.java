@@ -65,4 +65,7 @@ public class ActualizaConvenioPersonaPFDTO {
     private String archivoCurp;
     private String archivoRfc;
 
+    // falta que piña me responda si puede o no homologar los request en caso de que
+    // si se pueda aqui igual queda lo de empresa si no se crea un nuevo dto
+
 }
