@@ -15,6 +15,7 @@ public class DetalleConvenioPFXPersonaBeneficiarios  {
     private String telefono;
     private int docIne;
     private int docActa;
+    private int idParentesco;
     private Long idContratante;
 	
 }
