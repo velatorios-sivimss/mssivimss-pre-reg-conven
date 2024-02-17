@@ -107,4 +107,10 @@ public interface ActualizaConvenioPFPersonaMapper {
             "FEC_ACTUALIZACION = CURRENT_DATE() " +
             "WHERE ID_CONVENIO_PF = #{in.idConvenioPF} ")
     public int actualizarEstatusConvenioPF(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
+
+    @Update("UPDATE SVT_CONVENIO_PF SET ID_PROMOTOR = #{in.idPromotor} , " +
+            "ID_USUARIO_MODIFICA= #{in.idUsuario}, " +
+            "FEC_ACTUALIZACION = CURRENT_DATE() " +
+            "WHERE ID_CONVENIO_PF = #{in.idConvenioPF} ")
+    public int actualizaPromotor(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
 }

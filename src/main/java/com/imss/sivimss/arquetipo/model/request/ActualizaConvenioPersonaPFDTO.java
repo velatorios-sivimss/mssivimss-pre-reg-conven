@@ -14,6 +14,7 @@ public class ActualizaConvenioPersonaPFDTO {
     private Integer idContraPaqPF;
     private Integer idContrantante;
     private String matricula;
+    private String idPromotor;
 
     // persona
     private Integer idPersona;
