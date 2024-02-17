@@ -110,6 +110,7 @@ public interface ConvenioPF {
 			"IFNULL(PER.REF_TELEFONO, '') telefono,  " +   
 			"IFNULL(BEN.IND_INE_BENEFICIARIO, 0) docIne,  " +   
 			"IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
+			"IFNULL(BEN.ID_PARENTESCO, '') idParentesco,  " +   
 			"PAQ.ID_CONTRATANTE idContratante  " +   
 			"  " +   
 			"  " +   
@@ -285,6 +286,7 @@ public interface ConvenioPF {
 				"    IFNULL(PER.REF_TELEFONO,'')  telefono, " +  
 				"    IFNULL(BEN.IND_INE_BENEFICIARIO, 0) docIne,  " +   
 				"    IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
+				"    IFNULL(BEN.ID_PARENTESCO, '') idParentesco,  " +  
 				"    PAQ.ID_CONTRATANTE idContratante " +  
 				" " +  
 				" " +  

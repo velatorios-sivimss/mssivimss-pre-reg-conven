@@ -16,4 +16,5 @@ public class DetalleConvenioPFXEmpresaBeneficiarios  {
     private Integer idContratante;
     private int docIne;
     private int docActa;
+    private int idParentesco;
 }
