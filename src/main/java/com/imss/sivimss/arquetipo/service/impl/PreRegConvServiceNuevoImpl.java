@@ -691,7 +691,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				// pasar a generado 1
 				conveniosPA.actualizarEstatusConvenio(idUsuario, plan.getIdConvenio());
 				
-				//session.commit();
+				session.commit();
 				log.info("==> commit() ");
 
 				PreRegistrosXPAConBeneficiarios detalleConvenioPAPersona = consultaConveniosPA(plan.getIdConvenio());
