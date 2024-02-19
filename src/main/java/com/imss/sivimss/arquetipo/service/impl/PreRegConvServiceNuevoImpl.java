@@ -673,8 +673,10 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				conveniosPA.actualizarDatosContratante(plan);
 				conveniosPA.actualizarDomicilioContratante(plan);
 
-				conveniosPA.actualizarDatosSustituto(titularSustituto);
-				conveniosPA.actualizarDomicilioSustituto(titularSustituto);
+				if( titularSustituto != null ) {
+					conveniosPA.actualizarDatosSustituto(titularSustituto);
+					conveniosPA.actualizarDomicilioSustituto(titularSustituto);
+				}
 
 				if( beneficiario1 != null ) {
 					conveniosPA.actualizarDatosBeneficiario(beneficiario1);
@@ -689,7 +691,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				// pasar a generado 1
 				conveniosPA.actualizarEstatusConvenio(idUsuario, plan.getIdConvenio());
 				
-				session.commit();
+				//session.commit();
 				log.info("==> commit() ");
 
 				PreRegistrosXPAConBeneficiarios detalleConvenioPAPersona = consultaConveniosPA(plan.getIdConvenio());

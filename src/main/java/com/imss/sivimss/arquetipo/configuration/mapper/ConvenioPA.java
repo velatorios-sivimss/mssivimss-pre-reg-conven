@@ -76,6 +76,7 @@ public interface ConvenioPA {
 		+ "		SD.REF_ESTADO AS estado, "
 		+ "		SPS.ID_PAQUETE AS idPaquete, "
 		+ "		stpm.DES_TIPO_PAGO_MENSUAL AS numPagos, "
+		+ "		stpm.ID_TIPO_PAGO_MENSUAL AS idTipoPagoMensual, "
 		+ "		SP3.REF_PAQUETE_NOMBRE AS nomPaquete, "
 		+ "		SPS.IND_TITULAR_SUBSTITUTO AS titularSust, "
 		+ "		IFNULL(SPS.ID_TITULAR_SUBSTITUTO,0) AS idTitularSust, "
