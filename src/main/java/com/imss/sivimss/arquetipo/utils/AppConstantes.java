@@ -33,6 +33,8 @@ public class AppConstantes {
 
 	public static final String ERROR_CONSULTAR = "52";// Error al consultar la información.
 	public static final String ERROR_LOG_QUERY = "Fallo al ejecutar el query:  ";
+	public static final String OCURRIO_ERROR_GUARDAR = "5";// Ocurrio un error al procesar tu solicitud.
+	
 	private AppConstantes() {
 
 	}
