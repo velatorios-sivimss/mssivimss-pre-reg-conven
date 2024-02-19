@@ -107,15 +107,22 @@ public interface ConvenioPF {
 
 	@Select("  SELECT  " +   
 			"BEN.ID_CONTRATANTE_BENEFICIARIOS  idBeneficiario, PER.ID_PERSONA idPersona, " +   
-			"CONCAT(PER.NOM_PERSONA,' ',PER.NOM_PRIMER_APELLIDO,' ',PER.NOM_SEGUNDO_APELLIDO) nombre,  " +   
+			"    IFNULL(PER.NOM_PERSONA, '') AS nombre, " +  
+			"    IFNULL(PER.NOM_PRIMER_APELLIDO, '') AS primerApellido, " +  
+			"    IFNULL(PER.NOM_SEGUNDO_APELLIDO, '') AS segundoApellido, " +  
 			"TIMESTAMPDIFF(YEAR, PER.FEC_NAC, CURDATE()) AS edad,  " +   
 			"IFNULL(PAR.DES_PARENTESCO, '') parentesco,  " +   
 			"IFNULL(PER.CVE_CURP, '') curp,  " +   
 			"IFNULL(PER.CVE_RFC, '') rfc,  " +   
 			"IFNULL(PER.REF_CORREO, '') correo,  " +   
 			"IFNULL(PER.REF_TELEFONO, '') telefono,  " +   
+			"    PER.FEC_NAC AS fechaNaciemiento,  " +  
+			"    PER.NUM_SEXO AS idSexo,  " +  
+			"    IFNULL(PER.REF_OTRO_SEXO,'') AS otroSexo,  " +  
 			"IFNULL(BEN.IND_INE_BENEFICIARIO, 0) docIne,  " +   
 			"IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
+			"PER.ID_PAIS AS idPais, " +  
+			"PER.ID_ESTADO AS idEstado, " +  
 			"CASE WHEN BEN.IND_ACTA_NACIMIENTO IS NULL OR 0 THEN IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') ELSE IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') END AS nombreArchivo,  " +   
 			"IFNULL(BEN.ID_PARENTESCO, '') idParentesco,  " +   
 			"PAQ.ID_CONTRATANTE idContratante  " +   
@@ -225,6 +232,7 @@ public interface ConvenioPF {
 		+ "			IFNULL(EMP.REF_CORREO,'')  AS correo, "
 		+ "			EMP.ID_CONVENIO_PF AS idConvenio, "
 		+ "			EMP.ID_EMPRESA_CONVENIO_PF AS idEmpresa, "
+		+ "			EMP.ID_DOMICILIO AS idDomicilio, "
 		+ "			PF.ID_PROMOTOR AS idPromotor, "
 		+ "			PF.DES_FOLIO folioConvenio, PF.IND_ACTIVO activo "
 		+ "FROM "
@@ -241,6 +249,7 @@ public interface ConvenioPF {
 
 		@Select(" SELECT  " +  
 				"    PAQ.ID_PAQUETE idPaquete, " +  
+				"    IFNULL(CON.CVE_MATRICULA, '') AS matricula, " +  
 				"    CON.ID_CONTRATANTE idContratante, " +  
 				"    IFNULL(PER.CVE_RFC,'') rfc, " +  
 				"    IFNULL(PER.CVE_CURP,'') curp, " +  
@@ -262,9 +271,19 @@ public interface ConvenioPF {
 				"	 IFNULL(PA.REF_PAQUETE_NOMBRE,'') tipoPaquete, " +
 				"    IFNULL(PER.REF_CORREO,'') correo, " +  
 				"    PER.ID_PERSONA idPersona, " +  
+				"    PER.ID_ESTADO idEstado, " +  
+				"    PER.FEC_NAC AS fechaNaciemiento,  " +  
+				"    PER.NUM_SEXO AS idSexo,  " +  
+				"    IFNULL(PF.ID_PROMOTOR,null) AS idPromotor,  " +  
+				"    IFNULL(PER.REF_OTRO_SEXO,'') AS otroSexo,  " +  
 				"    IFNULL(DOC.IND_INE_AFILIADO, 0) AS docIne, " +  
-				"    IFNULL(DOC.IND_CURP, 0) AS docCurp, " +  
+				"    IFNULL(DOC.IND_CURP, 0) AS docCurp,  " +  
 				"    IFNULL(DOC.IND_RFC, 0) AS docRfc, " +  
+				"    PF.DES_FOLIO folioConvenio, " +  
+				"    CON.ID_DOMICILIO idDomicilio, " +  
+				"    PAQ.IND_ENFERMEDAD_PREXISTENTE enfermedadPre, " +  
+				"    IFNULL(PAQ.REF_OTRA_ENFERMEDAD, '') otraEnfermedad, " +  
+				"    DOC.ID_VALIDACION_DOCUMENTO AS idValidaDocumento,  " +  
 				"    DOM.ID_DOMICILIO idDomicilio, PAQ.ID_CONTRA_PAQ_CONVENIO_PF idPaqueteConvenio " +  
 				" " +  
 				"FROM " +  
@@ -277,23 +296,31 @@ public interface ConvenioPF {
 				"LEFT JOIN SVC_PAIS PAI ON PAI.ID_PAIS = PER.ID_PAIS " +  
 				"LEFT  JOIN SVC_ESTADO ES ON ES.ID_ESTADO = PER.ID_ESTADO " +  
 				"INNER  JOIN SVT_PAQUETE PA ON PA.ID_PAQUETE = PAQ.ID_PAQUETE  " +  
-				"INNER  JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC  ON PAQ.ID_CONTRA_PAQ_CONVENIO_PF  = DOC.ID_CONTRA_PAQ_CONVENIO_PF  " +  
+				"LEFT  JOIN SVC_VALIDA_DOCS_CONVENIO_PF DOC  ON PAQ.ID_CONTRA_PAQ_CONVENIO_PF  = DOC.ID_CONTRA_PAQ_CONVENIO_PF  " +  
 				"WHERE PF.ID_CONVENIO_PF = #{idConvenioPf} and CON.IND_ACTIVO = 1")
 		public ArrayList<DetalleConvenioPFXEmpresaSolicitantes> 
 		consultaDetalleConvenioXEmpresaSolicitantes( @Param("idConvenioPf") Integer idConvenioPf );
 
 		@Select("SELECT  " +  
 				"  	 BEN.ID_CONTRATANTE_BENEFICIARIOS idBeneficiario, PER.ID_PERSONA idPersona, " +  
-				"    CONCAT(PER.NOM_PERSONA,' ',PER.NOM_PRIMER_APELLIDO,' ',PER.NOM_SEGUNDO_APELLIDO) nombre, " +  
+				"    IFNULL(PER.NOM_PERSONA,'') nombre, " +  
+				"    IFNULL(PER.NOM_PRIMER_APELLIDO,'') primerApellido, " +  
+				"    IFNULL(PER.NOM_SEGUNDO_APELLIDO,'') segundoApellido, " +   
 				"    TIMESTAMPDIFF(YEAR, PER.FEC_NAC, CURDATE()) AS edad, " +  
 				"    IFNULL(PAR.DES_PARENTESCO,'') parentesco, " +  
 				"    IFNULL(PER.CVE_CURP,'')  curp, " +  
 				"    IFNULL(PER.CVE_RFC ,'') rfc, " +  
 				"    IFNULL(PER.REF_CORREO,'')  correo, " +  
 				"    IFNULL(PER.REF_TELEFONO,'')  telefono, " +  
+				"    PER.FEC_NAC AS fechaNaciemiento,  " +  
+				"    PER.NUM_SEXO AS idSexo,  " +  
+				"    IFNULL(PER.REF_OTRO_SEXO,'') AS otroSexo,  " +  
 				"    IFNULL(BEN.IND_INE_BENEFICIARIO, 0) docIne,  " +   
 				"    IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
-				"    IFNULL(BEN.ID_PARENTESCO, '') idParentesco,  " +  
+				"    PER.ID_PAIS AS idPais, " +  
+				"    PER.ID_ESTADO AS idEstado, " +  
+		        "    CASE WHEN BEN.IND_ACTA_NACIMIENTO IS NULL OR 0 THEN IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') ELSE IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') END AS nombreArchivo,  " +   
+                "    IFNULL(BEN.ID_PARENTESCO, '') idParentesco,  " +  
 				"    PAQ.ID_CONTRATANTE idContratante " +  
 				" " +  
 				" " +  

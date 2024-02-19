@@ -47,7 +47,8 @@ public interface ActualizaConvenioPFPersonaMapper {
                         + "REF_UBICACION_INE_BENEFICIARIO = #{in.nombreIne}, "
                         + "IND_ACTA_NACIMIENTO  = #{in.validaActa},"
                         + "REF_UBICACION_ACTA_NACIMIENTO=#{in.nombreActa},"
-                        + "REF_DOCUMENTO_BENEFICIARIO=#{in.documento} "
+                        + "REF_DOCUMENTO_BENEFICIARIO=#{in.documento}, "
+                        + "ID_PARENTESCO=#{in.idParentesco} "
                         + "WHERE ID_CONTRATANTE_BENEFICIARIOS = #{in.idContratanteBeneficiario}  "
                         + " AND ID_PERSONA = #{in.idPersona}")
         public int actualizaDocumentosBeneficiario(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
@@ -124,7 +125,7 @@ public interface ActualizaConvenioPFPersonaMapper {
                         " REF_CORREO   = #{in.correo} ," +
                         " ID_USUARIO_MODIFICA   = #{in.idUsuario}," +
                         " FEC_ACTUALIZACION   = CURRENT_DATE() " +
-                        " WHERE    ID_EMPRESA_CONVENIO_PF   = #{in.idEmpresaConvenio} " +
-                        " AND ID_CONVENIO_PF   = #{in.idPromotor}")
+                        " WHERE    ID_EMPRESA_CONVENIO_PF   = #{in.idEmpresa} " +
+                        " AND ID_CONVENIO_PF   = #{in.idConvenioPF}")
         public int actualizaPlanEmpresa(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
 }

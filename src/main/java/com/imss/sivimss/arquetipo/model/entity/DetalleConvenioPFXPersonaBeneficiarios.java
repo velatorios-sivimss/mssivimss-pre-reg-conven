@@ -7,6 +7,8 @@ public class DetalleConvenioPFXPersonaBeneficiarios  {
     private Long idPersona;
     private Long idBeneficiario;
     private String nombre;
+    private String primerApellido;
+    private String segundoApellido;
     private int edad;
     private String parentesco;
     private String curp;
@@ -18,5 +20,10 @@ public class DetalleConvenioPFXPersonaBeneficiarios  {
     private int docActa;
     private int idParentesco;
     private Long idContratante;
+    private String fechaNaciemiento;
+    private String otroSexo;
+    private int idSexo;
+    private int idPais;
+    private int idEstado;
 	
 }
