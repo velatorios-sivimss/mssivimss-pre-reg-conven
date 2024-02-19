@@ -5,11 +5,11 @@ import lombok.Data;
 @Data
 public class PlanPAData {
 	
-	private int idPagonMensual;
-	private int idPaquete;
-	private int idTitularSust;
-	private boolean indTitularSut;
-	private int idConvenio;
+	private Integer idPagonMensual;
+	private Integer idPaquete;
+	private Integer idTitularSust;
+	private Boolean indTitularSut;
+	private Integer idConvenio;
 	private String curp;
 	private String rfc;
 	private String nss;
@@ -19,13 +19,13 @@ public class PlanPAData {
 	private String numSex;
 	private String oreoSex;
 	private String fecNac;
-	private int idPais;
-	private int idEstado;
+	private Integer idPais;
+	private Integer idEstado;
 	private String telefono;
 	private String telefonoFij;
 	private String correo;
-	private int idPersonaContratante;
-	private int idDomicilio;
+	private Integer idPersonaContratante;
+	private Integer idDomicilio;
 	private String calle;
 	private String numExt;
 	private String numInt;

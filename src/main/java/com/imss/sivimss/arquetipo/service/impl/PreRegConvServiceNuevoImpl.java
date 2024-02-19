@@ -673,8 +673,10 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				conveniosPA.actualizarDatosContratante(plan);
 				conveniosPA.actualizarDomicilioContratante(plan);
 
-				conveniosPA.actualizarDatosSustituto(titularSustituto);
-				conveniosPA.actualizarDomicilioSustituto(titularSustituto);
+				if( titularSustituto != null ) {
+					conveniosPA.actualizarDatosSustituto(titularSustituto);
+					conveniosPA.actualizarDomicilioSustituto(titularSustituto);
+				}
 
 				if( beneficiario1 != null ) {
 					conveniosPA.actualizarDatosBeneficiario(beneficiario1);
