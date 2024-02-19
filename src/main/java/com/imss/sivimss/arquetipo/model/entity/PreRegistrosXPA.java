@@ -36,6 +36,7 @@ public class PreRegistrosXPA {
 	private String estado;
 	private Long idPaquete;
 	private int numPagos;
+	private int idTipoPagoMensual;
 	private String nomPaquete;
 	private String titularSust;
 	private Long idTitularSust;
