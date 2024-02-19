@@ -24,4 +24,5 @@ public class DetalleConvenioPFXEmpresa  {
 	// private String tipoPaquete;
     private String folioConvenio;
     private int activo;
+    private int idDomicilio;
 }

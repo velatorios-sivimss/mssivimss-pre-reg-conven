@@ -121,7 +121,7 @@ public class ConvenioPfServiceImpl implements ConvenioPfService{
 				return new Response<>(true, 200, AppConstantes.OCURRIO_ERROR_GUARDAR, e.getMessage());
 			}
 
-			 session.commit();
+			session.commit();
 		}
 
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
@@ -131,13 +131,17 @@ public class ConvenioPfServiceImpl implements ConvenioPfService{
 	public Response<Object> actualizarPlanPFEmpresa(DatosRequest request, Authentication authentication)
 			throws IOException {
 		usuario = gson.fromJson((String) authentication.getPrincipal(), Usuario.class);
-		this.convenioPersonaPFDTO= new ActualizaConvenioPersonaPFDTO();
+		String datosJson=request.getDatos().get(AppConstantes.DATOS).toString();
+		this.convenioPersonaPFDTO=gson.fromJson(datosJson, ActualizaConvenioPersonaPFDTO.class);
 		convenioPersonaPFDTO.setIdUsuario(Integer.parseInt(usuario.getIdUsuario()));
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 		try (SqlSession session = sqlSessionFactory.openSession()) {
-		
+			ActualizaConvenioPFPersonaMapper convenioPFPersonaMapper= session.getMapper(ActualizaConvenioPFPersonaMapper.class);
+
 			try {
 			
+				convenioPFPersonaMapper.actualizaPlanEmpresa(convenioPersonaPFDTO);
+				convenioPFPersonaMapper.actualizaDomicilio(convenioPersonaPFDTO);
 
 			} catch (Exception e) {
 				session.rollback();
