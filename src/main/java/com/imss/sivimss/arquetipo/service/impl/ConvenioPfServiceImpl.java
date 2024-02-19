@@ -208,7 +208,7 @@ public class ConvenioPfServiceImpl implements ConvenioPfService{
 				return new Response<>(true, 200, AppConstantes.OCURRIO_ERROR_GUARDAR, e.getMessage());
 			}
 
-			//session.commit();
+			session.commit();
 		}
 
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
