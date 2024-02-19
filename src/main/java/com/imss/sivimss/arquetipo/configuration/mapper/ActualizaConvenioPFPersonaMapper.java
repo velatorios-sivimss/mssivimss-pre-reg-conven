@@ -48,20 +48,20 @@ public interface ActualizaConvenioPFPersonaMapper {
             + "IND_ACTA_NACIMIENTO  = #{in.validaActa},"
             + "REF_UBICACION_ACTA_NACIMIENTO=#{in.nombreActa},"
             + "REF_DOCUMENTO_BENEFICIARIO=#{in.documento} "
-            + "WHERE ID_CONTRATANTE_BENEFICIARIOS = #{in.idConvenio})) "
+            + "WHERE ID_CONTRATANTE_BENEFICIARIOS = #{in.idContratanteBeneficiario}  "
             + " AND ID_PERSONA = #{in.idPersona}")
-    public int actualizaDocumentosContratante(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
+    public int actualizaDocumentosBeneficiario(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
 
     @Update(value = " UPDATE   SVT_CONTRA_PAQ_CONVENIO_PF  " +
             "SET " +
             " IND_ENFERMEDAD_PREXISTENTE  =  #{in.idEnfermedad}," +
             " REF_OTRA_ENFERMEDAD  =  #{in.otraEnfermedad}," +
             " ID_PAQUETE  =  #{in.idPaquete}, " +
-            " ID_USUARIO_MODIFICA  =  #{in.idUsuario}," +
+            " ID_USUARIO_MODIFICA  =  #{in.idUsuario}, " +
             " FEC_ACTUALIZACION  = CURRENT_DATE() " +
-            " WHERE   ID_CONTRA_PAQ_CONVENIO_PF  =  #{in.idContraPaqPF}" +
-            " AND ID_CONTRATANTE  =  #{in.idContrantante}, " +
-            " AND ID_CONVENIO_PF = #{in.idConvenioPF}")
+            " WHERE   ID_CONTRA_PAQ_CONVENIO_PF  =  #{in.idContraPaqPF} " +
+            " AND ID_CONTRATANTE  =  #{in.idContrantante} " +
+            " AND ID_CONVENIO_PF = #{in.idConvenioPF} ")
     public int actualizaPaqueteConvenio(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
 
     @Update(value = " UPDATE SVC_VALIDA_DOCS_CONVENIO_PF SET " +

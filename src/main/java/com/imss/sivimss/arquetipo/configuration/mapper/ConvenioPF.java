@@ -82,6 +82,12 @@ public interface ConvenioPF {
 			"    IFNULL(DOC.IND_INE_AFILIADO, 0) AS docIne,  " +  
 			"    IFNULL(DOC.IND_CURP, 0) AS docCurp,  " +  
 			"    IFNULL(DOC.IND_RFC, 0) AS docRfc,  " +  
+			"    SP.FEC_NAC AS fechaNaciemiento,  " +  
+			"    SP.NUM_SEXO AS idSexo,  " +  
+			"    IFNULL(SP.REF_OTRO_SEXO,'') AS otroSexo,  " +  
+			"    IFNULL(SCP.ID_PROMOTOR,'') AS idPromotor,  " +  
+			"    SCPA.ID_CONTRATANTE AS idContrantante,  " +  
+			"    DOC.ID_VALIDACION_DOCUMENTO AS idValidaDocumento,  " +  
 			"    IFNULL(ENF.REF_OTRA_ENFERMEDAD, '') otraEnfermedad, SCP.IND_ACTIVO activo " +  
 			"FROM " +  
 			"    SVT_CONVENIO_PF SCP " +  
@@ -110,6 +116,7 @@ public interface ConvenioPF {
 			"IFNULL(PER.REF_TELEFONO, '') telefono,  " +   
 			"IFNULL(BEN.IND_INE_BENEFICIARIO, 0) docIne,  " +   
 			"IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
+			"CASE WHEN BEN.IND_ACTA_NACIMIENTO IS NULL OR 0 THEN IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') ELSE IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') END AS nombreArchivo,  " +   
 			"IFNULL(BEN.ID_PARENTESCO, '') idParentesco,  " +   
 			"PAQ.ID_CONTRATANTE idContratante  " +   
 			"  " +   

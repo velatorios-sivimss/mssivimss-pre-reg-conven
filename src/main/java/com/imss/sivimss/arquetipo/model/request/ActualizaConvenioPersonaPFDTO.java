@@ -50,8 +50,8 @@ public class ActualizaConvenioPersonaPFDTO {
     private String documento;
     private String nombreIne;
     private String nombreActa;
-    private Integer validaIne;
-    private Integer validaActa;
+    private boolean validaIne;
+    private boolean validaActa;
     private Integer idContratante;
     private boolean actualizaArchivo;
 
