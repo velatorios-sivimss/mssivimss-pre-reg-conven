@@ -13,6 +13,5 @@ public interface ConvenioPfService {
 	public Response<Object> actualizarBeneficiario(DatosRequest request, Authentication authentication)throws IOException;
 	public Response<Object> actualizarPlanPFEmpresa(DatosRequest request, Authentication authentication)throws IOException;
 	public Response<Object> actualizarersonaPFEmpresa(DatosRequest request, Authentication authentication)throws IOException;
-	public Response<Object> consultaPlanPFEmpresa(DatosRequest request, Authentication authentication)throws IOException;
-	public Response<Object> consultaDetallePersonaConvenioEmpresa(DatosRequest request, Authentication authentication)throws IOException;
+	public Response<Object> actualizarEstatusConvenioPf(DatosRequest request, Authentication authentication)throws IOException;
 }

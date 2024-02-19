@@ -149,7 +149,7 @@ public class ConvenioPfServiceImpl implements ConvenioPfService{
 	}
 
 	@Override
-	public Response<Object> consultaPlanPFEmpresa(DatosRequest request, Authentication authentication)
+	public Response<Object> actualizarEstatusConvenioPf(DatosRequest request, Authentication authentication)
 			throws IOException {
 		usuario = gson.fromJson((String) authentication.getPrincipal(), Usuario.class);
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
@@ -174,30 +174,6 @@ public class ConvenioPfServiceImpl implements ConvenioPfService{
 		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
 	}
 
-	@Override
-	public Response<Object> consultaDetallePersonaConvenioEmpresa(DatosRequest request, Authentication authentication)
-			throws IOException {
-		usuario = gson.fromJson((String) authentication.getPrincipal(), Usuario.class);
-		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
-		try (SqlSession session = sqlSessionFactory.openSession()) {
-		
-			try {
-			
-
-			} catch (Exception e) {
-				session.rollback();
-				log.info("{}", e.getMessage());
-				logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
-						this.getClass().getPackage().toString(),
-						AppConstantes.ERROR_LOG_QUERY + AppConstantes.ERROR_CONSULTAR, AppConstantes.CONSULTA,
-						authentication);
-				return new Response<>(true, 200, AppConstantes.OCURRIO_ERROR_GUARDAR, e.getMessage());
-			}
-
-			session.commit();
-		}
-
-		return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, null);
-	}
+	
 
 }
