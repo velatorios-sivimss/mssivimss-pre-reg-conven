@@ -121,7 +121,7 @@ public interface ActualizaConvenioPFPersonaMapper {
                         " ID_PAIS   = #{in.idPais}," +
                         " ID_DOMICILIO   = #{in.idDomicilio}," +
                         " REF_TELEFONO   = #{in.telefono}," +
-                        " REF_CORREO   = #{in.correo} " +
+                        " REF_CORREO   = #{in.correo} ," +
                         " ID_USUARIO_MODIFICA   = #{in.idUsuario}," +
                         " FEC_ACTUALIZACION   = CURRENT_DATE() " +
                         " WHERE    ID_EMPRESA_CONVENIO_PF   = #{in.idEmpresaConvenio} " +
