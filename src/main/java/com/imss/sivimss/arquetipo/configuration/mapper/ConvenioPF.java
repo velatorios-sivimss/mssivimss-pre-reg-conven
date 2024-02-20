@@ -82,6 +82,9 @@ public interface ConvenioPF {
 			"    IFNULL(DOC.IND_INE_AFILIADO, 0) AS docIne,  " +  
 			"    IFNULL(DOC.IND_CURP, 0) AS docCurp,  " +  
 			"    IFNULL(DOC.IND_RFC, 0) AS docRfc,  " +  
+			"    IFNULL(DOC.REF_UBICACION_INE, 0) AS nombreDocumentoINE,  " +  
+			"    IFNULL(DOC.REF_UBICACION_CURP, 0) AS nombreDocumentoCURP,  " +  
+			"    IFNULL(DOC.REF_UBICACION_RFC, 0) AS nombreDocumentoRFC,  " +  
 			"    SP.FEC_NAC AS fechaNaciemiento,  " +  
 			"    SP.NUM_SEXO AS idSexo,  " +  
 			"    IFNULL(SP.REF_OTRO_SEXO,'') AS otroSexo,  " +  
@@ -279,6 +282,9 @@ public interface ConvenioPF {
 				"    IFNULL(DOC.IND_INE_AFILIADO, 0) AS docIne, " +  
 				"    IFNULL(DOC.IND_CURP, 0) AS docCurp,  " +  
 				"    IFNULL(DOC.IND_RFC, 0) AS docRfc, " +  
+				"    IFNULL(DOC.REF_UBICACION_INE, 0) AS nombreDocumentoINE,  " +  
+				"    IFNULL(DOC.REF_UBICACION_CURP, 0) AS nombreDocumentoCURP,  " +  
+				"    IFNULL(DOC.REF_UBICACION_RFC, 0) AS nombreDocumentoRFC,  " +
 				"    PF.DES_FOLIO folioConvenio, " +  
 				"    CON.ID_DOMICILIO idDomicilio, " +  
 				"    PAQ.IND_ENFERMEDAD_PREXISTENTE enfermedadPre, " +  

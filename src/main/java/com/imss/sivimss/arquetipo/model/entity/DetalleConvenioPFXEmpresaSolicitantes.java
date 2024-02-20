@@ -41,4 +41,7 @@ public class DetalleConvenioPFXEmpresaSolicitantes  {
 	private int idSexo;
 	private int idPromotor;
 	private int idValidaDocumento;
+	private String nombreDocumentoINE;
+	private String nombreDocumentoCURP;
+	private String nombreDocumentoRFC;
 }
