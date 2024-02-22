@@ -199,8 +199,12 @@ public class ConvenioPfServiceImpl implements ConvenioPfService{
 			ActualizaConvenioPFPersonaMapper convenioPFPersonaMapper= session.getMapper(ActualizaConvenioPFPersonaMapper.class);
 
 			try {
-			
-				convenioPFPersonaMapper.actualizarEstatusConvenioPF(convenioPersonaPFDTO);
+			    convenioPFPersonaMapper.actualizarEstatusConvenioPF(convenioPersonaPFDTO);
+				if (convenioPersonaPFDTO.getTipoContratacion()==2) {
+					convenioPFPersonaMapper.insertPagoBitacora(convenioPersonaPFDTO);
+				}
+				
+				
 
 			} catch (Exception e) {
 				session.rollback();

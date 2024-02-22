@@ -1,5 +1,7 @@
 package com.imss.sivimss.arquetipo.configuration.mapper;
 
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 import com.imss.sivimss.arquetipo.model.request.ActualizaConvenioPersonaPFDTO;
@@ -128,4 +130,15 @@ public interface ActualizaConvenioPFPersonaMapper {
                         " WHERE    ID_EMPRESA_CONVENIO_PF   = #{in.idEmpresa} " +
                         " AND ID_CONVENIO_PF   = #{in.idConvenioPF}")
         public int actualizaPlanEmpresa(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
+        
+        @Insert("INSERT INTO SVT_PAGO_BITACORA (ID_REGISTRO,ID_FLUJO_PAGOS,ID_VELATORIO,FEC_ODS,NOM_CONTRATANTE, \r\n"
+        		+ "                    CVE_FOLIO,IMP_VALOR,CVE_ESTATUS_PAGO,ID_USUARIO_ALTA) SELECT scp.ID_CONVENIO_PF as idConvenio,2,scp.ID_VELATORIO as velatorio,CURRENT_DATE(), s.REF_NOMBRE as nombreEmpresa, scp.DES_FOLIO as folio,sum(sp.MON_PRECIO) as total,2,#{in.idUsuario}\r\n"
+        		+ "FROM SVT_EMPRESA_CONVENIO_PF s  \r\n"
+        		+ "inner join SVT_CONVENIO_PF scp  on scp.ID_CONVENIO_PF  = s.ID_CONVENIO_PF  \r\n"
+        		+ "inner join SVT_CONTRA_PAQ_CONVENIO_PF scpcp on scpcp.ID_CONVENIO_PF = scp.ID_CONVENIO_PF  \r\n"
+        		+ "inner join SVT_PAQUETE sp on scpcp.ID_PAQUETE = sp.ID_PAQUETE  "+
+                " AND scp.ID_CONVENIO_PF   = #{in.idConvenioPF}")
+        @Options(useGeneratedKeys = true, keyProperty = "out.idPagoBitacora", keyColumn = "ID_PAGO_BITACORA")
+        public int insertPagoBitacora(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
+        
 }
