@@ -17,6 +17,8 @@ public class ActualizaConvenioPersonaPFDTO {
     private String idPromotor;
     private String razonSocial;
     private Integer idEmpresa;
+    private Integer tipoContratacion;
+    private Integer idPagoBitacora;
 
     // persona
     private Integer idPersona;
