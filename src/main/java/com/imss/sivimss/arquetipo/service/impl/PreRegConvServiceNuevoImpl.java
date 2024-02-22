@@ -662,7 +662,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		PlanPASustituto titularSustituto = datosPlanPA.getTitularSustituto();
 		PlanPABeneficiario beneficiario1 = datosPlanPA.getBeneficiario1();
 		PlanPABeneficiario beneficiario2 = datosPlanPA.getBeneficiario2();
-
+		
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 
 		try (SqlSession session = sqlSessionFactory.openSession()) {
