@@ -336,7 +336,7 @@ public interface ConvenioPA {
 							"\tREF_ESTADO \t\t= #{ben.estado} \r\n" + //
 							" \r\n" + //
 							"WHERE \r\n" + //
-							"\tID_DOMICILIO = #{bens.idDomicilio} ;"
+							"\tID_DOMICILIO = #{ben.idDomicilio} ;"
 			)	
 		public int actualizarDomicilioBeneficiario (@Param("ben") PlanPABeneficiario ben);
 }
