@@ -141,4 +141,17 @@ public interface ActualizaConvenioPFPersonaMapper {
         @Options(useGeneratedKeys = true, keyProperty = "in.idPagoBitacora", keyColumn = "ID_PAGO_BITACORA")
         public int insertPagoBitacora(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
         
+        @Insert("INSERT INTO SVT_PAGO_BITACORA (ID_REGISTRO,ID_FLUJO_PAGOS,ID_VELATORIO,FEC_ODS,NOM_CONTRATANTE, \r\n"
+        		+ "                    CVE_FOLIO,IMP_VALOR,CVE_ESTATUS_PAGO,ID_USUARIO_ALTA) \r\n"
+        		+ "SELECT scp.ID_CONVENIO_PF as idConvenio,2,scp.ID_VELATORIO as velatorio,CURRENT_DATE(), CONCAT(ps.NOM_PERSONA,' ',ps.NOM_PRIMER_APELLIDO,' ',ps.NOM_SEGUNDO_APELLIDO) \r\n"
+        		+ "as nombreContratante, scp.DES_FOLIO as folio,sum(sp.MON_PRECIO) as total,2,1\r\n"
+        		+ "from SVT_CONVENIO_PF scp  \r\n"
+        		+ "inner join SVT_CONTRA_PAQ_CONVENIO_PF scpcp on scpcp.ID_CONVENIO_PF = scp.ID_CONVENIO_PF  \r\n"
+        		+ "inner join SVC_CONTRATANTE sc on sc.ID_CONTRATANTE=scpcp.ID_CONTRATANTE\r\n"
+        		+ "inner join SVC_PERSONA ps on ps.ID_PERSONA=sc.ID_PERSONA\r\n"
+        		+ "inner join SVT_PAQUETE sp on scpcp.ID_PAQUETE = sp.ID_PAQUETE  "
+                + " AND scp.ID_CONVENIO_PF   = #{inp.idConvenioPF} ")
+        @Options(useGeneratedKeys = true, keyProperty = "inp.idPagoBitacora", keyColumn = "ID_PAGO_BITACORA")
+        public int insertPagoBitacoraPersona(@Param("inp") ActualizaConvenioPersonaPFDTO parametros);
+        
 }
