@@ -202,6 +202,8 @@ public class ConvenioPfServiceImpl implements ConvenioPfService{
 			    convenioPFPersonaMapper.actualizarEstatusConvenioPF(convenioPersonaPFDTO);
 				if (convenioPersonaPFDTO.getTipoContratacion()==2) {
 					convenioPFPersonaMapper.insertPagoBitacora(convenioPersonaPFDTO);
+				}else {
+					convenioPFPersonaMapper.insertPagoBitacoraPersona(convenioPersonaPFDTO);
 				}
 				
 				
