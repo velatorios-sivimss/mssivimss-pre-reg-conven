@@ -13,8 +13,8 @@ public class PlanPASustituto {
 	private String colonia;
 	private String municipio;
 	private String estado;
-	private int idDomicilio;
-	private int idPersonaTitular;
+	private Integer idDomicilio;
+	private Integer idPersonaTitular;
 	private String nss;
 	private String curp;
 	private String rfc;
@@ -23,11 +23,11 @@ public class PlanPASustituto {
 	private String segunApe;
 	private String sexo;
 	private String fechaNac;
-	private int idPais;
+	private Integer idPais;
 	private String telefonoFijo;
 	private String telefono;
 	private String correo;
-	private int idEstado;
+	private Integer idEstado;
 	private String otroSexo;
 	
 }
