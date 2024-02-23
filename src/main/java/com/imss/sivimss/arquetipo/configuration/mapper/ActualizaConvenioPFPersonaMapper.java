@@ -138,7 +138,7 @@ public interface ActualizaConvenioPFPersonaMapper {
         		+ "inner join SVT_CONTRA_PAQ_CONVENIO_PF scpcp on scpcp.ID_CONVENIO_PF = scp.ID_CONVENIO_PF  \r\n"
         		+ "inner join SVT_PAQUETE sp on scpcp.ID_PAQUETE = sp.ID_PAQUETE  "+
                 " AND scp.ID_CONVENIO_PF   = #{in.idConvenioPF}")
-        @Options(useGeneratedKeys = true, keyProperty = "out.idPagoBitacora", keyColumn = "ID_PAGO_BITACORA")
+        @Options(useGeneratedKeys = true, keyProperty = "in.idPagoBitacora", keyColumn = "ID_PAGO_BITACORA")
         public int insertPagoBitacora(@Param("in") ActualizaConvenioPersonaPFDTO parametros);
         
 }
