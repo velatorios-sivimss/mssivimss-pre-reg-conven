@@ -31,4 +31,17 @@ public class DetalleConvenioPFXEmpresaSolicitantes  {
 	private int docIne;
 	private int docCurp;
 	private int docRfc;
+	private String matricula;
+	private int idEstado;
+	private String enfermedadPre;
+	private String folioConvenio;
+	private String otraEnfermedad;
+	private String fechaNaciemiento;
+	private String otroSexo;
+	private int idSexo;
+	private int idPromotor;
+	private int idValidaDocumento;
+	private String nombreDocumentoINE;
+	private String nombreDocumentoCURP;
+	private String nombreDocumentoRFC;
 }

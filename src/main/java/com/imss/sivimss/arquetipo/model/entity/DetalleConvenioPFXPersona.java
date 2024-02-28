@@ -36,5 +36,15 @@ public class DetalleConvenioPFXPersona  {
     private int docIne;
     private int docCurp;
     private int docRfc;
+    private String fechaNaciemiento;
+    private String otroSexo;
+    private int idSexo;
+    private int idPromotor;
+    private int idContrantante;
+    private int idValidaDocumento;
+    private String nombreDocumentoINE;
+    private String nombreDocumentoCURP;
+    private String nombreDocumentoRFC;
+
 
 }

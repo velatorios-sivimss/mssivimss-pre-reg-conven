@@ -80,10 +80,10 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	Gson json = new Gson();
 
 	private static final Integer PLATAFORMA_LINEA = 2;
-	
+
 	@Autowired
 	private LogUtil logUtil;
-	
+
 	@Override
 	public Response<Object> actualizarDatosPersona(DatosRequest request, Authentication authentication) {
 		UsuarioDto usuarioDto = json.fromJson((String) authentication.getPrincipal(), UsuarioDto.class);
@@ -116,7 +116,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				Double importe = convenios.consultaImportePaquetesConvenio(personaConvenio.getIdConvenioPF());
 				RegistroPagoPlanPF registro = new RegistroPagoPlanPF();
 
-				registro.setIdConvenioPf(  personaConvenio.getIdConvenioPF());
+				registro.setIdConvenioPf(personaConvenio.getIdConvenioPF());
 				registro.setIdFlujo(1);
 				registro.setIdVelatorio(idVelatorio); // revalidar
 				registro.setNomContratante(personaConvenio.getNombreCompleto()); // revalidar
@@ -126,7 +126,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				registro.setIdUsuarioAlta(idUsuario);
 
 				session.commit();
-				//convenios.insertaPago(registro);
+				// convenios.insertaPago(registro);
 				log.info("==> commit() ");
 				// pasar a generado id 1
 
@@ -215,18 +215,18 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				Double importe = convenios.consultaImportePaquetesConvenio(datosEmpresa.getIdConvenioPf());
 				RegistroPagoPlanPF registro = new RegistroPagoPlanPF();
 
-				registro.setIdConvenioPf( datosEmpresa.getIdConvenioPf() );
+				registro.setIdConvenioPf(datosEmpresa.getIdConvenioPf());
 				registro.setIdFlujo(2);
-				registro.setIdVelatorio(idVelatorio); 
-				registro.setNomContratante( datosEmpresa.getNombreEmpresa() );
-				registro.setCveFolio( datosEmpresa.getFolioConvenioPf() );
+				registro.setIdVelatorio(idVelatorio);
+				registro.setNomContratante(datosEmpresa.getNombreEmpresa());
+				registro.setCveFolio(datosEmpresa.getFolioConvenioPf());
 				registro.setImporte(importe);
 				registro.setCvdEstatusPago(2);
 				registro.setIdUsuarioAlta(idUsuario);
-				registro.setIdPlataforma( PLATAFORMA_LINEA );
+				registro.setIdPlataforma(PLATAFORMA_LINEA);
 				convenios.insertaPago(registro);
 				session.commit();
-				
+
 				log.info("==> commit() ");
 
 			} catch (Exception e) {
@@ -649,7 +649,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 	}
 
 	@Override
-	public Response<Object> actualizarDatosPA(DatosRequest request,Authentication authentication) {
+	public Response<Object> actualizarDatosPA(DatosRequest request, Authentication authentication) {
 		Gson gson = new Gson();
 		String datos = String.valueOf(request.getDatos().get(AppConstantes.DATOS));
 		log.info(datos);
@@ -665,7 +665,7 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 		
 		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
 
-		try(SqlSession session = sqlSessionFactory.openSession()) {
+		try (SqlSession session = sqlSessionFactory.openSession()) {
 			ConvenioPA conveniosPA = session.getMapper(ConvenioPA.class);
 
 			try {
@@ -673,24 +673,24 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				conveniosPA.actualizarDatosContratante(plan);
 				conveniosPA.actualizarDomicilioContratante(plan);
 
-				if( titularSustituto != null ) {
+				if (titularSustituto != null) {
 					conveniosPA.actualizarDatosSustituto(titularSustituto);
 					conveniosPA.actualizarDomicilioSustituto(titularSustituto);
 				}
 
-				if( beneficiario1 != null ) {
+				if (beneficiario1 != null) {
 					conveniosPA.actualizarDatosBeneficiario(beneficiario1);
 					conveniosPA.actualizarDomicilioBeneficiario(beneficiario1);
 				}
-				
-				if( beneficiario2 != null ) {
+
+				if (beneficiario2 != null) {
 					conveniosPA.actualizarDatosBeneficiario(beneficiario2);
 					conveniosPA.actualizarDomicilioBeneficiario(beneficiario2);
 				}
-				
+
 				// pasar a generado 1
 				conveniosPA.actualizarEstatusConvenio(idUsuario, plan.getIdConvenio());
-				
+
 				session.commit();
 				log.info("==> commit() ");
 
@@ -698,44 +698,44 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPAPersona);
 			} catch (Exception e) {
 				log.info(e.getMessage());
-				
+
 				log.info("==> rollback() ");
 				return new Response<>(true, HttpStatus.OK.value(), ERROR, 0);
 			}
 
 		}
 
-		// throw new UnsupportedOperationException("Unimplemented method 'actualizarDatosPA'");
+		// throw new UnsupportedOperationException("Unimplemented method
+		// 'actualizarDatosPA'");
 	}
 
 	@Override
-	public Response<Object> descargarDocumentos(DatosRequest request, Authentication authentication) throws IOException {
+	public Response<Object> descargarDocumentos(DatosRequest request, Authentication authentication)
+			throws IOException {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode datos = mapper.readTree(request.getDatos().get(AppConstantes.DATOS)
-                    .toString());
-			Integer idPaqueteConvenio=datos.get("idPaqueteConvenio").asInt();
-			Integer idContratante=datos.get("idContratante").asInt();
-			Integer idPersona=datos.get("idPersona").asInt();
-			Integer tipoDocumento=datos.get("tipoDocumento").asInt();
-			Integer tipoPersona=datos.get("tipoPersona").asInt();
-			
+					.toString());
+			Integer idPaqueteConvenio = datos.get("idPaqueteConvenio").asInt();
+			Integer idContratante = datos.get("idContratante").asInt();
+			Integer idPersona = datos.get("idPersona").asInt();
+			Integer tipoDocumento = datos.get("tipoDocumento").asInt();
+			Integer tipoPersona = datos.get("tipoPersona").asInt();
+
 			switch (tipoPersona) {
-			case 1:
+				case 1:
 
-				return this.consultarDocumentoContratante(idPaqueteConvenio, idContratante, tipoDocumento);
-				
-				
-			case 2:
+					return this.consultarDocumentoContratante(idPaqueteConvenio, idContratante, tipoDocumento);
 
-				return this.consultarDocumentoBeneficiario(idPaqueteConvenio, idPersona, tipoDocumento);
-				
-		
+				case 2:
+
+					return this.consultarDocumentoBeneficiario(idPaqueteConvenio, idPersona, tipoDocumento);
+
 			}
-			
+
 			return new Response<>(true, HttpStatus.INTERNAL_SERVER_ERROR.value(), AppConstantes.OCURRIO_ERROR_GENERICO,
 					Arrays.asList());
-			
+
 		} catch (Exception e) {
 			log.info(ERROR, e.getCause().getMessage());
 			logUtil.crearArchivoLog(Level.WARNING.toString(), this.getClass().getSimpleName(),
@@ -745,56 +745,55 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 			return new Response<>(true, HttpStatus.INTERNAL_SERVER_ERROR.value(), AppConstantes.OCURRIO_ERROR_GENERICO,
 					Arrays.asList());
 		}
-		
-	}
-	
-	
-	private Response<Object>consultarDocumentoContratante(Integer idPaqueteConvenio, Integer idContratante, Integer tipoDocumento){
-		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
-		
-		String documento=null;
-		try(SqlSession session = sqlSessionFactory.openSession()) {
-			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
-		   switch (tipoDocumento) {
-			case 1:
-				documento=convenios.consultaInePDFContratante(idPaqueteConvenio, idContratante, tipoDocumento);
-				break;
-			case 2:
-				documento=convenios.consultaCurpPDFContratante(idPaqueteConvenio, idContratante, tipoDocumento);
-				break;
-			case 3:
-				documento=convenios.consultaRfcPDFContratante(idPaqueteConvenio, idContratante, tipoDocumento);
-				break;
-				
-			default:
-				break;
-			}
-		} 
-		return new Response<>(false,HttpStatus.OK.value(), "Exito",documento);
-	}
-	
-    private Response<Object>consultarDocumentoBeneficiario(Integer idPaqueteConvenio, Integer idPersona, Integer tipoDocumento){
-    	SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
-		
-		String documento=null;
-		try(SqlSession session = sqlSessionFactory.openSession()) {
-			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
-		   switch (tipoDocumento) {
-			case 1:
-				documento=convenios.consultaInePDFBeneficiario(idPaqueteConvenio, idPersona, tipoDocumento);
-				break;
 
-			case 4:
-				documento=convenios.consultaActaPDFBeneficiario(idPaqueteConvenio, idPersona, tipoDocumento);
-				break;
-				
-			default:
-				break;
-			}
-		} 
-		return new Response<>(false,HttpStatus.OK.value(), "Exito",documento);
 	}
-	
-	
+
+	private Response<Object> consultarDocumentoContratante(Integer idPaqueteConvenio, Integer idContratante,
+			Integer tipoDocumento) {
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+
+		String documento = null;
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
+			switch (tipoDocumento) {
+				case 1:
+					documento = convenios.consultaInePDFContratante(idPaqueteConvenio, idContratante, 1);
+					break;
+				case 2:
+					documento = convenios.consultaCurpPDFContratante(idPaqueteConvenio, idContratante, 1);
+					break;
+				case 3:
+					documento = convenios.consultaRfcPDFContratante(idPaqueteConvenio, idContratante, 1);
+					break;
+
+				default:
+					break;
+			}
+		}
+		return new Response<>(false, HttpStatus.OK.value(), "Exito", documento);
+	}
+
+	private Response<Object> consultarDocumentoBeneficiario(Integer idPaqueteConvenio, Integer idPersona,
+			Integer tipoDocumento) {
+		SqlSessionFactory sqlSessionFactory = myBatisConfig.buildqlSessionFactory();
+
+		String documento = null;
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			ConvenioPF convenios = session.getMapper(ConvenioPF.class);
+			switch (tipoDocumento) {
+				case 1:
+					documento = convenios.consultaInePDFBeneficiario(idPaqueteConvenio, idPersona, 1);
+					break;
+
+				case 4:
+					documento = convenios.consultaActaPDFBeneficiario(idPaqueteConvenio, idPersona, 1);
+					break;
+
+				default:
+					break;
+			}
+		}
+		return new Response<>(false, HttpStatus.OK.value(), "Exito", documento);
+	}
 
 }
