@@ -88,7 +88,7 @@ public interface ConvenioPF {
 			"    SP.FEC_NAC AS fechaNaciemiento,  " +  
 			"    SP.NUM_SEXO AS idSexo,  " +  
 			"    IFNULL(SP.REF_OTRO_SEXO,'') AS otroSexo,  " +  
-			"    IFNULL(SCP.ID_PROMOTOR,'') AS idPromotor,  " +  
+			"    IFNULL(SCP.ID_PROMOTOR,null) AS idPromotor,  " +  
 			"    SCPA.ID_CONTRATANTE AS idContrantante,  " +  
 			"    DOC.ID_VALIDACION_DOCUMENTO AS idValidaDocumento,  " +  
 			"    IFNULL(ENF.REF_OTRA_ENFERMEDAD, '') otraEnfermedad, SCP.IND_ACTIVO activo " +  
