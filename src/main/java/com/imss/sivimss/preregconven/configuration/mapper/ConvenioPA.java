@@ -1,5 +1,8 @@
 package com.imss.sivimss.preregconven.configuration.mapper;
 
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -339,4 +342,31 @@ public interface ConvenioPA {
 							"\tID_DOMICILIO = #{ben.idDomicilio} ;"
 			)	
 		public int actualizarDomicilioBeneficiario (@Param("ben") PlanPABeneficiario ben);
+	
+	    @Select(value = "SELECT * from " +
+             "   SVC_PERSONA where ID_PERSONA = #{idPersona} ")
+	    public Map<String, Object> buscarPersona(@Param("idPersona") Integer idPersona);
+		
+	
+		@Select(value = "SELECT * from " +
+		             "   SVT_DOMICILIO where ID_DOMICILIO = #{idDomicilio} ")
+		public Map<String, Object> buscarDomicilio(@Param("idDomicilio") Integer idDomicilio);
+		
+		@Select(value = "SELECT * from " +
+	             "   SVT_PLAN_SFPA where ID_PLAN_SFPA = #{idPlan} ")
+	    public Map<String, Object> buscarContratoPa(@Param("idPlan") Integer idPlan);
+	    
+		@Insert(value = " INSERT INTO SVH_BITACORA (ID_TIPO_TRANSACCION,DES_TABLA, DES_DATO_AFECTADO, DES_DATO_ACTUAL, ID_USUARIO) values ("
+		             +
+		             " #{tipoTransaccion} ," +
+		             " #{nombreTabla} ," +
+		             " #{valorAnterior} ," +
+		             " #{valorActual} ," +
+		             " #{IdUsuario} " +
+		             " )")
+		
+		public int bitacora(@Param("tipoTransaccion") Integer tipoTransaccion, @Param("nombreTabla") String nombreTabla,
+		             @Param("valorAnterior") String valorAnterior,
+		             @Param("valorActual") String valorActual, @Param("IdUsuario") Integer IdUsuario);
+		
 }

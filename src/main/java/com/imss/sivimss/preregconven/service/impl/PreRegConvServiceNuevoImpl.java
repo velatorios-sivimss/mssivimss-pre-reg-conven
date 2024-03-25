@@ -675,30 +675,160 @@ public class PreRegConvServiceNuevoImpl implements PreRegConvServiceNuevo {
 			ConvenioPA conveniosPA = session.getMapper(ConvenioPA.class);
 
 			try {
+				String consultaAnterior;
+				String consultaNueva;
+				Map<String, Object> consulta;
+				
+				// plan
+				// consulta dato anterior plan
+				consulta = conveniosPA.buscarContratoPa(plan.getIdConvenio());
+				consultaAnterior = consulta == null ? null
+						: consulta.toString();
 				conveniosPA.actualizarDatosPlan(plan);
+				// consulta actualizacion plan
+				consulta = conveniosPA.buscarContratoPa(plan.getIdConvenio());
+				consultaNueva = consulta == null ? null
+						: consulta.toString();
+				// inserta bitacora
+				conveniosPA.bitacora(2, "SVT_PLAN_SFPA", consultaAnterior, consultaNueva,
+						usuarioDto.getIdUsuario());
+
+				// persona
+				// consulta dato anterior persona
+				consulta = conveniosPA.buscarPersona(plan.getIdPersonaContratante());
+				consultaAnterior = consulta == null ? null
+						: consulta.toString();
+
 				conveniosPA.actualizarDatosContratante(plan);
+				// consulta actualizacion persona
+				consulta = conveniosPA.buscarPersona(plan.getIdPersonaContratante());
+				consultaNueva = consulta == null ? null
+						: consulta.toString();
+				// inserta bitacora
+				conveniosPA.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva,
+						usuarioDto.getIdUsuario());
+
+				// domcilio	
+				// consulta dato anterior domcilio
+				consulta = conveniosPA.buscarDomicilio(plan.getIdDomicilio());
+				consultaAnterior = consulta == null ? null
+						: consulta.toString();
 				conveniosPA.actualizarDomicilioContratante(plan);
+				// consulta actualizacion domcilio
+				consulta = conveniosPA.buscarDomicilio(plan.getIdDomicilio());
+				consultaNueva = consulta == null ? null
+						: consulta.toString();
+				// inserta bitacora
+				conveniosPA.bitacora(2, "SVT_DOMICILIO", consultaAnterior, consultaNueva,
+						usuarioDto.getIdUsuario());
+
 
 				if (titularSustituto != null) {
+					// persona
+					// consulta dato anterior persona
+					consulta = conveniosPA.buscarPersona(titularSustituto.getIdPersonaTitular());
+					consultaAnterior = consulta == null ? null
+							: consulta.toString();
+
 					conveniosPA.actualizarDatosSustituto(titularSustituto);
+					// consulta actualizacion persona
+					consulta = conveniosPA.buscarPersona(titularSustituto.getIdPersonaTitular());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					conveniosPA.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva,
+							usuarioDto.getIdUsuario());
+					// domicilio
+					// consulta dato anterior domcilio
+					consulta = conveniosPA.buscarDomicilio(titularSustituto.getIdDomicilio());
+					consultaAnterior = consulta == null ? null
+							: consulta.toString();
 					conveniosPA.actualizarDomicilioSustituto(titularSustituto);
+					// consulta actualizacion domcilio
+					consulta = conveniosPA.buscarDomicilio(titularSustituto.getIdDomicilio());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					conveniosPA.bitacora(2, "SVT_DOMICILIO", consultaAnterior, consultaNueva,
+							usuarioDto.getIdUsuario());
 				}
 
 				if (beneficiario1 != null) {
+					// persona
+					// consulta dato anterior persona
+					consulta = conveniosPA.buscarPersona(beneficiario1.getIdPersonaTitular());
+					consultaAnterior = consulta == null ? null
+							: consulta.toString();
 					conveniosPA.actualizarDatosBeneficiario(beneficiario1);
+					// consulta actualizacion persona
+					consulta = conveniosPA.buscarPersona(beneficiario1.getIdPersonaTitular());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+							
+					// inserta bitacora
+					conveniosPA.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva,
+							usuarioDto.getIdUsuario());		
+					// domicilio
+					// consulta dato anterior domcilio
+					consulta = conveniosPA.buscarDomicilio(beneficiario1.getIdDomicilio());
+					consultaAnterior = consulta == null ? null
+							: consulta.toString();
 					conveniosPA.actualizarDomicilioBeneficiario(beneficiario1);
+					// consulta actualizacion domcilio
+					consulta = conveniosPA.buscarDomicilio(beneficiario1.getIdDomicilio());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					conveniosPA.bitacora(2, "SVT_DOMICILIO", consultaAnterior, consultaNueva,
+							usuarioDto.getIdUsuario());
 				}
 
 				if (beneficiario2 != null) {
+					// persona
+					// consulta dato anterior persona
+					consulta = conveniosPA.buscarPersona(beneficiario2.getIdPersonaTitular());
+					consultaAnterior = consulta == null ? null
+							: consulta.toString();
 					conveniosPA.actualizarDatosBeneficiario(beneficiario2);
+					// consulta actualizacion persona
+					consulta = conveniosPA.buscarPersona(beneficiario2.getIdPersonaTitular());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+							
+					// inserta bitacora
+					conveniosPA.bitacora(2, "SVC_PERSONA", consultaAnterior, consultaNueva,
+							usuarioDto.getIdUsuario());		
+					// domcilio
+					// consulta dato anterior domcilio
+					consulta = conveniosPA.buscarDomicilio(beneficiario2.getIdDomicilio());
+					consultaAnterior = consulta == null ? null
+							: consulta.toString();
 					conveniosPA.actualizarDomicilioBeneficiario(beneficiario2);
+					// consulta actualizacion domcilio
+					consulta = conveniosPA.buscarDomicilio(beneficiario2.getIdDomicilio());
+					consultaNueva = consulta == null ? null
+							: consulta.toString();
+					// inserta bitacora
+					conveniosPA.bitacora(2, "SVT_DOMICILIO", consultaAnterior, consultaNueva,
+							usuarioDto.getIdUsuario());
 				}
 
+				// plan
 				// pasar a generado 1
+				// consulta dato anterior plan
+				consulta = conveniosPA.buscarContratoPa(plan.getIdConvenio());
+				consultaAnterior = consulta == null ? null
+						: consulta.toString();
 				conveniosPA.actualizarEstatusConvenio(idUsuario, plan.getIdConvenio());
-
+				// consulta actualizacion plan
+				consulta = conveniosPA.buscarContratoPa(plan.getIdConvenio());
+				consultaNueva = consulta == null ? null
+						: consulta.toString();
+				// inserta bitacora
+				conveniosPA.bitacora(2, "SVT_PLAN_SFPA", consultaAnterior, consultaNueva,
+						usuarioDto.getIdUsuario());
 				session.commit();
-				log.info(COMMIT);
+			
 
 				PreRegistrosXPAConBeneficiarios detalleConvenioPAPersona = consultaConveniosPA(plan.getIdConvenio());
 				return new Response<>(false, HttpStatus.OK.value(), AppConstantes.EXITO, detalleConvenioPAPersona);
