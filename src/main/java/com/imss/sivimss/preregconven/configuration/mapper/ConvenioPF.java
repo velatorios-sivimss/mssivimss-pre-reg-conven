@@ -126,7 +126,7 @@ public interface ConvenioPF {
 			"IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
 			"PER.ID_PAIS AS idPais, " +  
 			"PER.ID_ESTADO AS idEstado, " +  
-			"CASE WHEN BEN.IND_ACTA_NACIMIENTO IS NULL OR 0 THEN IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') ELSE IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') END AS nombreArchivo,  " +   
+			"CASE WHEN BEN.IND_ACTA_NACIMIENTO = 1 THEN IFNULL(BEN.REF_UBICACION_ACTA_NACIMIENTO, '') ELSE IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') END AS nombreArchivo,  " +   
 			"IFNULL(BEN.ID_PARENTESCO, '') idParentesco,  " +   
 			"PAQ.ID_CONTRATANTE idContratante  " +   
 			"  " +   
@@ -325,7 +325,7 @@ public interface ConvenioPF {
 				"    IFNULL(BEN.IND_ACTA_NACIMIENTO, 0) docActa,  " +   
 				"    PER.ID_PAIS AS idPais, " +  
 				"    PER.ID_ESTADO AS idEstado, " +  
-		        "    CASE WHEN BEN.IND_ACTA_NACIMIENTO IS NULL OR 0 THEN IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') ELSE IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') END AS nombreArchivo,  " +   
+		        "    CASE WHEN BEN.IND_ACTA_NACIMIENTO = 1 THEN IFNULL(BEN.REF_UBICACION_ACTA_NACIMIENTO, '') ELSE IFNULL(BEN.REF_UBICACION_INE_BENEFICIARIO, '') END AS nombreArchivo,  " +   
                 "    IFNULL(BEN.ID_PARENTESCO, '') idParentesco,  " +  
 				"    PAQ.ID_CONTRATANTE idContratante " +  
 				" " +  
